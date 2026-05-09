@@ -16,36 +16,95 @@ body {
 
 /* Magic Dark Mode Overrides for existing hardcoded utility classes */
 @layer utilities {
-  .dark .bg-white { background-color: var(--color-dark-bg) !important; }
-  .dark .text-black { color: var(--color-dark-text) !important; }
-  .dark .border-black { border-color: rgba(255, 255, 255, 0.2) !important; }
-  .dark .border-black\/20 { border-color: rgba(255, 255, 255, 0.15) !important; }
-  .dark .border-black\/10 { border-color: rgba(255, 255, 255, 0.05) !important; }
-  .dark .bg-gray-50 { background-color: var(--color-dark-card) !important; }
-  .dark .bg-gray-100 { background-color: #262626 !important; }
-  .dark .bg-gray-200 { background-color: #333333 !important; }
-  .dark .text-gray-600 { color: var(--color-dark-text-muted) !important; }
-  .dark .text-gray-700 { color: #e5e7eb !important; }
-  .dark .text-gray-800 { color: #f3f4f6 !important; }
-  .dark .text-gray-500 { color: #9ca3af !important; }
-  
-  .dark .hover\:bg-black\/5:hover { background-color: rgba(255, 255, 255, 0.05) !important; }
-  .dark .hover\:bg-gray-50:hover { background-color: #262626 !important; }
-  .dark .hover\:bg-gray-100:hover { background-color: var(--color-dark-hover) !important; }
-  .dark .hover\:text-gray-800:hover { color: #ffffff !important; }
-  .dark .hover\:text-black:hover { color: #ffffff !important; }
-  .dark .hover\:bg-white:hover { background-color: var(--color-dark-hover) !important; }
-  
-  .dark .focus\:border-black:focus { border-color: rgba(255, 255, 255, 0.5) !important; }
-  .dark .placeholder-gray-400::placeholder { color: #6b7280 !important; }
+  .dark .bg-white {
+    background-color: var(--color-dark-bg) !important;
+  }
+
+  .dark .text-black {
+    color: var(--color-dark-text) !important;
+  }
+
+  .dark .border-black {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  .dark .border-black\/20 {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .dark .border-black\/10 {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .dark .bg-gray-50 {
+    background-color: var(--color-dark-card) !important;
+  }
+
+  .dark .bg-gray-100 {
+    background-color: #262626 !important;
+  }
+
+  .dark .bg-gray-200 {
+    background-color: #333333 !important;
+  }
+
+  .dark .text-gray-600 {
+    color: var(--color-dark-text-muted) !important;
+  }
+
+  .dark .text-gray-700 {
+    color: #e5e7eb !important;
+  }
+
+  .dark .text-gray-800 {
+    color: #f3f4f6 !important;
+  }
+
+  .dark .text-gray-500 {
+    color: #9ca3af !important;
+  }
+
+  .dark .hover\:bg-black\/5:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .dark .hover\:bg-gray-50:hover {
+    background-color: #262626 !important;
+  }
+
+  .dark .hover\:bg-gray-100:hover {
+    background-color: var(--color-dark-hover) !important;
+  }
+
+  .dark .hover\:text-gray-800:hover {
+    color: #ffffff !important;
+  }
+
+  .dark .hover\:text-black:hover {
+    color: #ffffff !important;
+  }
+
+  .dark .hover\:bg-white:hover {
+    background-color: var(--color-dark-hover) !important;
+  }
+
+  .dark .focus\:border-black:focus {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+  }
+
+  .dark .placeholder-gray-400::placeholder {
+    color: #6b7280 !important;
+  }
 }
 
 /* NProgress Customization */
 #nprogress {
   pointer-events: none;
 }
+
 #nprogress .bar {
-  background: #9ca3af !important; /* Gray-400 line */
+  background: #9ca3af !important;
+  /* Gray-400 line */
   position: fixed;
   z-index: 10000;
   top: 0;
@@ -53,6 +112,7 @@ body {
   width: 100%;
   height: 3px;
 }
+
 #nprogress .peg {
   display: block;
   position: absolute;
@@ -63,15 +123,73 @@ body {
   opacity: 1.0;
   transform: rotate(3deg) translate(0px, -4px);
 }
+
 #nprogress .spinner {
-  display: none !important; /* Disable spinner, keep only top bar */
+  display: none !important;
+  /* Disable spinner, keep only top bar */
 }
 
 /* Navbar active item fix */
 .dark .active-nav-item.text-gray-700 {
   color: #000000 !important;
 }
+
 .dark .active-nav-item.text-gray-700 svg,
 .dark .active-nav-item.text-gray-700 span {
   color: #000000 !important;
+}
+
+/* Minimalist Custom Scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+html.dark {
+  scrollbar-color: #3f3f46 transparent;
+}
+
+/* Untuk scrollbar di dalam elemen */
+* {
+  scrollbar-width: thin;
+}
+
+html.dark * {
+  scrollbar-color: #3f3f46 transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+/* Target scrollbar untuk elemen di dalam html.dark */
+html.dark ::-webkit-scrollbar-thumb {
+  background-color: #3f3f46;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #52525b;
+}
+
+/* Target scrollbar utama milik window (root html) */
+html.dark::-webkit-scrollbar-thumb {
+  background-color: #3f3f46;
+}
+
+html.dark::-webkit-scrollbar-thumb:hover {
+  background-color: #52525b;
 }
