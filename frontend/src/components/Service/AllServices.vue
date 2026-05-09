@@ -129,33 +129,32 @@ onMounted(async () => {
 
     <div v-if="!loading" class="-mt-16 md:mt-3 px-4 py-16 md:px-8 max-w-6xl mx-auto">
       <div class="text-center mb-12 mt-4 page-title " style="opacity: 0; visibility: hidden">
-        <h1
-          class="text-3xl md:text-5xl font-black font-serif uppercase tracking-wider inline-block relative border-b border-black/20 pb-2">
-          <span class="relative z-10">All Services</span>
-          <span class="absolute top-0 left-0 w-full h-full bg-gray-200 -z-0 -rotate-1 skew-x-12 opacity-70"></span>
+        <h1 class="anim-text text-2xl md:text-3xl font-bold tracking-wide text-black">
+          All Services
         </h1>
-        <p class="mt-4 font-[Inter] text-gray-600 text-sm md:text-base max-w-xl mx-auto italic">
+        <p class="mt-4 font-sans text-gray-600 text-sm md:text-base max-w-xl mx-auto italic">
           "Professional solutions tailored to your needs. Ready to collaborate?"
         </p>
       </div>
 
       <div v-if="services.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-        <div v-for="service in services" :key="service.id"
-          @click="openModal(service)"
+        <div v-for="service in services" :key="service.id" @click="openModal(service)"
           class="service-card group flex flex-col bg-white border border-black/20 rounded-xl p-4 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
           style="opacity: 0; visibility: hidden">
-          
+
           <div class="flex flex-col items-center justify-center text-center h-full py-2">
             <div
               class="w-14 h-14 mb-4 bg-gray-50 text-black flex items-center justify-center rounded-lg border border-black/10 shadow-sm group-hover:scale-110 transition-transform duration-300">
               <Icon :icon="service.icon || 'mdi:briefcase-outline'" class="text-3xl" />
             </div>
-            
-            <h3 class="text-base font-bold font-serif leading-tight mb-2 group-hover:underline decoration-2 underline-offset-2">
+
+            <h3
+              class="text-base font-bold font-serif leading-tight mb-2 group-hover:underline decoration-2 underline-offset-2">
               {{ service.title }}
             </h3>
-            
-            <span class="mt-auto inline-block bg-gray-50 border border-black/10 px-2 py-0.5 text-[10px] md:text-xs font-bold uppercase rounded shadow-sm">
+
+            <span
+              class="mt-auto inline-block bg-gray-50 border border-black/10 px-2 py-0.5 text-[10px] md:text-xs font-bold uppercase rounded shadow-sm">
               {{ service.price }}
             </span>
           </div>
