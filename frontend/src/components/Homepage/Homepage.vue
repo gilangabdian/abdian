@@ -215,7 +215,7 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="min-h-screen bg-white text-black font-sans selection:bg-black selection:text-white overflow-x-hidden flex flex-col pb-24 md:pb-0">
+    class="min-h-screen bg-white text-black font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0">
     <Transition name="fade">
       <InitialLoadingScreen v-if="isLoading" :percent="loadingPercent" />
     </Transition>

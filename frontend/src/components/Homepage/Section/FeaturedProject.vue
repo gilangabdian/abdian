@@ -203,16 +203,16 @@ onUnmounted(() => {
             </div>
 
             <div v-if="selectedProject?.role || selectedProject?.team_size"
-              class="mb-6 p-4 border border-black/10 bg-gray-50/50 rounded-lg flex flex-wrap gap-6 text-gray-600">
+              class="mb-6 p-4 border border-black/10 bg-gray-50/50 rounded-lg flex flex-wrap gap-6 text-gray-600 dark:bg-black/40 dark:text-white dark:border-white/10">
               <div v-if="selectedProject?.role">
-                <h4 class="text-[10px] font-black uppercase text-gray-400 mb-1">Role:</h4>
+                <h4 class="text-[10px] font-black uppercase text-gray-400 dark:text-white/50 mb-1">Role:</h4>
                 <div class="flex items-center gap-2 font-bold text-sm uppercase">
                   <Icon icon="lucide:user-cog" class="text-lg" />
                   {{ selectedProject.role }}
                 </div>
               </div>
               <div v-if="selectedProject?.team_size">
-                <h4 class="text-[10px] font-black uppercase text-gray-400 mb-1">Team Size:</h4>
+                <h4 class="text-[10px] font-black uppercase text-gray-400 dark:text-white/50 mb-1">Team Size:</h4>
                 <div class="flex items-center gap-2 font-bold text-sm uppercase">
                   <Icon icon="lucide:users" class="text-lg" />
                   {{ selectedProject.team_size }} {{ selectedProject.team_size > 1 ? 'People' : 'Person' }}

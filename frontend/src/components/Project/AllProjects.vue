@@ -43,6 +43,20 @@ const statusClass = (status) => {
   return map[status] || "bg-gray-100 text-gray-700 border-gray-500";
 };
 
+// Helper: Preload gambar
+function preloadImage(url) {
+  return new Promise((resolve) => {
+    if (!url) {
+      resolve();
+      return;
+    }
+    const img = new Image();
+    img.src = url;
+    img.onload = resolve;
+    img.onerror = resolve;
+  });
+}
+
 // --- FUNCTION FETCH DATA (Dengan Delay Buatan agar Smooth) ---
 async function fetchProjects() {
   loading.value = true;
@@ -52,7 +66,15 @@ async function fetchProjects() {
     const responseBody = await response.json();
 
     if (response.status === 200) {
-      projects.value = responseBody.data || responseBody;
+      const data = responseBody.data || responseBody;
+      projects.value = data;
+
+      // Tunggu hingga semua thumbnail project selesai di-load
+      const imagePromises = data
+        .filter(p => p.thumbnail_url)
+        .map(p => preloadImage(p.thumbnail_url));
+
+      await Promise.all(imagePromises);
     } else {
       await alertError(responseBody.message);
     }
@@ -60,11 +82,11 @@ async function fetchProjects() {
     console.error(`Error fetch projects:`, e);
   } finally {
     NProgress.done();
-    // Delay 800ms sebelum loading hilang agar transisi tidak kasar
+    // Gunakan delay yang lebih singkat karena kita sudah menunggu gambar selesai di-load
     setTimeout(() => {
       loading.value = false;
       window.dispatchEvent(new CustomEvent("content-loaded"));
-    }, 800);
+    }, 400);
   }
 }
 
@@ -243,16 +265,16 @@ onMounted(async () => {
             </div>
 
             <div v-if="selectedProject?.role || selectedProject?.team_size"
-              class="mb-6 p-4 border border-black/10 bg-gray-50/50 rounded-lg flex flex-wrap gap-6 text-gray-600">
+              class="mb-6 p-4 border border-black/10 bg-gray-50/50 rounded-lg flex flex-wrap gap-6 text-gray-600 dark:bg-black/40 dark:text-white dark:border-white/10">
               <div v-if="selectedProject?.role">
-                <h4 class="text-[10px] font-black uppercase text-gray-400 mb-1">Role:</h4>
+                <h4 class="text-[10px] font-black uppercase text-gray-400 dark:text-white/50 mb-1">Role:</h4>
                 <div class="flex items-center gap-2 font-bold text-sm uppercase">
                   <Icon icon="lucide:user-cog" class="text-lg" />
                   {{ selectedProject.role }}
                 </div>
               </div>
               <div v-if="selectedProject?.team_size">
-                <h4 class="text-[10px] font-black uppercase text-gray-400 mb-1">Team Size:</h4>
+                <h4 class="text-[10px] font-black uppercase text-gray-400 dark:text-white/50 mb-1">Team Size:</h4>
                 <div class="flex items-center gap-2 font-bold text-sm uppercase">
                   <Icon icon="lucide:users" class="text-lg" />
                   {{ selectedProject.team_size }} {{ selectedProject.team_size > 1 ? 'People' : 'Person' }}

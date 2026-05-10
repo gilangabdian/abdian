@@ -81,7 +81,7 @@ watch(isLoading, (newVal) => {
 
 
     <section v-if="!isLoading"
-      class="-mt-30 md:-mt-12 min-h-screen flex justify-center py-24 px-4 sm:px-6 font-sans text-black selection:bg-black selection:text-white">
+      class="-mt-30 md:-mt-12 min-h-screen flex justify-center py-24 px-4 sm:px-6 font-sans text-black">
       <div class="container max-w-[650px] w-full flex flex-col space-y-12 mt-10 mx-auto">
 
         <!-- About Section -->
@@ -92,14 +92,16 @@ watch(isLoading, (newVal) => {
 
           <div class="anim-text space-y-6 text-sm md:text-base text-gray-700 font-normal leading-relaxed">
             <p>
-              Hi, I am Gilang Abdian Anggara. I am a Frontend Developer dedicated to creating digital experiences that
-              are simple, fast, and accessible. I focus on building interfaces that feel natural and work perfectly
-              across all devices.
+              Hi, I'm Gilang Abdian Anggara. While my background covers the full stack of web development, my true
+              passion and current focus are deeply rooted in Frontend Development. I love the challenge of turning
+              complex logic into something beautiful, intuitive, and easy for people to use.
             </p>
             <p>
-              I believe that good frontend development is timeless. It is about more than just looks—it is about writing
-              clean, maintainable code and putting the user first. My goal is to turn complex ideas into smooth,
-              high-performance web applications that stay relevant as technology evolves.
+              I am dedicated to crafting digital experiences that are not just visually stunning, but also fast,
+              accessible, and seamless. For me, great frontend work is about more than just aesthetics; it's about
+              writing clean, maintainable code and building interfaces that feel natural on any device. My goal is to
+              transform complex ideas into smooth, high-performance web applications that stay relevant as technology
+              evolves.
             </p>
 
 
@@ -119,8 +121,10 @@ watch(isLoading, (newVal) => {
             </div> -->
 
             <p>
-              Outside of programming, I enjoy making YouTube videos, playing the guitar, and finding new ways to blend
-              technology with creativity to stay inspired.
+              Outside of programming, I enjoy making <a href="https://www.youtube.com/@jeezfay" target="_blank"
+                class="hover:underline decoration-black dark:decoration-white underline-offset-4 transition-all duration-300">YouTube
+                videos</a>, playing the guitar, and finding new ways to blend technology with creativity to stay
+              inspired.
             </p>
           </div>
         </div>
