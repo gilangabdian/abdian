@@ -16,13 +16,17 @@ body {
 
 /* Custom Selection Color */
 ::selection {
-  background-color: #d1d5db; /* gray-300 */
-  color: #111827; /* gray-900 */
+  background-color: #d1d5db;
+  /* gray-300 */
+  color: #111827;
+  /* gray-900 */
 }
 
 .dark ::selection {
-  background-color: #4b5563; /* gray-600 */
-  color: #f9fafb; /* gray-50 */
+  background-color: #454546;
+  /* gray-600 */
+  color: #f9fafb;
+  /* gray-50 */
 }
 
 

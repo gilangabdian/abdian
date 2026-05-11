@@ -60,7 +60,7 @@ function preloadImage(url) {
 // --- FUNCTION FETCH DATA (Dengan Delay Buatan agar Smooth) ---
 async function fetchProjects() {
   loading.value = true;
-  NProgress.start();
+  // NProgress.start() is handled by router.beforeEach — no duplicate call needed
   try {
     const response = await getAllProjects();
     const responseBody = await response.json();

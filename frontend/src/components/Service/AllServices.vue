@@ -22,7 +22,7 @@ const renderMarkdown = (text) => {
 // --- FUNCTION FETCH DATA ---
 async function fetchServices() {
   loading.value = true;
-  NProgress.start();
+  // NProgress.start() is handled by router.beforeEach — no duplicate call needed
   try {
     const response = await getAllServices();
     const responseBody = await response.json();

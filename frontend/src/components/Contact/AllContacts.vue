@@ -13,7 +13,7 @@ const isLoading = ref(true);
 // --- Fetch Data ---
 async function fetchContacts() {
   isLoading.value = true;
-  NProgress.start();
+  // NProgress.start() is handled by router.beforeEach — no duplicate call needed
   try {
     const response = await getAllContacts();
     const responseBody = await response.json();

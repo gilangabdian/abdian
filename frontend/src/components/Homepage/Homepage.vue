@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, watch, nextTick, onUnmounted } from "vue";
+import NProgress from "nprogress";
 // --- 1. Import GSAP dan ScrollTrigger ---
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -200,6 +201,7 @@ watch(isLoading, (newVal) => {
 });
 
 onMounted(() => {
+  NProgress.done(); // Close the router's progress bar — Homepage uses its own InitialLoadingScreen
   fetchAllData();
   initVisitorTracking();
 });

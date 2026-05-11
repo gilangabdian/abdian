@@ -195,7 +195,11 @@ router.beforeEach((to, from, next) => {
 
 // Force global scrolling systems like Lenis to update scroll state after navigation
 router.afterEach((to, from) => {
-  NProgress.done();
+  // Public page components (About, Projects, etc.) call NProgress.done() after their data fetch.
+  // Admin pages don't manage NProgress themselves, so close it immediately for them.
+  if (to.path.startsWith('/admin')) {
+    NProgress.done();
+  }
   // Only execute scroll jump if the route actually changed (avoids triggering on modal pushState/popState)
   if (to.path !== from.path) {
     // Reset window position manually just in case

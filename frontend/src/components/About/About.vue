@@ -17,7 +17,7 @@ gsap.registerPlugin(ScrollTrigger);
 // --- FUNCTION ---
 const fetchProfileData = async () => {
   isLoading.value = true;
-  NProgress.start();
+  // NProgress.start() is handled by router.beforeEach — no duplicate call needed
   try {
     const res = await getProfile();
     if (!res.ok) throw new Error("Failed to fetch");

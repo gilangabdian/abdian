@@ -1,9 +1,15 @@
 <script setup>
+import { onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import { useDark } from "@vueuse/core";
+import NProgress from "nprogress";
 
 // Initialize theme logic for this page
 const isDark = useDark();
+
+onMounted(() => {
+  NProgress.done(); // Close the router's progress bar — this page has no data fetch
+});
 </script>
 
 <template>

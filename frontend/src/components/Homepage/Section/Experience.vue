@@ -294,3 +294,10 @@ onUnmounted(() => {
   font-weight: bold;
 }
 </style>
+
+<!-- Unscoped block for dark mode — scoped styles break :global() with :deep() -->
+<style>
+.dark .markdown-content strong {
+  color: white !important;
+}
+</style>

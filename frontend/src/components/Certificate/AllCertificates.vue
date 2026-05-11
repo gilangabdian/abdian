@@ -35,7 +35,7 @@ const formatDate = (dateStr) => {
 // --- FUNCTION FETCH DATA (Dengan Delay Buatan) ---
 async function fetchCertificates() {
   loading.value = true;
-  NProgress.start();
+  // NProgress.start() is handled by router.beforeEach — no duplicate call needed
   try {
     const response = await getAllCertificates();
     const responseBody = await response.json();
