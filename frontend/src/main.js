@@ -25,6 +25,7 @@ import AllContacts from "./components/Contact/AllContacts.vue";
 import Home from "./components/LayoutHome/Home.vue";
 import AllServices from "./components/Service/AllServices.vue";
 import About from "./components/About/About.vue";
+import Me from "./components/Me.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -40,12 +41,16 @@ const router = createRouter({
     }
   },
   routes: [
-    {
+     {
       path: "/",
+      component: Me,
+    },
+    {
+      path: "/me",
       component: Home,
       children: [
         {
-          path: "/",
+          path: "/me",
           component: Homepage,
         },
         {
@@ -70,6 +75,7 @@ const router = createRouter({
         },
       ],
     },
+
 
     {
       path: "/admin",
@@ -164,7 +170,9 @@ const router = createRouter({
 
 // [BEST PRACTICE] Global Navigation Guard
 router.beforeEach((to, from, next) => {
-  NProgress.start();
+  if (to.path !== "/" && to.path !== from.path) {
+    NProgress.start();
+  }
   // Ambil token dari localStorage (sesuaikan key-nya dengan kode login Anda)
   const token = localStorage.getItem("token");
 
@@ -197,20 +205,20 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from) => {
   // Public page components (About, Projects, etc.) call NProgress.done() after their data fetch.
   // Admin pages don't manage NProgress themselves, so close it immediately for them.
-  if (to.path.startsWith('/admin')) {
+  if (to.path.startsWith("/admin") || to.path === "/") {
     NProgress.done();
   }
   // Only execute scroll jump if the route actually changed (avoids triggering on modal pushState/popState)
   if (to.path !== from.path) {
     // Reset window position manually just in case
     window.scrollTo(0, 0);
-    
+
     // If Lenis is instantiated globally, instantly teleport it to 0 otherwise it will resume its inertia from the previous page
     if (window.lenis) {
       window.lenis.scrollTo(0, { immediate: true });
-      
+
       // FIX ADMIN SCROLL: Stop lenis from intercepting scroll if we are in admin
-      if (to.path.startsWith('/admin')) {
+      if (to.path.startsWith("/admin")) {
         window.lenis.stop();
       } else {
         window.lenis.start();

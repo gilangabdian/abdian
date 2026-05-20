@@ -13,7 +13,7 @@ const toggleDark = useToggle(isDark);
 
 const route = useRoute();
 const menus = [
-  { name: "Home", href: "/", icon: "mdi:home-variant-outline" },
+  { name: "Home", href: "/me", icon: "mdi:home-variant-outline" },
   { name: "About", href: "/about", icon: "mdi:card-account-details-outline" },
   { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
   { name: "Certificates", href: "/certificates", icon: "mdi:certificate-outline" },
