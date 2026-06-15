@@ -47,12 +47,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="pt-16 md:pt-36 pb-16 min-h-screen bg-white dark:bg-black flex flex-col items-center">
+  <div class="pt-16 md:pt-36 pb-16 min-h-screen bg-white dark:bg-black flex flex-col items-center font-[Inter]">
     <div class="w-full max-w-3xl px-4 md:px-8">
       <!-- Empty State -->
-      <div v-if="!isLoading && blogs.length === 0" class="text-center font-sans text-neutral-500 py-12">
-        no article yet!
-      </div>
+      <div v-if="!isLoading && blogs.length === 0" class="text-center text-neutral-500 py-12">no article yet!</div>
 
       <!-- Blog List by Year -->
       <div v-else-if="!isLoading && blogs.length > 0" class="w-full flex flex-col gap-24">
@@ -72,12 +70,12 @@ onMounted(async () => {
               :to="'/blogs/' + blog.slug"
               class="blog-row cursor-pointer group flex flex-col sm:flex-row justify-start items-start sm:items-center w-full py-2 transition-colors gap-3 md:gap-4">
               <h2
-                class="text-lg md:text-xl font-small font-sans text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors leading-tight">
+                class="text-lg md:text-xl font-small text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors leading-tight">
                 {{ blog.title }}
               </h2>
 
               <div
-                class="flex items-center gap-2 mt-1 sm:mt-0 text-sm font-sans text-neutral-400 dark:text-neutral-500 whitespace-nowrap group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors">
+                class="flex items-center gap-2 mt-1 sm:mt-0 text-sm text-neutral-400 dark:text-neutral-500 whitespace-nowrap group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors">
                 <span>{{ formatDate(blog.created_at) }}</span>
                 <span class="text-[10px]">•</span>
                 <span>{{ blog.read_time }} min</span>

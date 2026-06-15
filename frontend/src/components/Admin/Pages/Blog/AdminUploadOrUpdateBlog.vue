@@ -48,7 +48,7 @@ onMounted(async () => {
     extensions: [
       StarterKit,
       TextAlign.configure({
-        types: ['heading', 'paragraph'],
+        types: ["heading", "paragraph"],
       }),
       ImageResize.configure({
         inline: true,
@@ -60,7 +60,7 @@ onMounted(async () => {
     },
     editorProps: {
       attributes: {
-        class: "prose max-w-none min-h-[300px] outline-none p-4 font-serif",
+        class: "prose max-w-none min-h-[300px] outline-none p-4 font-[Inter]",
       },
     },
   });
@@ -171,7 +171,7 @@ const saveBlog = async () => {
           v-model="form.title"
           type="text"
           placeholder="Cara Belajar Coding dengan Seru..."
-          class="w-full p-3 border-4 border-black font-sans text-lg focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all" />
+          class="w-full p-3 border-4 border-black text-lg focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all" />
       </div>
 
       <!-- Editor Toolbar -->
@@ -236,7 +236,7 @@ const saveBlog = async () => {
             <Icon icon="lucide:quote" />
           </button>
           <div class="w-px h-6 bg-gray-400 my-auto mx-2"></div>
-          
+
           <!-- Text Align Buttons -->
           <button
             type="button"
@@ -307,14 +307,16 @@ const saveBlog = async () => {
       </div>
     </form>
 
-    <div v-else-if="isPreviewMode" class="bg-white border-4 border-black p-6 md:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] space-y-8">
+    <div
+      v-else-if="isPreviewMode"
+      class="bg-white border-4 border-black p-6 md:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] space-y-8">
       <article class="relative mt-8">
         <!-- Title and Meta from SingleBlog -->
         <header class="mb-12">
-          <h1 class="text-3xl md:text-5xl font-medium font-sans leading-tight mb-4 text-black">
-            {{ form.title || 'Untitled Blog' }}
+          <h1 class="text-3xl md:text-5xl font-medium leading-tight mb-4 text-black">
+            {{ form.title || "Untitled Blog" }}
           </h1>
-          <div class="flex flex-wrap items-center gap-2 text-sm font-sans text-neutral-500">
+          <div class="flex flex-wrap items-center gap-2 text-sm text-neutral-500">
             <span>
               {{ new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) }}
             </span>
@@ -324,9 +326,12 @@ const saveBlog = async () => {
         </header>
 
         <!-- Content (Tiptap HTML) -->
-        <div class="prose prose-neutral prose-lg max-w-none font-sans prose-headings:font-black prose-headings:text-black prose-a:text-neutral-600 hover:prose-a:text-black prose-a:transition-colors prose-img:rounded-lg prose-img:mx-auto" v-html="form.content"></div>
+        <div
+          class="prose prose-neutral prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black prose-a:text-neutral-600 hover:prose-a:text-black prose-a:transition-colors prose-img:rounded-lg prose-img:mx-auto"
+          v-html="form.content"></div>
       </article>
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-8 border-t-4 border-black mt-12">
+      <div
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-8 border-t-4 border-black mt-12">
         <button
           type="button"
           @click="isPreviewMode = false"
@@ -378,8 +383,19 @@ const saveBlog = async () => {
   margin-left: 0;
   font-style: italic;
 }
+/* Memastikan enter/baris kosong tidak kolaps */
+.ProseMirror p:empty::before,
+.prose p:empty::before {
+  content: "\00a0";
+  display: inline-block;
+}
+
+/* Memastikan foto sebaris bisa berdampingan (menimpa default Tailwind Typography) */
 .ProseMirror img,
 .prose img {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0.5em; /* Memberikan jarak (gap) di semua sisi (atas, bawah, kiri, kanan) */
   max-width: 100%;
   height: auto;
   border: 4px solid black;

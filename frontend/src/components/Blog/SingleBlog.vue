@@ -81,7 +81,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="pt-20 pb-20 min-h-screen bg-white dark:bg-black text-neutral-800 dark:text-neutral-300">
+  <div class="pt-20 pb-20 min-h-screen bg-white dark:bg-black text-neutral-800 dark:text-neutral-300 font-[Inter]">
     <!-- Desktop ToC Sidebar -->
     <transition
       enter-active-class="transition-all duration-300 ease-out"
@@ -97,7 +97,7 @@ onMounted(async () => {
         @mouseleave="onMouseLeave">
         <div class="absolute left-0 top-34 pl-7 xl:pl-10">
           <ul
-            class="flex flex-col gap-3 text-sm font-sans border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
+            class="flex flex-col gap-3 text-sm border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
             <li v-for="item in toc" :key="item.id" class="w-fit" :class="item.level === 'h3' ? 'ml-4 text-xs' : ''">
               <a
                 :href="'#' + item.id"
@@ -115,11 +115,11 @@ onMounted(async () => {
       <article v-if="!isLoading && blog" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave" class="relative mt-8">
         <!-- Header -->
         <header class="mb-12">
-          <h1 class="text-3xl md:text-5xl font-medium font-sans leading-tight mb-4 text-black dark:text-white">
+          <h1 class="text-3xl md:text-5xl font-medium leading-none mb-3 text-black dark:text-white">
             {{ blog.title }}
           </h1>
 
-          <div class="flex flex-wrap items-center gap-2 text-sm font-sans text-neutral-500 dark:text-neutral-400">
+          <div class="flex flex-wrap items-center gap-2 text-sm text-neutral-500 dark:text-neutral-500">
             <span>
               {{
                 new Date(blog.created_at).toLocaleDateString("en-US", {
@@ -137,15 +137,18 @@ onMounted(async () => {
         <!-- Content (Tiptap HTML) -->
         <div
           ref="contentRef"
-          class="prose prose-neutral dark:prose-invert prose-lg max-w-none font-sans prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-a:text-neutral-600 dark:prose-a:text-neutral-400 hover:prose-a:text-black dark:hover:prose-a:text-white prose-a:transition-colors prose-img:rounded-lg prose-img:mx-auto"
+          class="prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-a:text-neutral-600 dark:prose-a:text-neutral-400 hover:prose-a:text-black dark:hover:prose-a:text-white prose-a:transition-colors prose-img:rounded-lg prose-img:mx-auto"
           v-html="blog.content"></div>
 
         <!-- Back Button at bottom -->
         <router-link
           to="/blogs"
-          class="cursor-pointer mt-16 font-sans font-medium text-neutral-500 hover:text-black dark:hover:text-white border-b border-neutral-300 dark:border-neutral-700 hover:border-black dark:hover:border-white transition-all flex items-center gap-2 w-fit">
-          <span class="font-bold">></span>
-          cd . .
+          class="group cursor-pointer mt-16 font-medium text-neutral-500 flex items-center gap-2 w-fit">
+          <span class="font-mono">></span>
+          <span
+            class="border-b border-neutral-300 dark:border-neutral-700 group-hover:border-black dark:group-hover:border-white group-hover:text-black dark:group-hover:text-white transition-all pb-[1px]">
+            cd . .
+          </span>
         </router-link>
       </article>
     </div>
@@ -157,6 +160,13 @@ onMounted(async () => {
 .prose p:empty::before {
   content: "\00a0";
   display: inline-block;
+}
+
+/* Memastikan foto sebaris bisa berdampingan (menimpa default Tailwind Typography) */
+.prose img {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0.5em; /* Memberikan jarak (gap) di semua sisi (atas, bawah, kiri, kanan) */
 }
 
 /* Hover simbol # pada judul konten */
