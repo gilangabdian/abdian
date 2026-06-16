@@ -137,7 +137,7 @@ onMounted(async () => {
         <!-- Content (Tiptap HTML) -->
         <div
           ref="contentRef"
-          class="prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-a:text-neutral-600 dark:prose-a:text-neutral-400 hover:prose-a:text-black dark:hover:prose-a:text-white prose-a:transition-colors prose-img:rounded-lg prose-img:mx-auto"
+          class="prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg"
           v-html="blog.content"></div>
 
         <!-- Back Button at bottom -->
@@ -162,11 +162,40 @@ onMounted(async () => {
   display: inline-block;
 }
 
-/* Memastikan foto sebaris bisa berdampingan (menimpa default Tailwind Typography) */
+/* Custom Paragraph Styling */
+.prose p {
+  color: #52525b !important; /* text-neutral-600 */
+}
+.dark .prose p {
+  color: #a1a1aa !important; /* text-neutral-400 */
+}
+
+/* Custom Link Styling */
+.prose a {
+  font-weight: 400 !important;
+  color: #171717 !important; /* text-neutral-900 */
+  text-decoration: underline !important;
+  text-decoration-color: #d4d4d8 !important; /* neutral-300 */
+  text-underline-offset: 2px !important;
+  transition: all 0.2s ease-in-out;
+}
+.dark .prose a {
+  color: #e5e5e5 !important; /* text-neutral-200 */
+  text-decoration-color: #3f3f46 !important; /* neutral-700 */
+}
+.prose a:hover {
+  text-decoration-color: #171717 !important; /* neutral-900 */
+}
+.dark .prose a:hover {
+  text-decoration-color: #e5e5e5 !important; /* neutral-200 */
+}
+
+/* Memastikan foto menjadi Block (1 foto per baris) sejajar dengan perbaikan di Admin */
 .prose img {
-  display: inline-block;
-  vertical-align: middle;
-  margin: 0.5em; /* Memberikan jarak (gap) di semua sisi (atas, bawah, kiri, kanan) */
+  display: block;
+  margin: 1.5em auto; /* Jarak atas bawah normal, posisi ke tengah */
+  max-width: 100%;
+  height: auto;
 }
 
 /* Hover simbol # pada judul konten */

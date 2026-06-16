@@ -493,6 +493,40 @@ const saveBlog = async () => {
   display: inline-block;
 }
 
+/* Custom Paragraph Styling */
+.ProseMirror p,
+.prose p {
+  color: #52525b !important; /* text-neutral-600 */
+}
+.dark .ProseMirror p,
+.dark .prose p {
+  color: #a1a1aa !important; /* text-neutral-400 */
+}
+
+/* Custom Link Styling */
+.ProseMirror a,
+.prose a {
+  font-weight: 400 !important;
+  color: #171717 !important; /* text-neutral-900 */
+  text-decoration: underline !important;
+  text-decoration-color: #d4d4d8 !important; /* neutral-300 */
+  text-underline-offset: 2px !important;
+  transition: all 0.2s ease-in-out;
+}
+.dark .ProseMirror a,
+.dark .prose a {
+  color: #e5e5e5 !important; /* text-neutral-200 */
+  text-decoration-color: #3f3f46 !important; /* neutral-700 */
+}
+.ProseMirror a:hover,
+.prose a:hover {
+  text-decoration-color: #171717 !important; /* neutral-900 */
+}
+.dark .ProseMirror a:hover,
+.dark .prose a:hover {
+  text-decoration-color: #e5e5e5 !important; /* neutral-200 */
+}
+
 /* Hover simbol # pada judul konten */
 .prose h2,
 .prose h3 {
