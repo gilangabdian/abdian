@@ -506,8 +506,8 @@ const saveBlog = async () => {
 /* Custom Link Styling */
 .ProseMirror a,
 .prose a {
-  font-weight: 400 !important;
-  color: #171717 !important; /* text-neutral-900 */
+  font-weight: 600 !important;
+  color: #000000 !important; /* text-neutral-900 */
   text-decoration: underline !important;
   text-decoration-color: #d4d4d8 !important; /* neutral-300 */
   text-underline-offset: 2px !important;
