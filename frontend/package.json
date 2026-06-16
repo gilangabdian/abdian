@@ -11,8 +11,11 @@
   "dependencies": {
     "@iconify/vue": "^5.0.0",
     "@tailwindcss/vite": "^4.1.18",
+    "@tiptap/extension-highlight": "^3.26.1",
     "@tiptap/extension-image": "^3.26.1",
+    "@tiptap/extension-link": "^3.26.1",
     "@tiptap/extension-text-align": "^3.26.1",
+    "@tiptap/extension-underline": "^3.26.1",
     "@tiptap/pm": "^3.26.1",
     "@tiptap/starter-kit": "^3.26.1",
     "@tiptap/vue-3": "^3.26.1",

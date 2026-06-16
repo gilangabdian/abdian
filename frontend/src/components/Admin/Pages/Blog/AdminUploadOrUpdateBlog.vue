@@ -7,6 +7,9 @@ import { Editor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import ImageResize from "tiptap-extension-resize-image";
 import TextAlign from "@tiptap/extension-text-align";
+import Link from "@tiptap/extension-link";
+import Underline from "@tiptap/extension-underline";
+import Highlight from "@tiptap/extension-highlight";
 import { Icon } from "@iconify/vue";
 
 const route = useRoute();
@@ -24,6 +27,18 @@ const form = ref({
 
 let editor = null;
 const imageInput = ref(null);
+
+const setLink = () => {
+  const previousUrl = editor.getAttributes("link").href;
+  const url = window.prompt("Masukkan URL:", previousUrl);
+
+  if (url === null) return;
+  if (url === "") {
+    editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    return;
+  }
+  editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+};
 
 onMounted(async () => {
   if (route.params.id) {
@@ -51,9 +66,12 @@ onMounted(async () => {
         types: ["heading", "paragraph"],
       }),
       ImageResize.configure({
-        inline: true,
+        inline: false,
         allowBase64: true,
       }),
+      Link.configure({ openOnClick: false }),
+      Underline,
+      Highlight.configure({ multicolor: true }),
     ],
     onUpdate: () => {
       form.value.content = editor.getHTML();
@@ -180,26 +198,71 @@ const saveBlog = async () => {
         <div class="border-4 border-black mb-[-4px] relative z-10 bg-gray-100 flex flex-wrap gap-2 p-2" v-if="editor">
           <button
             type="button"
+            @click="editor.chain().focus().undo().run()"
+            :disabled="!editor.can().undo()"
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded disabled:opacity-30"
+            title="Undo">
+            <Icon icon="lucide:undo" />
+          </button>
+          <button
+            type="button"
+            @click="editor.chain().focus().redo().run()"
+            :disabled="!editor.can().redo()"
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded disabled:opacity-30"
+            title="Redo">
+            <Icon icon="lucide:redo" />
+          </button>
+          <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
+
+          <button
+            type="button"
             @click="editor.chain().focus().toggleBold().run()"
             :class="{ 'bg-black text-white': editor.isActive('bold') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded">
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Bold">
             <Icon icon="lucide:bold" />
           </button>
           <button
             type="button"
             @click="editor.chain().focus().toggleItalic().run()"
             :class="{ 'bg-black text-white': editor.isActive('italic') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded">
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Italic">
             <Icon icon="lucide:italic" />
+          </button>
+          <button
+            type="button"
+            @click="editor.chain().focus().toggleUnderline().run()"
+            :class="{ 'bg-black text-white': editor.isActive('underline') }"
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Underline">
+            <Icon icon="lucide:underline" />
           </button>
           <button
             type="button"
             @click="editor.chain().focus().toggleStrike().run()"
             :class="{ 'bg-black text-white': editor.isActive('strike') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded">
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Strikethrough">
             <Icon icon="lucide:strikethrough" />
           </button>
-          <div class="w-px h-6 bg-gray-400 my-auto mx-2"></div>
+          <button
+            type="button"
+            @click="editor.chain().focus().toggleHighlight().run()"
+            :class="{ 'bg-black text-white': editor.isActive('highlight') }"
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Highlight">
+            <Icon icon="lucide:highlighter" />
+          </button>
+          <button
+            type="button"
+            @click="setLink"
+            :class="{ 'bg-black text-white': editor.isActive('link') }"
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Insert Link">
+            <Icon icon="lucide:link" />
+          </button>
+          <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
           <button
             type="button"
             @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
@@ -218,24 +281,34 @@ const saveBlog = async () => {
             type="button"
             @click="editor.chain().focus().toggleBulletList().run()"
             :class="{ 'bg-black text-white': editor.isActive('bulletList') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded">
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Bullet List">
             <Icon icon="lucide:list" />
           </button>
           <button
             type="button"
             @click="editor.chain().focus().toggleOrderedList().run()"
             :class="{ 'bg-black text-white': editor.isActive('orderedList') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded">
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Numbered List">
             <Icon icon="lucide:list-ordered" />
           </button>
           <button
             type="button"
             @click="editor.chain().focus().toggleBlockquote().run()"
             :class="{ 'bg-black text-white': editor.isActive('blockquote') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded">
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Blockquote">
             <Icon icon="lucide:quote" />
           </button>
-          <div class="w-px h-6 bg-gray-400 my-auto mx-2"></div>
+          <button
+            type="button"
+            @click="editor.chain().focus().setHorizontalRule().run()"
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Horizontal Rule">
+            <Icon icon="lucide:minus" />
+          </button>
+          <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
 
           <!-- Text Align Buttons -->
           <button
@@ -390,15 +463,13 @@ const saveBlog = async () => {
   display: inline-block;
 }
 
-/* Memastikan foto sebaris bisa berdampingan (menimpa default Tailwind Typography) */
+/* Memastikan foto menjadi Block (1 foto per baris) */
 .ProseMirror img,
 .prose img {
-  display: inline-block;
-  vertical-align: middle;
-  margin: 0.5em; /* Memberikan jarak (gap) di semua sisi (atas, bawah, kiri, kanan) */
+  display: block; /* Menghilangkan efek inline-block yang merusak line-height */
+  margin: 1em auto; /* Jarak atas bawah normal, posisi ke tengah */
   max-width: 100%;
   height: auto;
-  border: 4px solid black;
 }
 
 /* Memastikan H2 dan H3 selalu bold di Preview Mode */
