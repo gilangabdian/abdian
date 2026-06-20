@@ -7,7 +7,12 @@ import { getSkills } from "../../../lib/api/SkillApi";
 import { getAllContacts } from "../../../lib/api/ContactApi";
 import { getAllPhotos } from "../../../lib/api/PhotoApi";
 import { getAllBlogsAdmin } from "../../../lib/api/BlogApi";
-import { getVisitorCount, adminGetVisitors, adminDeleteVisitor, adminClearAllVisitors } from "../../../lib/api/VisitorApi";
+import {
+  getVisitorCount,
+  adminGetVisitors,
+  adminDeleteVisitor,
+  adminClearAllVisitors,
+} from "../../../lib/api/VisitorApi";
 import { alertConfirmVisitor, alertConfirmClearAllVisitors, alertSuccessVisitor } from "../../../lib/alert";
 import { Icon } from "@iconify/vue";
 
@@ -36,10 +41,10 @@ let timeInterval = null;
 let statusInterval = null;
 
 const getDeviceIcon = (deviceType) => {
-  if (deviceType === 'mobile') return 'lucide:smartphone';
-  if (deviceType === 'tablet') return 'lucide:tablet';
-  if (deviceType === 'robot') return 'lucide:bot';
-  return 'lucide:monitor';
+  if (deviceType === "mobile") return "lucide:smartphone";
+  if (deviceType === "tablet") return "lucide:tablet";
+  if (deviceType === "robot") return "lucide:bot";
+  return "lucide:monitor";
 };
 
 // --- Logic Jam Digital ---
@@ -60,7 +65,7 @@ async function fetchData(apiCall, key) {
       isDbConnected.value = true;
       const responseBody = await response.json();
       const data = responseBody.data || responseBody;
-      if (key === 'visitors') {
+      if (key === "visitors") {
         stats.value[key] = data.total_visitors || 0;
       } else {
         stats.value[key] = Array.isArray(data) ? data.length : 0;
@@ -192,11 +197,14 @@ onUnmounted(() => {
         </div>
         <div class="flex justify-between items-start relative z-10">
           <div>
-            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">Total Projects</p>
+            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">
+              Total Projects
+            </p>
             <h3 class="text-5xl font-black mt-2">{{ isLoading ? "..." : stats.projects }}</h3>
           </div>
-          <div class="bg-black text-white p-2 border-2 border-black rotate-3 group-hover:-rotate-3 transition-transform">
-             <Icon icon="lucide:folder-kanban" class="text-3xl" />
+          <div
+            class="bg-black text-white p-2 border-2 border-black rotate-3 group-hover:-rotate-3 transition-transform">
+            <Icon icon="lucide:folder-kanban" class="text-3xl" />
           </div>
         </div>
         <div
@@ -214,11 +222,14 @@ onUnmounted(() => {
         </div>
         <div class="flex justify-between items-start relative z-10">
           <div>
-            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">Artworks</p>
+            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">
+              Artworks
+            </p>
             <h3 class="text-5xl font-black mt-2">{{ isLoading ? "..." : stats.artworks }}</h3>
           </div>
-          <div class="bg-black text-white p-2 border-2 border-black rotate-2 group-hover:-rotate-3 transition-transform">
-             <Icon icon="lucide:palette" class="text-3xl" />
+          <div
+            class="bg-black text-white p-2 border-2 border-black rotate-2 group-hover:-rotate-3 transition-transform">
+            <Icon icon="lucide:palette" class="text-3xl" />
           </div>
         </div>
         <div
@@ -236,11 +247,14 @@ onUnmounted(() => {
         </div>
         <div class="flex justify-between items-start relative z-10">
           <div>
-            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">Certificates</p>
+            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">
+              Certificates
+            </p>
             <h3 class="text-5xl font-black mt-2">{{ isLoading ? "..." : stats.certificates }}</h3>
           </div>
-          <div class="bg-black text-white p-2 border-2 border-black rotate-6 group-hover:-rotate-3 transition-transform">
-             <Icon icon="lucide:award" class="text-3xl" />
+          <div
+            class="bg-black text-white p-2 border-2 border-black rotate-6 group-hover:-rotate-3 transition-transform">
+            <Icon icon="lucide:award" class="text-3xl" />
           </div>
         </div>
         <div
@@ -262,7 +276,7 @@ onUnmounted(() => {
             <h3 class="text-5xl font-black mt-2">{{ isLoading ? "..." : stats.photos }}</h3>
           </div>
           <div class="bg-black text-white p-2 border-2 border-black rotate-2 group-hover:rotate-6 transition-transform">
-             <Icon icon="ri:camera-3-line" class="text-3xl" />
+            <Icon icon="ri:camera-3-line" class="text-3xl" />
           </div>
         </div>
         <div
@@ -283,8 +297,9 @@ onUnmounted(() => {
             <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">Blogs</p>
             <h3 class="text-5xl font-black mt-2">{{ isLoading ? "..." : stats.blogs }}</h3>
           </div>
-          <div class="bg-black text-white p-2 border-2 border-black -rotate-3 group-hover:-rotate-6 transition-transform">
-             <Icon icon="material-symbols-light:post-outline" class="text-3xl" />
+          <div
+            class="bg-black text-white p-2 border-2 border-black -rotate-3 group-hover:-rotate-6 transition-transform">
+            <Icon icon="material-symbols-light:post-outline" class="text-3xl" />
           </div>
         </div>
         <div
@@ -302,11 +317,14 @@ onUnmounted(() => {
         </div>
         <div class="flex justify-between items-start relative z-10">
           <div>
-            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">Tech Stack</p>
+            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">
+              Tech Stack
+            </p>
             <h3 class="text-5xl font-black mt-2">{{ isLoading ? "..." : stats.skills }}</h3>
           </div>
-          <div class="bg-black text-white p-2 border-2 border-black -rotate-6 group-hover:rotate-3 transition-transform">
-             <Icon icon="lucide:zap" class="text-3xl" />
+          <div
+            class="bg-black text-white p-2 border-2 border-black -rotate-6 group-hover:rotate-3 transition-transform">
+            <Icon icon="lucide:zap" class="text-3xl" />
           </div>
         </div>
         <div
@@ -324,11 +342,14 @@ onUnmounted(() => {
         </div>
         <div class="flex justify-between items-start relative z-10">
           <div>
-            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">Social Links</p>
+            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">
+              Social Links
+            </p>
             <h3 class="text-5xl font-black mt-2">{{ isLoading ? "..." : stats.contacts }}</h3>
           </div>
-          <div class="bg-black text-white p-2 border-2 border-black rotate-3 group-hover:-rotate-3 transition-transform">
-             <Icon icon="lucide:share-2" class="text-3xl" />
+          <div
+            class="bg-black text-white p-2 border-2 border-black rotate-3 group-hover:-rotate-3 transition-transform">
+            <Icon icon="lucide:share-2" class="text-3xl" />
           </div>
         </div>
         <div
@@ -346,11 +367,14 @@ onUnmounted(() => {
         </div>
         <div class="flex justify-between items-start relative z-10">
           <div>
-            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">Total Visitors</p>
+            <p class="font-black text-sm uppercase mb-1 tracking-wide bg-black text-white inline-block px-1">
+              Total Visitors
+            </p>
             <h3 class="text-5xl font-black mt-2">{{ isLoading ? "..." : stats.visitors }}</h3>
           </div>
-          <div class="bg-black text-white p-2 border-2 border-black -rotate-3 group-hover:rotate-6 transition-transform">
-             <Icon icon="lucide:users" class="text-3xl" />
+          <div
+            class="bg-black text-white p-2 border-2 border-black -rotate-3 group-hover:rotate-6 transition-transform">
+            <Icon icon="lucide:users" class="text-3xl" />
           </div>
         </div>
         <div
@@ -362,12 +386,14 @@ onUnmounted(() => {
     </div>
 
     <div class="w-full">
-      <div class="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all">
+      <div
+        class="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all">
         <h3 class="font-black text-xl mb-4 border-b-4 border-black pb-2 flex items-center gap-2 uppercase">
           <span class="bg-black text-white px-2 py-1 inline-block -skew-x-6">SYSTEM STATUS</span>
         </h3>
         <ul class="space-y-4 font-mono text-sm font-bold mt-6">
-          <li class="flex justify-between items-center p-3 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group hover:-translate-y-1 transition-transform bg-white">
+          <li
+            class="flex justify-between items-center p-3 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group hover:-translate-y-1 transition-transform bg-white">
             <span class="uppercase tracking-widest text-xs">Backend Connection</span>
             <span v-if="isDbConnected" class="text-black flex items-center gap-2 transition-all duration-500">
               <span class="w-3 h-3 bg-black rounded-full animate-pulse"></span>
@@ -379,7 +405,8 @@ onUnmounted(() => {
             </span>
           </li>
 
-          <li class="flex justify-between items-center p-3 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group hover:-translate-y-1 transition-transform bg-white">
+          <li
+            class="flex justify-between items-center p-3 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group hover:-translate-y-1 transition-transform bg-white">
             <span class="uppercase tracking-widest text-xs">Database Status</span>
             <span v-if="isDbConnected" class="text-black flex items-center gap-2 transition-all duration-500">
               <Icon icon="lucide:database" class="text-lg" />
@@ -391,7 +418,8 @@ onUnmounted(() => {
             </span>
           </li>
 
-          <li class="flex justify-between items-center p-3 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group hover:-translate-y-1 transition-transform bg-black text-white">
+          <li
+            class="flex justify-between items-center p-3 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group hover:-translate-y-1 transition-transform bg-black text-white">
             <span class="uppercase tracking-widest text-xs">Server Time</span>
             <span class="font-bold font-mono tracking-widest">{{ currentTime }}</span>
           </li>
@@ -401,24 +429,27 @@ onUnmounted(() => {
 
     <!-- Visitors List Section -->
     <div class="w-full mt-8">
-      <div class="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all">
-        <h3 class="font-black text-xl mb-4 border-b-4 border-black pb-2 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 uppercase">
+      <div
+        class="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all">
+        <h3
+          class="font-black text-xl mb-4 border-b-4 border-black pb-2 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 uppercase">
           <div class="flex items-center gap-2">
             <span class="bg-black text-white px-2 py-1 inline-block -skew-x-6">VISITOR HISTORY</span>
             <span class="text-sm font-mono lowercase opacity-60">({{ pagination.total }} records)</span>
           </div>
-          <button @click="clearAllVisitors" 
+          <button
+            @click="clearAllVisitors"
             class="bg-red-500 text-white border-2 border-black px-3 py-1 text-xs font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[1px] active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center gap-2">
             <Icon icon="lucide:trash-2" />
             CLEAR ALL LOGS
           </button>
         </h3>
-        
+
         <div v-if="visitorsList.length === 0" class="text-center py-8 border-2 border-dashed border-gray-400 mt-6">
           <Icon icon="lucide:ghost" class="text-4xl mx-auto mb-2 text-gray-400" />
           <p class="font-mono font-bold text-gray-500">No visitors logged yet.</p>
         </div>
-        
+
         <div v-else class="overflow-x-auto mt-6">
           <table class="w-full text-left font-mono text-sm border-2 border-black">
             <thead class="bg-black text-white">
@@ -432,31 +463,42 @@ onUnmounted(() => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(visitor, index) in visitorsList" :key="visitor.id" 
-                  class="border-t-2 border-black hover:bg-yellow-100 transition-colors"
-                  :class="{'bg-gray-50': index % 2 === 0}">
-                <td class="p-3 border-r-2 border-black font-bold whitespace-nowrap">{{ new Date(visitor.updated_at).toLocaleDateString() }}</td>
+              <tr
+                v-for="(visitor, index) in visitorsList"
+                :key="visitor.id"
+                class="border-t-2 border-black hover:bg-yellow-100 transition-colors"
+                :class="{ 'bg-gray-50': index % 2 === 0 }">
+                <td class="p-3 border-r-2 border-black font-bold whitespace-nowrap">
+                  {{ new Date(visitor.updated_at).toLocaleDateString() }}
+                </td>
                 <td class="p-3 border-r-2 border-black" :title="visitor.device_id">
                   <div class="flex justify-center items-center gap-2 font-bold uppercase">
                     <Icon :icon="getDeviceIcon(visitor.device_type)" class="text-xl" />
-                    <span class="hidden md:inline">{{ visitor.device_type || 'Unknown' }}</span>
+                    <span class="hidden md:inline">{{ visitor.device_type || "Unknown" }}</span>
                   </div>
                 </td>
                 <td class="p-3 border-r-2 border-black">
-                  <div class="font-bold">{{ visitor.os || 'Unknown OS' }}</div>
-                  <div class="text-xs text-gray-500 truncate max-w-[120px]" :title="visitor.browser">{{ visitor.browser || '-' }}</div>
+                  <div class="font-bold">{{ visitor.os || "Unknown OS" }}</div>
+                  <div class="text-xs text-gray-500 truncate max-w-[120px]" :title="visitor.browser">
+                    {{ visitor.browser || "-" }}
+                  </div>
                 </td>
                 <td class="p-3 border-r-2 border-black">
-                  <div class="font-bold truncate max-w-[120px] lg:max-w-[180px]" :title="visitor.city + ', ' + visitor.country">
-                    {{ visitor.city ? visitor.city + ', ' + visitor.country : 'Unknown' }}
+                  <div
+                    class="font-bold break-words max-w-[120px] lg:max-w-[180px]"
+                    :title="visitor.city + ', ' + visitor.country">
+                    {{ visitor.city ? visitor.city + ", " + visitor.country : "Unknown" }}
                   </div>
                 </td>
                 <td class="p-3 border-r-2 border-black hidden md:table-cell text-xs font-mono">
-                  <div class="font-bold text-gray-700 break-words max-w-[200px]" :title="visitor.isp">{{ visitor.isp || 'N/A' }}</div>
-                  <div class="text-gray-400">{{ visitor.ip_address || 'hidden' }}</div>
+                  <div class="font-bold text-gray-700 break-words max-w-[200px]" :title="visitor.isp">
+                    {{ visitor.isp || "N/A" }}
+                  </div>
+                  <div class="text-gray-400">{{ visitor.ip_address || "hidden" }}</div>
                 </td>
                 <td class="p-2 text-center">
-                  <button @click="deleteVisitor(visitor.id)" 
+                  <button
+                    @click="deleteVisitor(visitor.id)"
                     class="bg-white text-red-500 border-2 border-black p-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-red-50 active:translate-y-[1px] active:shadow-none transition-all">
                     <Icon icon="lucide:trash-2" />
                   </button>
@@ -469,17 +511,17 @@ onUnmounted(() => {
             <p class="text-xs font-mono font-bold opacity-60 italic">
               * Page {{ pagination.current_page }} of {{ pagination.last_page }}
             </p>
-            
+
             <div class="flex gap-2">
-              <button 
+              <button
                 @click="fetchVisitorsList(pagination.current_page - 1)"
                 :disabled="pagination.current_page === 1"
                 class="bg-white border-2 border-black px-4 py-2 font-black text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] disabled:opacity-30 disabled:translate-y-0 disabled:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center gap-2">
                 <Icon icon="lucide:chevron-left" />
                 PREV
               </button>
-              
-              <button 
+
+              <button
                 @click="fetchVisitorsList(pagination.current_page + 1)"
                 :disabled="pagination.current_page === pagination.last_page"
                 class="bg-black text-white border-2 border-black px-4 py-2 font-black text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] disabled:opacity-30 disabled:translate-y-0 disabled:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center gap-2 font-mono">

@@ -4,7 +4,7 @@ import NProgress from "nprogress";
 // --- 1. Import GSAP dan ScrollTrigger ---
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
+import fpPromise from "@fingerprintjs/fingerprintjs";
 import { getProfile } from "../../lib/api/ProfileApi";
 import { getAllProjects } from "../../lib/api/ProjectApi";
 import { getSkills } from "../../lib/api/SkillApi";
@@ -25,7 +25,7 @@ import { useSWR } from "../../utils/useSWR";
 gsap.registerPlugin(ScrollTrigger);
 
 // State Management
-const hasSeenIntro = ref(sessionStorage.getItem('has_seen_intro') === 'true');
+const hasSeenIntro = ref(sessionStorage.getItem("has_seen_intro") === "true");
 const isLoading = ref(true);
 const isError = ref(false);
 const errorMessage = ref("");
@@ -57,11 +57,11 @@ function preloadImage(url) {
 }
 
 // Karena useSWR otomatis berjalan saat setup, kita jalankan langsung di sini
-const profileSWR = useSWR('cache_profile', getProfile);
-const skillSWR = useSWR('cache_skills', getSkills, []);
-const projectSWR = useSWR('cache_projects', () => getAllProjects({ featured: 1 }), []);
-const certificateSWR = useSWR('cache_certificates', () => getAllCertificates({ featured: 1 }), []);
-const experienceSWR = useSWR('cache_experiences', getAllExperiences, []);
+const profileSWR = useSWR("cache_profile", getProfile);
+const skillSWR = useSWR("cache_skills", getSkills, []);
+const projectSWR = useSWR("cache_projects", () => getAllProjects({ featured: 1 }), []);
+const certificateSWR = useSWR("cache_certificates", () => getAllCertificates({ featured: 1 }), []);
+const experienceSWR = useSWR("cache_experiences", getAllExperiences, []);
 
 // Watcher untuk nge-track persentase dan selesainya semua fetch
 watch(
@@ -74,8 +74,8 @@ watch(
   ],
   (loadings) => {
     // Hitung berapa yang sudah selesai (isLoading = false)
-    const completed = loadings.filter(l => !l).length;
-    
+    const completed = loadings.filter((l) => !l).length;
+
     // [OPSI B] Jika ini kunjungan pertama (tab baru) dan semua data instant (SWR Cache),
     // kita tahan angkanya di 0 dulu sesaat, lalu tembak ke 100 agar animasinya jalan mulus!
     if (!hasSeenIntro.value && completed === 5 && loadingPercent.value === 0) {
@@ -104,7 +104,7 @@ watch(
       }
     }
   },
-  { immediate: true } // langsung trigger sekali saat mount
+  { immediate: true }, // langsung trigger sekali saat mount
 );
 
 function finalizeLoading() {
@@ -117,7 +117,7 @@ function finalizeLoading() {
     // Kunjungan pertama di sesi ini: putar animasi full
     setTimeout(() => {
       isLoading.value = false;
-      sessionStorage.setItem('has_seen_intro', 'true'); // Tandai sudah melihat
+      sessionStorage.setItem("has_seen_intro", "true"); // Tandai sudah melihat
       hasSeenIntro.value = true; // Update state reaktif
       window.dispatchEvent(new CustomEvent("content-loaded"));
     }, 850); // Tunggu 850ms agar animasi progress bar (800ms) selesai
@@ -130,7 +130,7 @@ async function fetchAllData() {
   isError.value = false;
   errorMessage.value = "";
   loadingPercent.value = 0;
-  
+
   profileSWR.revalidate();
   skillSWR.revalidate();
   projectSWR.revalidate();
@@ -187,16 +187,20 @@ function initStackingAnimation() {
 }
 
 // --- 5. Fungsi Tracking Visitor ---
-import fpPromise from '@fingerprintjs/fingerprintjs';
 
 async function initVisitorTracking() {
   try {
-    const fp = await fpPromise.load();
-    const result = await fp.get();
-    const deviceId = result.visitorId;
+    let deviceId = localStorage.getItem("device_id");
 
-    // Masih disimpan di local storage sebagai fallback cache
-    localStorage.setItem('device_id', deviceId);
+    // Jika belum ada di localStorage, buat baru pakai FingerprintJS
+    if (!deviceId) {
+      const fp = await fpPromise.load();
+      const result = await fp.get();
+      deviceId = result.visitorId;
+
+      // Simpan dan kunci abadi di local storage
+      localStorage.setItem("device_id", deviceId);
+    }
 
     let locationData = {};
     try {
@@ -209,23 +213,23 @@ async function initVisitorTracking() {
           city: geoData.city,
           region: geoData.region,
           country: geoData.country,
-          isp: geoData.organization_name || geoData.organization
+          isp: geoData.organization_name || geoData.organization,
         };
       }
     } catch (geoErr) {
       console.warn("Failed to fetch GeoIP from client", geoErr);
     }
 
-    logVisitor(deviceId, locationData).catch(err => console.error("Failed to log visitor", err));
+    logVisitor(deviceId, locationData).catch((err) => console.error("Failed to log visitor", err));
   } catch (err) {
     console.error("Failed to initialize FingerprintJS", err);
     // Fallback if FingerprintJS fails
-    let deviceId = localStorage.getItem('device_id');
+    let deviceId = localStorage.getItem("device_id");
     if (!deviceId) {
       deviceId = crypto.randomUUID();
-      localStorage.setItem('device_id', deviceId);
+      localStorage.setItem("device_id", deviceId);
     }
-    logVisitor(deviceId).catch(err => console.error("Failed to log visitor", err));
+    logVisitor(deviceId).catch((err) => console.error("Failed to log visitor", err));
   }
 }
 
@@ -246,7 +250,7 @@ watch(isLoading, (newVal) => {
 onMounted(() => {
   if (!hasSeenIntro.value) {
     // Jika ini kunjungan pertama, matikan NProgress bar biru karena kita pakai InitialLoadingScreen sendiri
-    NProgress.done(); 
+    NProgress.done();
   }
   // fetchAllData(); <-- Dihapus! SWR sudah memanggilnya secara otomatis di setup!
   initVisitorTracking();
@@ -262,8 +266,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-white text-black font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0">
+  <div class="min-h-screen bg-white text-black font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0">
     <Transition name="fade">
       <InitialLoadingScreen v-if="isLoading && !hasSeenIntro" :percent="loadingPercent" />
     </Transition>
