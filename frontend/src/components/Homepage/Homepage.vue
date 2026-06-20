@@ -200,16 +200,16 @@ async function initVisitorTracking() {
 
     let locationData = {};
     try {
-      // Menembak API GeoIP langsung dari browser pengunjung
-      const geoRes = await fetch("http://ip-api.com/json/?fields=status,country,regionName,city,isp,query");
+      // Menembak API GeoIP HTTPS langsung dari browser pengunjung menggunakan geojs.io (Bebas CORS & 100% Gratis)
+      const geoRes = await fetch("https://get.geojs.io/v1/ip/geo.json");
       const geoData = await geoRes.json();
-      if (geoData.status === 'success') {
+      if (geoData.ip) {
         locationData = {
-          ip_address: geoData.query,
+          ip_address: geoData.ip,
           city: geoData.city,
-          region: geoData.regionName,
+          region: geoData.region,
           country: geoData.country,
-          isp: geoData.isp
+          isp: geoData.organization_name || geoData.organization
         };
       }
     } catch (geoErr) {
