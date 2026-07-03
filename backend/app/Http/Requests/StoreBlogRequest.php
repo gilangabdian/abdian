@@ -15,8 +15,10 @@ class StoreBlogRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
             'is_published' => 'nullable|boolean',
+            'is_external' => 'nullable|boolean',
+            'external_url' => 'nullable|required_if:is_external,true|url',
+            'content' => 'nullable|required_if:is_external,false|string',
         ];
     }
 }

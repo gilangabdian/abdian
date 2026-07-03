@@ -16,10 +16,13 @@ class Blog extends Model
         'content',
         'read_time',
         'is_published',
+        'is_external',
+        'external_url',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'is_external' => 'boolean',
     ];
 
     protected static function boot()

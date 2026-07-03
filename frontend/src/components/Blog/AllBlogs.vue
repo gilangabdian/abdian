@@ -4,6 +4,7 @@ import { getAllBlogsPublic } from "../../lib/api/BlogApi";
 import { useRouter } from "vue-router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { Icon } from "@iconify/vue";
 
 const blogs = ref([]);
 const isLoading = ref(true);
@@ -64,23 +65,28 @@ onMounted(async () => {
 
           <!-- Articles List -->
           <div class="relative z-10 w-full flex flex-col items-start px-2 md:px-8">
-            <router-link
+            <component
               v-for="blog in group.blogs"
               :key="blog.id"
-              :to="'/blogs/' + blog.slug"
+              :is="blog.is_external ? 'a' : 'router-link'"
+              :[blog.is_external?'href':'to']="blog.is_external ? blog.external_url : '/blogs/' + blog.slug"
+              :target="blog.is_external ? '_blank' : undefined"
+              :rel="blog.is_external ? 'noopener noreferrer' : undefined"
               class="blog-row cursor-pointer group flex flex-col sm:flex-row justify-start items-start sm:items-center w-full py-2 transition-colors gap-3 md:gap-4">
+
               <h2
-                class="text-lg md:text-xl font-small text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors leading-tight">
+                class="text-lg md:text-xl font-small text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors leading-tight flex items-center gap-[2px]">
                 {{ blog.title }}
+                <Icon v-if="blog.is_external" icon="carbon:arrow-up-right" class="w-3 h-4 -mt-1 opacity-50 transition-opacity" />
               </h2>
 
               <div
                 class="flex items-center gap-2 mt-1 sm:mt-0 text-sm text-neutral-400 dark:text-neutral-500 whitespace-nowrap group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors">
                 <span>{{ formatDate(blog.created_at) }}</span>
-                <span class="text-[10px]">•</span>
-                <span>{{ blog.read_time }} min</span>
+                <span v-if="!blog.is_external" class="text-[10px]">•</span>
+                <span v-if="!blog.is_external">{{ blog.read_time }} min</span>
               </div>
-            </router-link>
+            </component>
           </div>
         </div>
       </div>

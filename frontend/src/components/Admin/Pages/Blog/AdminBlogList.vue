@@ -84,12 +84,21 @@ onMounted(() => {
         :key="blog.id"
         class="border-4 border-black bg-white p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col relative group">
         <div class="flex justify-between items-start mb-4">
-          <div
-            :class="[
-              blog.is_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800',
-              'px-2 py-1 text-xs font-bold font-mono border-2 border-black inline-block',
-            ]">
-            {{ blog.is_published ? "Published" : "Draft" }}
+          <div class="flex flex-col gap-2">
+            <div
+              :class="[
+                blog.is_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800',
+                'px-2 py-1 text-xs font-bold font-mono border-2 border-black inline-block w-fit',
+              ]">
+              {{ blog.is_published ? "Published" : "Draft" }}
+            </div>
+            
+            <div
+              v-if="blog.is_external"
+              class="px-2 py-1 text-xs font-bold font-mono border-2 border-black bg-blue-100 text-blue-800 flex items-center gap-1 w-fit"
+            >
+              <Icon icon="carbon:arrow-up-right" /> External
+            </div>
           </div>
           <div class="flex gap-2">
             <button
@@ -110,7 +119,7 @@ onMounted(() => {
         <h2 class="text-xl font-bold font-serif mb-2 line-clamp-2 leading-tight">{{ blog.title }}</h2>
 
         <div class="mt-auto pt-4 flex gap-4 text-xs font-mono text-gray-600 border-t-2 border-dashed border-gray-300">
-          <span class="flex items-center gap-1">
+          <span v-if="!blog.is_external" class="flex items-center gap-1">
             <Icon icon="lucide:clock" />
             {{ blog.read_time }} min read
           </span>
