@@ -118,6 +118,7 @@ watch(
     <div class="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-8 md:gap-2 mt-8">
       <div class="flex-1 flex flex-col items-start space-y-3 md:space-y-3 mt-4">
         <div
+          v-if="profile.about.is_available_for_work"
           class="hero-badge inline-block bg-[#f8f8f8] dark:bg-white/5 border border-black/20 dark:border-white/10 px-3 py-1 rounded-lg shadow-sm transform -rotate-1 origin-bottom-left">
           <h5 class="font-bold text-[10px] md:text-xs tracking-wide uppercase">Available for Work</h5>
         </div>
@@ -147,21 +148,24 @@ watch(
             <Icon icon="mdi:map-marker" />
             <span>Based in Indonesia</span>
           </div>
-          <div class="flex items-center gap-1.5 px-2.5 py-1 text-black dark:text-white">
+          <div v-if="profile.about.is_available_for_work" class="flex items-center gap-1.5 px-2.5 py-1 text-black dark:text-white">
             <div class="w-2 h-2 bg-black dark:bg-white rounded-full animate-pulse"></div>
             <span>Available Now</span>
           </div>
         </div>
 
         <div class="hero-content flex gap-3 pt-1 w-full md:w-auto">
-          <a href="mailto:qbdian@gmail.com?subject=Hi Gilang Abdian Anggara, I want to hire you!"
+          <a v-if="profile.about.is_available_for_work" href="mailto:qbdian@gmail.com?subject=Hi Gilang Abdian Anggara, I want to hire you!"
             class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black px-0 md:px-5 py-2 rounded-xl border border-transparent font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.23)] hover:bg-black/90 dark:hover:bg-gray-200 active:scale-95 transition-all">
             <Icon icon="mdi:handshake-outline" class="w-4 h-4 md:w-5 md:h-5" />
             <span>Hire Me</span>
           </a>
 
           <a :href="profile.about.cv_url" target="_blank"
-            class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-white text-black px-0 md:px-5 py-2 rounded-xl border border-black/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 active:scale-95 transition-all">
+            :class="[
+              profile.about.is_available_for_work ? 'flex-1 md:flex-none px-0 md:px-5' : 'flex-none px-6'
+            ]"
+            class="flex items-center justify-center gap-2 bg-white text-black py-2 rounded-xl border border-black/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 active:scale-95 transition-all">
             <Icon icon="mdi:file-download-outline" class="w-4 h-4 md:w-5 md:h-5" />
             <span>Download CV</span>
           </a>
