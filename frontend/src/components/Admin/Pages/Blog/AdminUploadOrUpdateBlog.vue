@@ -23,6 +23,8 @@ const form = ref({
   title: "",
   content: "",
   is_published: true,
+  is_external: false,
+  external_url: "",
 });
 
 let editor = null;
@@ -48,8 +50,10 @@ onMounted(async () => {
       const response = await getSingleBlogAdmin(route.params.id);
       const data = await response.json();
       form.value.title = data.title;
-      form.value.content = data.content;
+      form.value.content = data.content || "";
       form.value.is_published = data.is_published;
+      form.value.is_external = data.is_external || false;
+      form.value.external_url = data.external_url || "";
     } catch (e) {
       Swal.fire("Error", "Gagal memuat data blog", "error");
       router.push("/admin/dashboard/blogs");
@@ -131,8 +135,16 @@ const handleImageUpload = async (event) => {
 };
 
 const saveBlog = async () => {
-  if (!form.value.title || !form.value.content) {
-    Swal.fire("Peringatan", "Judul dan konten tidak boleh kosong", "warning");
+  if (!form.value.title) {
+    Swal.fire("Peringatan", "Judul tidak boleh kosong", "warning");
+    return;
+  }
+  if (form.value.is_external && !form.value.external_url) {
+    Swal.fire("Peringatan", "URL Eksternal wajib diisi", "warning");
+    return;
+  }
+  if (!form.value.is_external && !form.value.content) {
+    Swal.fire("Peringatan", "Konten tidak boleh kosong", "warning");
     return;
   }
 
@@ -192,8 +204,38 @@ const saveBlog = async () => {
           class="w-full p-3 border-4 border-black text-lg focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all" />
       </div>
 
-      <!-- Editor Toolbar -->
+      <!-- External Link Toggle -->
       <div>
+        <label class="flex items-center gap-3 cursor-pointer select-none">
+          <div class="relative">
+            <input type="checkbox" v-model="form.is_external" class="sr-only" />
+            <div
+              :class="[
+                form.is_external ? 'bg-black' : 'bg-gray-300',
+                'block w-14 h-8 transition-colors border-2 border-black',
+              ]"></div>
+            <div
+              :class="[
+                form.is_external ? 'translate-x-6' : 'translate-x-0',
+                'dot absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black',
+              ]"></div>
+          </div>
+          <span class="font-bold font-mono">Link ke Artikel Luar (Medium/Dev.to)</span>
+        </label>
+      </div>
+
+      <!-- External URL Input -->
+      <div v-if="form.is_external">
+        <label class="block font-bold font-mono mb-2 uppercase text-sm">External URL</label>
+        <input
+          v-model="form.external_url"
+          type="url"
+          placeholder="https://medium.com/..."
+          class="w-full p-3 border-4 border-black text-lg focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all" />
+      </div>
+
+      <!-- Editor Toolbar -->
+      <div v-if="!form.is_external">
         <label class="block font-bold font-mono mb-2 uppercase text-sm">Content</label>
         <div class="border-4 border-black mb-[-4px] relative z-10 bg-gray-100 flex flex-wrap gap-2 p-2" v-if="editor">
           <button
