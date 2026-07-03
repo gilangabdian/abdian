@@ -15,6 +15,7 @@ const form = ref({
   name: "",
   job_title: "",
   about_description: "",
+  is_available_for_work: true,
 });
 
 // State untuk menyimpan data asli dari Server (untuk perbandingan)
@@ -22,6 +23,7 @@ const originalForm = ref({
   name: "",
   job_title: "",
   about_description: "",
+  is_available_for_work: true,
 });
 
 // File Handling
@@ -52,7 +54,8 @@ const hasChanges = computed(() => {
   const hasTextChanges =
     form.value.name !== originalForm.value.name ||
     form.value.job_title !== originalForm.value.job_title ||
-    form.value.about_description !== originalForm.value.about_description;
+    form.value.about_description !== originalForm.value.about_description ||
+    form.value.is_available_for_work !== originalForm.value.is_available_for_work;
 
   return hasNewFiles || hasTextChanges;
 });
@@ -69,11 +72,13 @@ const fetchData = async () => {
       form.value.name = result.about.name;
       form.value.job_title = result.about.job_title;
       form.value.about_description = result.about.about_description; // Perhatikan field ini harus sesuai DB
+      form.value.is_available_for_work = result.about.is_available_for_work ?? true;
 
       originalForm.value = {
         name: result.about.name,
         job_title: result.about.job_title,
         about_description: result.about.about_description,
+        is_available_for_work: result.about.is_available_for_work ?? true,
       };
 
       if (result.about.photo_url) {
@@ -142,6 +147,7 @@ const handleSubmit = async () => {
     formData.append("name", form.value.name);
     formData.append("job_title", form.value.job_title);
     formData.append("about_description", form.value.about_description);
+    formData.append("is_available_for_work", form.value.is_available_for_work ? 1 : 0);
 
     if (photoFile.value) formData.append("photo_path", photoFile.value);
 
@@ -279,6 +285,20 @@ onMounted(() => {
                 required
                 class="w-full border-2 border-black p-3 font-mono focus:outline-none focus:bg-gray-50 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-gray-400"
                 placeholder="Ex: Full Stack Developer" />
+            </div>
+            
+            <div class="bg-blue-50 border-2 border-blue-200 p-4 rounded">
+              <label class="block font-bold uppercase mb-3">Available for Work</label>
+              <label class="flex items-center gap-3 cursor-pointer select-none">
+                <div class="relative">
+                  <input type="checkbox" v-model="form.is_available_for_work" class="sr-only" />
+                  <div :class="[ form.is_available_for_work ? 'bg-black' : 'bg-gray-300', 'block w-14 h-8 transition-colors border-2 border-black' ]"></div>
+                  <div :class="[ form.is_available_for_work ? 'translate-x-6' : 'translate-x-0', 'dot absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black' ]"></div>
+                </div>
+                <span class="font-bold font-mono text-sm text-gray-700">
+                  {{ form.is_available_for_work ? 'Yes, show "Hire Me" button' : 'No, hide "Hire Me" button' }}
+                </span>
+              </label>
             </div>
             <div>
               <label class="block font-bold uppercase mb-2">About Description</label>
