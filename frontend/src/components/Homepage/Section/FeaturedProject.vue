@@ -223,7 +223,7 @@ onUnmounted(() => {
                 class="text-xs font-mono text-gray-500 flex items-center gap-1 px-2 py-1">
                 <span class="text-[10px] uppercase tracking-wider font-mono font-normal">Period:</span>
                 <Icon icon="lucide:calendar" class="w-3.5 h-3.5" />
-                {{ formatDate(selectedProject.start_date) }} → {{ formatDate(selectedProject.end_date) }}
+                {{ formatDate(selectedProject.start_date) }} → {{ selectedProject.end_date ? formatDate(selectedProject.end_date) : 'Ongoing' }}
               </span>
             </div>
 

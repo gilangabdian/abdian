@@ -28,7 +28,7 @@ class UpdateProjectRequest extends FormRequest
             'description' => 'required|string',
             'is_featured' => 'boolean',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
             'status' => ['required', 'string', Rule::in(Project::STATUSES)],
             'type' => ['nullable', 'string', Rule::in(Project::TYPES)],
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
