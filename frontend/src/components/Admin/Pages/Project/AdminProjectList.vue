@@ -148,8 +148,8 @@ onMounted(() => {
     </div>
 
     <div v-else>
-      <div class="hidden md:block border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-        <table class="w-full text-left border-collapse">
+      <div class="hidden md:block border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-x-auto w-full">
+        <table class="w-full text-left border-collapse min-w-[800px]">
           <thead class="bg-black text-white font-mono uppercase text-sm">
             <tr>
               <th class="p-4 border-r-2 border-white w-24">Thumbnail</th>
@@ -199,7 +199,7 @@ onMounted(() => {
                     {{ formatLabel(project.type) }}
                   </span>
                   <span v-if="project.start_date" class="text-[9px] font-mono text-gray-400 whitespace-nowrap">
-                    {{ formatDate(project.start_date) }} → {{ formatDate(project.end_date) }}
+                    {{ formatDate(project.start_date) }} → {{ project.end_date ? formatDate(project.end_date) : 'Ongoing' }}
                   </span>
                 </div>
               </td>
@@ -304,7 +304,7 @@ onMounted(() => {
               </span>
               <span v-if="project.start_date" class="text-[10px] font-mono text-gray-400 flex items-center gap-1">
                 <Icon icon="lucide:calendar" class="w-3 h-3" />
-                {{ formatDate(project.start_date) }} → {{ formatDate(project.end_date) }}
+                {{ formatDate(project.start_date) }} → {{ project.end_date ? formatDate(project.end_date) : 'Ongoing' }}
               </span>
               <span v-if="project.role"
                 class="text-[10px] bg-black text-white px-1.5 py-0.5 rounded-sm font-bold uppercase flex items-center gap-1">

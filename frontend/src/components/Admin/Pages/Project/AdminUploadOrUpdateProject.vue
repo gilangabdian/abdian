@@ -191,7 +191,11 @@ async function handleSubmit() {
     formData.append("is_featured", form.is_featured ? "1" : "0");
     // Append kolom baru
     formData.append("start_date", form.start_date);
-    formData.append("end_date", form.end_date);
+    if (form.end_date) {
+      formData.append("end_date", form.end_date);
+    } else {
+      formData.append("end_date", ""); // Send empty string for null
+    }
     formData.append("status", form.status);
     formData.append("type", form.type || "");
     formData.append("team_size", form.team_size || "");
@@ -306,7 +310,7 @@ async function handleSubmit() {
               <label class="block font-black mb-2 text-xs uppercase flex items-center gap-2">
                 <Icon icon="lucide:calendar-check" class="text-lg" />
                 End Date
-                <span class="text-black">*</span>
+                <span class="text-gray-400 text-[10px] normal-case ml-1">(Leave empty for "Ongoing")</span>
               </label>
               <input
                 v-model="form.end_date"

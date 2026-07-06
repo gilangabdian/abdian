@@ -167,4 +167,26 @@ class ProjectApiTest extends TestCase
             'title' => 'Updated Project',
         ]);
     }
+
+    public function test_can_create_project_with_null_end_date()
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson('/api/projects', [
+            'title' => 'Ongoing Project',
+            'description' => 'No end date yet',
+            'thumbnail' => UploadedFile::fake()->image('thumb.jpg'),
+            'start_date' => '2025-01-01',
+            'end_date' => null, // end_date is null
+            'status' => 'in_development',
+        ]);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('projects', [
+            'title' => 'Ongoing Project',
+            'end_date' => null,
+        ]);
+    }
 }
