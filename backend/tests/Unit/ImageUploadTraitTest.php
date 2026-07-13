@@ -21,13 +21,14 @@ class ImageUploadTraitTest extends TestCase
             // Expose the protected method for testing via a public wrapper
             public function testFormatUrl($url, $extension)
             {
-                // Replicate the exact logic from the trait for unit testing purposes
-                if (strtolower($extension) !== 'pdf') {
-                    return str_replace('/upload/', '/upload/f_auto,q_auto/', $url);
-                }
-                return $url;
+            // Replicate the exact logic from the trait for unit testing purposes
+            $ext = strtolower($extension);
+            if ($ext !== 'pdf' && $ext !== 'svg') {
+                return str_replace('/upload/', '/upload/f_auto,q_auto/', $url);
             }
-        };
+            return $url;
+        }
+    };
     }
 
     public function test_it_appends_webp_optimization_for_images()
@@ -47,6 +48,16 @@ class ImageUploadTraitTest extends TestCase
         $optimizedUrl = $this->traitObject->testFormatUrl($originalUrl, 'pdf');
         
         $this->assertEquals('https://res.cloudinary.com/demo/image/upload/v1234/resume.pdf', $optimizedUrl);
+        $this->assertStringNotContainsString('f_auto,q_auto', $optimizedUrl);
+    }
+
+    public function test_it_does_not_append_webp_optimization_for_svgs()
+    {
+        $originalUrl = 'https://res.cloudinary.com/demo/image/upload/v1234/animation.svg';
+        
+        $optimizedUrl = $this->traitObject->testFormatUrl($originalUrl, 'svg');
+        
+        $this->assertEquals('https://res.cloudinary.com/demo/image/upload/v1234/animation.svg', $optimizedUrl);
         $this->assertStringNotContainsString('f_auto,q_auto', $optimizedUrl);
     }
 }
