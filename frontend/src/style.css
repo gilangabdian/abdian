@@ -29,7 +29,6 @@ body {
   /* gray-50 */
 }
 
-
 /* Magic Dark Mode Overrides for existing hardcoded utility classes */
 @layer utilities {
   .dark .bg-white {
@@ -135,8 +134,10 @@ body {
   right: 0px;
   width: 100px;
   height: 100%;
-  box-shadow: 0 0 10px #9ca3af, 0 0 5px #9ca3af !important;
-  opacity: 1.0;
+  box-shadow:
+    0 0 10px #9ca3af,
+    0 0 5px #9ca3af !important;
+  opacity: 1;
   transform: rotate(3deg) translate(0px, -4px);
 }
 
@@ -208,4 +209,73 @@ html.dark::-webkit-scrollbar-thumb {
 
 html.dark::-webkit-scrollbar-thumb:hover {
   background-color: #3f3f46;
+}
+
+/* Animate svg */
+
+@media (prefers-reduced-motion) {
+  .navbar-logo-svg path {
+    animation: none !important;
+    stroke-dasharray: unset !important;
+  }
+}
+@keyframes grow {
+  0% {
+    stroke-dashoffset: 1px;
+    stroke-dasharray: 0 350px;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  40% {
+    stroke-dasharray: 350px 0;
+  }
+  /* Moving back */
+  85% {
+    stroke-dasharray: 350px 0;
+  }
+  95%,
+  to {
+    stroke-dasharray: 0 350px;
+  }
+}
+.navbar-logo-svg path {
+  stroke-dashoffset: 1px;
+  stroke-dasharray: 350px 0;
+  animation: grow 10s ease forwards infinite;
+  transform-origin: center;
+  stroke: #171717; /* Light theme (neutral-900) */
+  animation-delay: 0s;
+}
+
+.dark .navbar-logo-svg path {
+  stroke: #ffffff; /* Dark theme */
+}
+
+/* Global Custom styling for Code Blocks (Tiptap / highlight.js) */
+.prose pre {
+  background-color: #fafafa !important; /* gray-100 for Light Theme */
+  color: #374151 !important; /* gray-700 for Light Theme */
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+.dark .prose pre {
+  background-color: #1a1a1a !important; /* Pure black for Dark Theme */
+  color: #c9d1d9 !important; /* Github dark text */
+}
+
+.prose pre code,
+.prose pre code.hljs {
+  background-color: transparent !important;
+  padding: 0;
+  border-radius: 0;
+  color: inherit !important;
+  font-family: "Fira Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+  font-size: 0.875em;
+  font-variant-ligatures: none;
 }

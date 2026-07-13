@@ -10,7 +10,14 @@ import TextAlign from "@tiptap/extension-text-align";
 import Link from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { VueNodeViewRenderer } from "@tiptap/vue-3";
+import { createLowlight, common } from "lowlight";
+import CodeBlockComponent from "./CodeBlockComponent.vue";
+import "highlight.js/styles/night-owl.css";
 import { Icon } from "@iconify/vue";
+
+const lowlight = createLowlight(common);
 
 const route = useRoute();
 const router = useRouter();
@@ -65,7 +72,14 @@ onMounted(async () => {
   editor = new Editor({
     content: form.value.content,
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        codeBlock: false,
+      }),
+      CodeBlockLowlight.extend({
+        addNodeView() {
+          return VueNodeViewRenderer(CodeBlockComponent);
+        },
+      }).configure({ lowlight }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
@@ -175,6 +189,19 @@ const saveBlog = async () => {
     isSaving.value = false;
   }
 };
+
+import { watch, nextTick } from "vue";
+import hljs from "highlight.js";
+
+watch(isPreviewMode, async (newVal) => {
+  if (newVal) {
+    await nextTick();
+    const codeBlocks = document.querySelectorAll(".prose pre code");
+    codeBlocks.forEach((block) => {
+      hljs.highlightElement(block);
+    });
+  }
+});
 </script>
 
 <template>
@@ -349,6 +376,14 @@ const saveBlog = async () => {
             class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
             title="Horizontal Rule">
             <Icon icon="lucide:minus" />
+          </button>
+          <button
+            type="button"
+            @click="editor.chain().focus().toggleCodeBlock().run()"
+            :class="{ 'bg-black text-white': editor.isActive('codeBlock') }"
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
+            title="Code Block">
+            <Icon icon="lucide:code" />
           </button>
           <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
 
@@ -583,6 +618,11 @@ const saveBlog = async () => {
   color: #a3a3a3; /* Warna abu-abu netral */
   transition: opacity 0.2s ease-in-out;
 }
+.prose h2:hover::before,
+.prose h3:hover::before {
+  opacity: 1;
+}
+
 .prose h2:hover::before,
 .prose h3:hover::before {
   opacity: 1;

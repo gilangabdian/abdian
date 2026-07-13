@@ -180,8 +180,34 @@ onUnmounted(() => {
     <div
       class="bg-white/90 dark:bg-[#1e1e1e]/90 backdrop-blur-md border border-black/20 dark:border-white/10 rounded-2xl lg:rounded-full px-2 py-2 lg:px-6 lg:py-2 shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex items-center transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.05)] overflow-hidden">
       <div
-        class="hidden lg:block font-serif font-bold text-xl tracking-tighter mr-4 border-r border-black/20 dark:border-white/20 pr-4 text-black dark:text-white">
-        A
+        class="hidden lg:block font-bold text-xl tracking-tighter mr-4 border-r border-black/20 dark:border-white/20 pr-4 text-black dark:text-white">
+        <svg
+          class="navbar-logo-svg"
+          width="20"
+          height="30"
+          viewBox="0 0 18 22"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <mask
+            id="mask0_3_132"
+            style="mask-type: alpha"
+            maskUnits="userSpaceOnUse"
+            x="-2"
+            y="-2"
+            width="22"
+            height="25">
+            <path
+              d="M18.069 4.0362L11.0853 11.4006L13.4629 21.0362L7.6713 15.0007L1.94779 21.0362L4.70141 11.9058L-0.931 6.0362L6.71431 5.23143L8.28112 0.0362015L9.49094 4.93916L18.069 4.0362Z"
+              fill="#D9D9D9" />
+            <path
+              d="M18.069 4.0362L1.94779 21.0362L8.28112 0.0362015L13.4629 21.0362L-0.931 6.0362L18.069 4.0362Z"
+              stroke="white" />
+          </mask>
+          <g mask="url(#mask0_3_132)">
+            <path
+              d="M6.069 10.0362L3.069 21.0362L7.569 15.0362L10.6523 11.0362L13.569 7.5362L16.069 4.5362L1.069 6.5362C1.23567 6.70286 3.669 9.5362 12.069 19.5362L10.569 10.5362L8.569 0.536199M8.569 0.536199C8.569 0.136199 7.9111 3.20287 7.9111 3.0362M3.95931 17.7717L6.069 10.0362L8.569 0.536199M5.069 18.3695L7.569 15.0362" />
+          </g>
+        </svg>
       </div>
 
       <div
