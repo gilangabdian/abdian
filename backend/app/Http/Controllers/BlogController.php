@@ -80,7 +80,7 @@ class BlogController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|max:5120' // max 5MB
+            'image' => 'required|mimes:jpeg,png,jpg,gif,svg,webp|max:5120' // max 5MB
         ]);
 
         $imageUrl = $this->handleFileUpload(

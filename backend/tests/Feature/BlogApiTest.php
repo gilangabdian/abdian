@@ -164,4 +164,25 @@ class BlogApiTest extends TestCase
         $files = Storage::disk('public')->files('blogs_inline');
         $this->assertCount(1, $files);
     }
+
+    public function test_admin_can_upload_svg_inline_image_locally()
+    {
+        Storage::fake('public');
+        config(['filesystems.default' => 'local']);
+
+        // Create a fake SVG file
+        $file = UploadedFile::fake()->create('animation.svg', 100, 'image/svg+xml');
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+                         ->postJson('/api/blogs/upload-image', [
+                             'image' => $file
+                         ]);
+        
+        $response->assertStatus(200)
+                 ->assertJsonStructure(['url']);
+
+        // Check file exists in folder
+        $files = Storage::disk('public')->files('blogs_inline');
+        $this->assertCount(1, $files);
+    }
 }
