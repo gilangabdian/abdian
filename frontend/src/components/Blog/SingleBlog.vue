@@ -5,6 +5,8 @@ import { getSingleBlogPublic } from "../../lib/api/BlogApi";
 import { Icon } from "@iconify/vue";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import hljs from "highlight.js";
+import "highlight.js/styles/night-owl.css";
 
 const route = useRoute();
 const router = useRouter();
@@ -82,6 +84,14 @@ onMounted(async () => {
 
     await nextTick();
     extractToc();
+
+    // Highlight code blocks
+    if (contentRef.value) {
+      const codeBlocks = contentRef.value.querySelectorAll("pre code");
+      codeBlocks.forEach((block) => {
+        hljs.highlightElement(block);
+      });
+    }
 
     // Inject event listeners to all images rendered by v-html
     if (contentRef.value) {
