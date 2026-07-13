@@ -517,15 +517,21 @@ watch(isPreviewMode, async (newVal) => {
   margin-top: 1.2em;
   margin-bottom: 0.5em;
 }
-.ProseMirror ul {
+.ProseMirror ul,
+.prose ul {
   list-style-type: disc;
   padding-left: 1.5em;
   margin-bottom: 1em;
 }
-.ProseMirror ol {
+.ProseMirror ol,
+.prose ol {
   list-style-type: decimal;
   padding-left: 1.5em;
   margin-bottom: 1em;
+}
+.ProseMirror li,
+.prose li {
+  margin-bottom: 0.5em;
 }
 .ProseMirror blockquote {
   border-left: 4px solid black;
