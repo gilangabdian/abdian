@@ -245,7 +245,7 @@ html.dark::-webkit-scrollbar-thumb:hover {
   stroke-dasharray: 350px 0;
   animation: grow 10s ease forwards infinite;
   transform-origin: center;
-  stroke: #171717; /* Light theme (neutral-900) */
+  stroke: #000000; /* Light theme (neutral-900) */
   animation-delay: 0s;
 }
 

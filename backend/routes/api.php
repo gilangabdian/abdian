@@ -38,6 +38,8 @@ Route::get('/photos', [PhotoController::class, 'index']);
 Route::get('/blogs', [BlogController::class, 'indexPublic']);
 Route::get('/blogs/{slug}', [BlogController::class, 'showPublic']);
 
+Route::get('/sitemap', [\App\Http\Controllers\SitemapController::class, 'index']);
+
 // Show Single (Detail untuk Edit) - TAMBAHKAN INI
 Route::get('/projects/{id}', [ProjectController::class, 'show']);
 Route::get('/skills/{id}', [SkillController::class, 'show']);

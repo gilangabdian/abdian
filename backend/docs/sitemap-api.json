@@ -1,0 +1,35 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sitemap API",
+    "description": "API Endpoint for generating dynamic sitemap.xml",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://qbdian-api.onrender.com/api"
+    }
+  ],
+  "paths": {
+    "/sitemap": {
+      "get": {
+        "summary": "Get dynamic sitemap.xml",
+        "description": "Returns a dynamically generated XML sitemap containing all published projects and blogs, as well as static routes.",
+        "tags": ["Sitemap"],
+        "responses": {
+          "200": {
+            "description": "Successful operation, returns XML sitemap",
+            "content": {
+              "text/xml": {
+                "schema": {
+                  "type": "string",
+                  "example": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <url>\n    <loc>https://abdian.vercel.app/</loc>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n</urlset>"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

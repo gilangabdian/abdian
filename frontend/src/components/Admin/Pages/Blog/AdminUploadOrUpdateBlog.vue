@@ -14,6 +14,7 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { VueNodeViewRenderer } from "@tiptap/vue-3";
 import { createLowlight, common } from "lowlight";
 import CodeBlockComponent from "./CodeBlockComponent.vue";
+import { RawHtml } from "./RawHtml.js";
 import "highlight.js/styles/night-owl.css";
 import { Icon } from "@iconify/vue";
 
@@ -90,6 +91,7 @@ onMounted(async () => {
       Link.configure({ openOnClick: false }),
       Underline,
       Highlight.configure({ multicolor: true }),
+      RawHtml,
     ],
     onUpdate: () => {
       form.value.content = editor.getHTML();
@@ -111,6 +113,33 @@ onBeforeUnmount(() => {
 const triggerImageUpload = () => {
   if (imageInput.value) {
     imageInput.value.click();
+  }
+};
+
+const insertHtmlEmbed = async () => {
+  const { value: htmlText } = await Swal.fire({
+    title: "Embed HTML/CSS/JS",
+    html: `
+      <div class="text-left font-mono text-sm mb-2 text-gray-700">
+        Kamu bisa paste kode gabungan <b>HTML</b>, <b>&lt;style&gt;</b> (CSS), dan <b>&lt;script&gt;</b> sekaligus di sini. 
+        Sangat cocok untuk menyisipkan SVG Animasi atau iframe custom.
+      </div>
+      <textarea id="swal-input-html" class="w-full h-48 p-2 border-2 border-black font-mono text-sm" placeholder="<svg>...</svg>\n<style>...</style>"></textarea>
+    `,
+    showCancelButton: true,
+    confirmButtonText: "Insert Embed",
+    confirmButtonColor: "#000",
+    preConfirm: () => {
+      const html = document.getElementById("swal-input-html").value;
+      if (!html) {
+        Swal.showValidationMessage("Kode HTML tidak boleh kosong");
+      }
+      return html;
+    }
+  });
+
+  if (htmlText) {
+    editor.commands.insertRawHtml(htmlText);
   }
 };
 
@@ -384,6 +413,13 @@ watch(isPreviewMode, async (newVal) => {
             class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
             title="Code Block">
             <Icon icon="lucide:code" />
+          </button>
+          <button
+            type="button"
+            @click="insertHtmlEmbed"
+            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded text-green-700 hover:bg-green-50 font-bold font-mono"
+            title="Embed HTML/CSS/JS Mentah">
+            <Icon icon="lucide:puzzle" class="inline" /> HTML
           </button>
           <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
 

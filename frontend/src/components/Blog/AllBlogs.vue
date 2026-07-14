@@ -58,13 +58,12 @@ onMounted(async () => {
         <div v-for="group in groupedBlogs" :key="group.year" class="relative w-full mt-10 md:mt-16">
           <!-- Background Year (Hollow Text) -->
           <div
-            class="absolute top-0 -left-2 md:-left-4 -translate-y-6 md:-translate-y-15 text-[4rem] md:text-[8rem] font-black select-none z-0 leading-none pointer-events-none"
-            style="color: transparent; -webkit-text-stroke: 1px rgba(150, 150, 150, 0.15)">
+            class="absolute top-0 -left-2 md:-left-4 -translate-y-6 md:-translate-y-15 text-[7rem] md:text-[8rem] font-black select-none z-0 leading-none pointer-events-none year-watermark">
             {{ group.year }}
           </div>
 
           <!-- Articles List -->
-          <div class="relative z-10 w-full flex flex-col items-start px-2 md:px-8">
+          <div class="relative z-10 w-full flex flex-col items-start px-2 pt-6 md:pt-0 md:px-8">
             <component
               v-for="blog in group.blogs"
               :key="blog.id"
@@ -93,3 +92,37 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style>
+.year-watermark {
+  /* Teks transparan agar isi pola terlihat */
+  color: transparent;
+  /* Garis Tepi (Hitam Samar) */
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.1);
+
+  /* Pola Arsiran Hitam (Light Theme) */
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.04) 0px,
+    rgba(0, 0, 0, 0.04) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.dark .year-watermark {
+  /* Garis Tepi (Putih Samar) */
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+
+  /* Pola Arsiran Putih (Dark Theme) */
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.06) 0px,
+    rgba(255, 255, 255, 0.06) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+}
+</style>
