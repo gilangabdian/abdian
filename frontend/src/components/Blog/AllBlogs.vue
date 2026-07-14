@@ -114,7 +114,7 @@ onMounted(async () => {
 
 .dark .year-watermark {
   /* Garis Tepi (Putih Samar) */
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
 
   /* Pola Arsiran Putih (Dark Theme) */
   background-image: repeating-linear-gradient(
