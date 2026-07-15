@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://abdian.vercel.app/sitemap.xml
+Sitemap: https://qbdian-api.onrender.com/api/sitemap
