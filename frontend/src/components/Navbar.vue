@@ -10,14 +10,14 @@ const toggleDark = useToggle(isDark);
 
 const route = useRoute();
 const menus = [
-  { name: "Home", href: "/", icon: "mdi:home-variant-outline" },
-  { name: "About", href: "/about", icon: "mdi:card-account-details-outline" },
-  { name: "Blogs", href: "/blogs", icon: "material-symbols-light:post-outline" },
-  { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
-  { name: "Certificates", href: "/certificates", icon: "mdi:certificate-outline" },
-  { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
-  { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
-  { name: "Contacts", href: "/contacts", icon: "mdi:email-outline" },
+  { name: "Home", href: "/", icon: "mdi:home-variant-outline", title: "Home" },
+  { name: "About", href: "/about", icon: "mdi:card-account-details-outline", title: "About" },
+  { name: "Blogs", href: "/blogs", icon: "material-symbols-light:post-outline", title: "Blogs" },
+  { name: "Projects", href: "/projects", icon: "mdi:folder-outline", title: "Projects" },
+  { name: "Certificates", href: "/certificates", icon: "mdi:certificate-outline", title: "Certificates" },
+  { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline", title: "Artworks" },
+  { name: "Photos", href: "/photos", icon: "ri:camera-3-line", title: "Photos" },
+  { name: "Contacts", href: "/contacts", icon: "mdi:email-outline", title: "Contacts" },
 ];
 
 const menuContainer = ref(null);
@@ -211,6 +211,7 @@ onUnmounted(() => {
     <div
       class="bg-white/90 dark:bg-[#1e1e1e]/90 backdrop-blur-md border border-black/20 dark:border-white/10 rounded-2xl lg:rounded-full px-2 py-2 lg:px-6 lg:py-2 shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex items-center transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.05)] overflow-hidden">
       <div
+        title="Gilang Abdian"
         class="hidden lg:block font-bold text-xl tracking-tighter mr-4 border-r border-black/20 dark:border-white/20 pr-4 text-black dark:text-white">
         <svg
           class="navbar-logo-svg"
@@ -252,6 +253,7 @@ onUnmounted(() => {
           v-for="item in menus"
           :key="item.name"
           :to="item.href"
+          :title="item.title"
           class="group flex-shrink-0 flex flex-col lg:flex-row items-center justify-center gap-1 lg:gap-1.5 p-2 lg:px-3 lg:py-1.5 rounded-xl lg:rounded-full text-[10px] lg:text-sm font-bold transition-all duration-200 border border-transparent hover:border-black/20 dark:hover:border-white/20 active:scale-95 whitespace-nowrap text-gray-700 dark:text-gray-300 dark:hover:text-white"
           exact-active-class="active-nav-item bg-black text-white dark:!bg-[#ffffff] shadow-md lg:shadow-none !border-transparent">
           <Icon :icon="item.icon" class="w-5 h-5 lg:w-4 lg:h-4 transition-transform group-hover:scale-110" />
