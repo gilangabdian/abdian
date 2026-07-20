@@ -63,4 +63,23 @@ class SkillController extends Controller
 
         return response()->json(['message' => 'Skill deleted']);
     }
+
+    public function bulkDelete(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:skills,id'
+        ]);
+
+        $skills = Skill::whereIn('id', $request->ids)->get();
+        foreach ($skills as $skill) {
+            $this->deleteFile($skill->icon_path);
+        }
+
+        Skill::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Skills deleted successfully'
+        ]);
+    }
 }

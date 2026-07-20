@@ -71,6 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/projects/{id}', [ProjectController::class, 'destroy']);
 
     // Skills CRUD
+    Route::post('/skills/bulk-delete', [SkillController::class, 'bulkDelete']);
     Route::post('/skills', [SkillController::class, 'store']);
     Route::put('/skills/{id}', [SkillController::class, 'update']);
     Route::delete('/skills/{id}', [SkillController::class, 'destroy']);

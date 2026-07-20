@@ -20,7 +20,7 @@ class SkillApiTest extends TestCase
         $skill = Skill::create([
             'name' => 'Laravel',
             'identifier' => 'laravel',
-            'category' => 'backend',
+            'category' => 'Backend',
             'svg' => '<svg>...</svg>',
         ]);
 
@@ -80,11 +80,11 @@ class SkillApiTest extends TestCase
     public function test_admin_can_update_skill()
     {
         $user = User::factory()->create();
-        $skill = Skill::create(['name' => 'Old Name', 'category' => 'Tools', 'identifier' => 'simple-icons:old']);
+        $skill = Skill::create(['name' => 'Old Name', 'category' => 'Cloud & DevOps', 'identifier' => 'simple-icons:old']);
 
         $response = $this->actingAs($user)->putJson("/api/skills/{$skill->id}", [
             'name' => 'New Name',
-            'category' => 'Tools',
+            'category' => 'Cloud & DevOps',
             'identifier' => 'simple-icons:new',
         ]);
 
@@ -95,11 +95,27 @@ class SkillApiTest extends TestCase
     public function test_admin_can_delete_skill()
     {
         $user = User::factory()->create();
-        $skill = Skill::create(['name' => 'To Delete', 'category' => 'Other', 'identifier' => 'simple-icons:del']);
+        $skill = Skill::create(['name' => 'To Delete', 'category' => 'Databases', 'identifier' => 'simple-icons:del']);
 
         $response = $this->actingAs($user)->deleteJson("/api/skills/{$skill->id}");
 
         $response->assertStatus(200);
         $this->assertDatabaseMissing('skills', ['id' => $skill->id]);
+    }
+    public function test_admin_can_bulk_delete_skills()
+    {
+        $user = User::factory()->create();
+        $skill1 = Skill::create(['name' => 'To Delete 1', 'category' => 'Databases', 'identifier' => 'del1']);
+        $skill2 = Skill::create(['name' => 'To Delete 2', 'category' => 'Frontend', 'identifier' => 'del2']);
+        $skill3 = Skill::create(['name' => 'Keep This', 'category' => 'Backend', 'identifier' => 'keep']);
+
+        $response = $this->actingAs($user)->postJson('/api/skills/bulk-delete', [
+            'ids' => [$skill1->id, $skill2->id]
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('skills', ['id' => $skill1->id]);
+        $this->assertDatabaseMissing('skills', ['id' => $skill2->id]);
+        $this->assertDatabaseHas('skills', ['id' => $skill3->id]);
     }
 }

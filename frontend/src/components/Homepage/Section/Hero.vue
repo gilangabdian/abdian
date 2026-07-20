@@ -113,7 +113,8 @@ watch(
 </script>
 
 <template>
-  <div v-if="props.profile && props.profile.about"
+  <div
+    v-if="props.profile && props.profile.about"
     class="container mx-auto px-6 pt-26 pb-6 md:pt-8 md:pb-0 min-h-screen flex items-center justify-center overflow-hidden">
     <div class="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-8 md:gap-2 mt-8">
       <div class="flex-1 flex flex-col items-start space-y-3 md:space-y-3 mt-4">
@@ -127,14 +128,16 @@ watch(
           <h1 class="hero-text text-4xl md:text-5xl font-bold leading-tight font-[Inter] tracking-tight">
             Hi, I'm
             <br class="hidden md:block" />
-            <span class="underline decoration-4 underline-offset-4 decoration-black dark:decoration-white">{{
-              profile.about.name }}</span>
+            <span class="underline decoration-4 underline-offset-4 decoration-black dark:decoration-white">
+              {{ profile.about.name }}
+            </span>
           </h1>
 
           <h2
             class="hero-text text-xl md:text-2xl lg:text-3xl font-[Playfair_Display] italic text-gray-800 pt-1 min-h-[1.5em] flex items-center">
             <span>{{ displayedJob }}</span>
-            <span class="inline-block w-[2px] h-[24px] md:h-[32px] bg-black dark:bg-white ml-1 align-middle"
+            <span
+              class="inline-block w-[2px] h-[24px] md:h-[32px] bg-black dark:bg-white ml-1 align-middle"
               :class="{ 'opacity-0': !cursorVisible, 'opacity-100': cursorVisible }"></span>
           </h2>
         </div>
@@ -148,23 +151,27 @@ watch(
             <Icon icon="mdi:map-marker" />
             <span>Based in Indonesia</span>
           </div>
-          <div v-if="profile.about.is_available_for_work" class="flex items-center gap-1.5 px-2.5 py-1 text-black dark:text-white">
+          <div
+            v-if="profile.about.is_available_for_work"
+            class="flex items-center gap-1.5 px-2.5 py-1 text-black dark:text-white">
             <div class="w-2 h-2 bg-black dark:bg-white rounded-full animate-pulse"></div>
             <span>Available Now</span>
           </div>
         </div>
 
         <div class="hero-content flex gap-3 pt-1 w-full md:w-auto">
-          <a v-if="profile.about.is_available_for_work" href="mailto:qbdian@gmail.com?subject=Hi Gilang Abdian Anggara, I want to hire you!"
+          <a
+            v-if="profile.about.is_available_for_work"
+            href="mailto:qbdian@gmail.com?subject=Hi Gilang Abdian Anggara, I want to hire you!"
             class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black px-0 md:px-5 py-2 rounded-xl border border-transparent font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.23)] hover:bg-black/90 dark:hover:bg-gray-200 active:scale-95 transition-all">
             <Icon icon="mdi:handshake-outline" class="w-4 h-4 md:w-5 md:h-5" />
             <span>Hire Me</span>
           </a>
 
-          <a :href="profile.about.cv_url" target="_blank"
-            :class="[
-              profile.about.is_available_for_work ? 'flex-1 md:flex-none px-0 md:px-5' : 'flex-none px-6'
-            ]"
+          <a
+            :href="profile.about.cv_url"
+            target="_blank"
+            :class="[profile.about.is_available_for_work ? 'flex-1 md:flex-none px-0 md:px-5' : 'flex-none px-6']"
             class="flex items-center justify-center gap-2 bg-white text-black py-2 rounded-xl border border-black/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 active:scale-95 transition-all">
             <Icon icon="mdi:file-download-outline" class="w-4 h-4 md:w-5 md:h-5" />
             <span>Download CV</span>
@@ -174,9 +181,13 @@ watch(
         <hr class="hero-content w-full border-t border-black/20" />
 
         <div class="hero-content flex flex-col md:flex-row items-start md:items-center gap-2 text-xs font-bold">
-          <span class="whitespace-nowrap">Follow me:</span>
+          <span class="whitespace-nowrap">Find me on:</span>
           <div class="flex flex-wrap gap-2">
-            <a v-for="social in profile.social_media" :key="social.name" :href="social.url" target="_blank"
+            <a
+              v-for="social in profile.social_media"
+              :key="social.name"
+              :href="social.url"
+              target="_blank"
               class="p-1.5 border border-black/20 rounded-lg hover:bg-gray-50 hover:shadow-sm transition-all duration-200"
               :title="social.name">
               <Icon :icon="social.icon" class="w-4 h-4 text-black" />
@@ -188,7 +199,10 @@ watch(
       <div class="w-full md:w-5/12 flex justify-center md:justify-end relative hero-image">
         <div class="absolute inset-0 bg-gray-100 rounded-full scale-90 blur-3xl -z-10 opacity-50"></div>
 
-        <img loading="lazy" :src="profile.about.photo_url" alt="Gilang Abdian"
+        <img
+          loading="lazy"
+          :src="profile.about.photo_url"
+          alt="Gilang Abdian"
           class="w-[400px] md:w-[300px] -mt-32 md:mt-0 h-auto object-cover grayscale contrast-110 border-b border-black/20" />
       </div>
     </div>

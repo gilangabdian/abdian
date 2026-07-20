@@ -152,6 +152,75 @@
                 }
             }
         },
+        "/api/skills/bulk-delete": {
+            "post": {
+                "summary": "Bulk Delete Skills (🔒 Admin Only)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "ids"
+                                ],
+                                "properties": {
+                                    "ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [1, 2, 3]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Deleted",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Skills deleted successfully"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "The ids field is required.",
+                                    "errors": {
+                                        "ids": [
+                                            "The ids field is required."
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Unauthenticated."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/skills/{id}": {
             "get": {
                 "summary": "Get Single Skill (Detail)",
