@@ -2,7 +2,7 @@
 import { ref, onMounted, reactive, computed, nextTick } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import { Icon } from "@iconify/vue";
-import { getSkills, addSkill, deleteSkill, updateSkill } from "../../../../lib/api/SkillApi";
+import { getSkills, addSkill, deleteSkill, updateSkill, bulkDeleteSkills } from "../../../../lib/api/SkillApi";
 import { alertSuccess, alertError, alertConfirm } from "../../../../lib/alert";
 
 const token = useLocalStorage("token", "");
@@ -12,6 +12,9 @@ const isSubmitting = ref(false);
 
 const isEditing = ref(false);
 const editId = ref(null);
+
+const isSelectMode = ref(false);
+const selectedIds = ref([]);
 
 const formTopRef = ref(null);
 const categorizedTech = {
@@ -55,8 +58,29 @@ const categorizedTech = {
 };
 
 const isLibraryOpen = ref(false);
-const form = reactive({ name: "", identifier: "" });
+const form = reactive({ name: "", identifier: "", category: "Frontend" });
 const showSuggestions = ref(false);
+
+const categories = ["Frontend", "Backend", "Cloud & DevOps", "Mobile", "Databases"];
+
+// Computed untuk mengelompokkan skills berdasarkan kategori
+const groupedSkills = computed(() => {
+  const groups = {};
+  skills.value.forEach((skill) => {
+    const cat = skill.category || "Frontend";
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(skill);
+  });
+  // Sort keys based on predefined categories order, put missing ones at the end
+  const sortedGroups = {};
+  categories.forEach(cat => {
+    if (groups[cat]) sortedGroups[cat] = groups[cat];
+  });
+  Object.keys(groups).forEach(cat => {
+    if (!sortedGroups[cat]) sortedGroups[cat] = groups[cat];
+  });
+  return sortedGroups;
+});
 
 // Logic pencarian (flatten data kategori menjadi array biasa untuk suggestion)
 const filteredSuggestions = computed(() => {
@@ -91,6 +115,7 @@ const startEdit = (skill) => {
   editId.value = skill.id;
   form.name = skill.name;
   form.identifier = skill.identifier;
+  form.category = skill.category || "Frontend";
 
   nextTick(() => {
     if (formTopRef.value) {
@@ -107,6 +132,7 @@ const cancelEdit = () => {
   editId.value = null;
   form.name = "";
   form.identifier = "";
+  form.category = "Frontend";
 };
 
 const handleSubmit = async () => {
@@ -118,12 +144,13 @@ const handleSubmit = async () => {
   try {
     let response;
     if (isEditing.value) {
-      const payload = { name: form.name, identifier: form.identifier };
+      const payload = { name: form.name, identifier: form.identifier, category: form.category };
       response = await updateSkill(token.value, editId.value, payload);
     } else {
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("identifier", form.identifier);
+      formData.append("category", form.category);
       response = await addSkill(token.value, formData);
     }
 
@@ -154,6 +181,7 @@ const handleDelete = async (id) => {
     if (response.status === 200) {
       await alertSuccess("Skill dihapus!");
       await fetchData();
+      selectedIds.value = selectedIds.value.filter(sId => sId !== id);
     } else {
       await alertError(responseBody.message);
     }
@@ -161,16 +189,83 @@ const handleDelete = async (id) => {
     alertError("Gagal menghapus");
   }
 };
+
+const toggleSelectMode = () => {
+  isSelectMode.value = !isSelectMode.value;
+  if (!isSelectMode.value) {
+    selectedIds.value = []; // Reset selection when exiting mode
+  }
+};
+
+const toggleSelection = (id) => {
+  if (!isSelectMode.value) return;
+  const index = selectedIds.value.indexOf(id);
+  if (index === -1) {
+    selectedIds.value.push(id);
+  } else {
+    selectedIds.value.splice(index, 1);
+  }
+};
+
+const toggleSelectAll = () => {
+  if (selectedIds.value.length === skills.value.length) {
+    selectedIds.value = [];
+  } else {
+    selectedIds.value = skills.value.map(skill => skill.id);
+  }
+};
+
+const handleBulkDelete = async () => {
+  if (selectedIds.value.length === 0) return;
+  if (!(await alertConfirm(`Yakin ingin menghapus ${selectedIds.value.length} skill yang dipilih?`))) {
+    return;
+  }
+
+  isSubmitting.value = true;
+  try {
+    const response = await bulkDeleteSkills(token.value, selectedIds.value);
+    const responseBody = await response.json();
+    if (response.status === 200) {
+      await alertSuccess(responseBody.message || "Skills berhasil dihapus!");
+      await fetchData();
+      isSelectMode.value = false;
+      selectedIds.value = [];
+    } else {
+      await alertError(responseBody.message || "Gagal menghapus skills");
+    }
+  } catch (e) {
+    alertError("Terjadi kesalahan sistem");
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 </script>
 
 <template>
   <div class="p-6 max-w-7xl mx-auto">
-    <div class="mb-10 border-b-4 border-black pb-4 flex justify-between items-end">
+    <div class="mb-10 border-b-4 border-black pb-4 flex justify-between items-end gap-4">
       <div>
         <h1 class="text-3xl md:text-4xl font-black italic">SKILL MANAGER</h1>
         <p class="font-mono text-gray-600 mt-2 text-sm md:text-base">Manage your tech stack efficiently.</p>
       </div>
-      <div class="hidden md:block bg-black text-white px-3 py-1 font-mono font-bold">{{ skills.length }} SKILLS</div>
+      <div class="flex items-center gap-2 flex-wrap justify-end">
+        <button
+          v-if="isSelectMode"
+          @click="toggleSelectAll"
+          class="border-2 border-black px-3 py-1 font-mono font-bold text-xs md:text-sm shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-white text-black hover:bg-black hover:text-white transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+          {{ selectedIds.length === skills.length ? 'Deselect All' : 'Select All' }}
+        </button>
+        <button
+          v-if="skills.length > 0"
+          @click="toggleSelectMode"
+          :class="[
+            'border-2 border-black px-3 py-1 font-mono font-bold text-xs md:text-sm shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-black hover:text-white transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
+            isSelectMode ? 'bg-black text-white' : 'bg-white text-black'
+          ]">
+          {{ isSelectMode ? 'Cancel' : 'Select Mode' }}
+        </button>
+        <div class="hidden md:block bg-black text-white px-3 py-1 font-mono font-bold border-2 border-black">{{ skills.length }} SKILLS</div>
+      </div>
     </div>
 
     <div
@@ -269,6 +364,15 @@ const handleDelete = async (id) => {
           </p>
         </div>
 
+        <div class="w-full md:flex-[0.8]">
+          <label class="block font-bold mb-2 border-b-2 border-black inline-block">CATEGORY</label>
+          <select
+            v-model="form.category"
+            class="w-full p-4 border-2 border-black font-mono focus:bg-gray-100 focus:outline-none transition-colors appearance-none bg-white rounded-none">
+            <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+          </select>
+        </div>
+
         <div class="flex flex-col gap-2 mt-2 md:mt-8 w-full md:w-auto">
           <button
             type="submit"
@@ -305,52 +409,93 @@ const handleDelete = async (id) => {
         </div>
       </div>
 
-      <div v-else class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        <div
-          v-for="skill in skills"
-          :key="skill.id"
-          class="group relative bg-white border-2 border-black flex flex-col items-center hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all duration-200">
-          <div class="p-4 flex flex-col items-center gap-4 w-full">
-            <div class="w-16 h-16 flex items-center justify-center">
-              <Icon :icon="skill.identifier" :key="skill.identifier" class="text-5xl" />
-            </div>
-            <div class="text-center w-full pt-2">
-              <h3 class="font-black font-mono text-sm truncate">{{ skill.name }}</h3>
-            </div>
-          </div>
+      <div v-else>
+        <!-- Loop per kategori -->
+        <div v-for="(items, categoryName) in groupedSkills" :key="categoryName" class="mb-12">
+          <h3 class="font-black text-xl mb-4 uppercase border-b-4 border-black pb-1 inline-block">{{ categoryName }}</h3>
+          
+          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            <div
+              v-for="skill in items"
+              :key="skill.id"
+              @click="toggleSelection(skill.id)"
+              :class="[
+                'group relative bg-white border-2 border-black flex flex-col items-center hover:-translate-y-1 transition-all duration-200',
+                isSelectMode ? 'cursor-pointer' : '',
+                selectedIds.includes(skill.id) ? 'bg-gray-100 shadow-none translate-y-1' : 'shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
+              ]">
+              
+              <!-- Checkbox (Only visible in select mode) -->
+              <div v-if="isSelectMode" class="absolute top-2 left-2 z-10">
+                <div 
+                  :class="[
+                    'w-6 h-6 border-2 border-black flex items-center justify-center transition-colors',
+                    selectedIds.includes(skill.id) ? 'bg-black text-white' : 'bg-white text-transparent'
+                  ]">
+                  <Icon icon="lucide:check" width="16" stroke-width="4" />
+                </div>
+              </div>
+              <div class="p-4 flex flex-col items-center gap-4 w-full">
+                <div class="w-16 h-16 flex items-center justify-center">
+                  <Icon :icon="skill.identifier" :key="skill.identifier" class="text-5xl" />
+                </div>
+                <div class="text-center w-full pt-2">
+                  <h3 class="font-black font-mono text-sm truncate">{{ skill.name }}</h3>
+                </div>
+              </div>
 
-          <div
-            class="hidden md:flex absolute inset-0 bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity items-center justify-center gap-2 backdrop-blur-[1px]">
-            <button
-              @click="startEdit(skill)"
-              class="bg-white text-black border-2 border-black p-2 hover:scale-110 transition-transform shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-              title="Edit">
-              <Icon icon="lucide:edit-2" width="20" />
-            </button>
-            <button
-              @click="handleDelete(skill.id)"
-              class="bg-red-500 text-white hover:bg-red-600 border-2 border-black p-2 hover:scale-110 transition-transform shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-              title="Hapus">
-              <Icon icon="lucide:trash-2" width="20" />
-            </button>
-          </div>
+              <div
+                v-if="!isSelectMode"
+                class="hidden md:flex absolute inset-0 bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity items-center justify-center gap-2 backdrop-blur-[1px]">
+                <button
+                  @click.stop="startEdit(skill)"
+                  class="bg-white text-black border-2 border-black p-2 hover:scale-110 transition-transform shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                  title="Edit">
+                  <Icon icon="lucide:edit-2" width="20" />
+                </button>
+                <button
+                  @click.stop="handleDelete(skill.id)"
+                  class="bg-red-500 text-white hover:bg-red-600 border-2 border-black p-2 hover:scale-110 transition-transform shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                  title="Hapus">
+                  <Icon icon="lucide:trash-2" width="20" />
+                </button>
+              </div>
 
-          <div class="flex md:hidden w-full border-t-2 border-black">
-            <button
-              @click="startEdit(skill)"
-              class="flex-1 bg-gray-200 py-3 flex items-center justify-center border-r-2 border-black active:bg-gray-500">
-              <Icon icon="lucide:edit-2" width="16" />
-            </button>
-            <button
-              @click="handleDelete(skill.id)"
-              class="bg-red-500 text-white hover:bg-red-600 flex-1 py-3 flex items-center justify-center active:bg-red-700">
-              <Icon icon="lucide:trash-2" width="16" />
-            </button>
+              <div v-if="!isSelectMode" class="flex md:hidden w-full border-t-2 border-black">
+                <button
+                  @click.stop="startEdit(skill)"
+                  class="flex-1 bg-gray-200 py-3 flex items-center justify-center border-r-2 border-black active:bg-gray-500">
+                  <Icon icon="lucide:edit-2" width="16" />
+                </button>
+                <button
+                  @click.stop="handleDelete(skill.id)"
+                  class="bg-red-500 text-white hover:bg-red-600 flex-1 py-3 flex items-center justify-center active:bg-red-700">
+                  <Icon icon="lucide:trash-2" width="16" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    <!-- Sticky Bottom Bar for Mobile Bulk Delete -->
+    <div
+      v-if="isSelectMode"
+      class="fixed bottom-0 left-0 right-0 z-50 p-4 transform transition-transform duration-300 translate-y-0 flex justify-center">
+      <div class="bg-black text-white border-2 border-white shadow-[0_-4px_20px_rgba(0,0,0,0.5)] rounded-2xl flex items-center justify-between p-4 max-w-lg w-full">
+        <div class="font-bold font-mono">
+          {{ selectedIds.length }} Selected
+        </div>
+        <button
+          @click="handleBulkDelete"
+          :disabled="selectedIds.length === 0 || isSubmitting"
+          class="bg-red-500 hover:bg-red-600 text-white font-black px-4 py-2 border-2 border-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg flex items-center gap-2">
+          <Icon icon="lucide:trash-2" />
+          Delete
+        </button>
+      </div>
     </div>
   </div>
+</div>
 </template>
 
 <style scoped>
