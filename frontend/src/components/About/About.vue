@@ -50,27 +50,23 @@ watch(isLoading, (newVal) => {
         },
       });
 
-      tl.from(
-        ".anim-text",
+      tl.from(".anim-text", {
+        y: 20,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power2.out",
+      }).from(
+        ".anim-box",
         {
           y: 20,
           opacity: 0,
           duration: 0.8,
-          stagger: 0.1,
+          stagger: 0.15,
           ease: "power2.out",
-        }
-      )
-        .from(
-          ".anim-box",
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.8,
-            stagger: 0.15,
-            ease: "power2.out",
-          },
-          "-=0.6",
-        );
+        },
+        "-=0.6",
+      );
       ScrollTrigger.refresh();
     });
   }
@@ -79,17 +75,13 @@ watch(isLoading, (newVal) => {
 
 <template>
   <div class="min-h-screen mb-40">
-
-
-    <section v-if="!isLoading"
+    <section
+      v-if="!isLoading"
       class="-mt-30 md:-mt-12 min-h-screen flex justify-center py-24 px-4 sm:px-6 font-sans text-black">
       <div class="container max-w-[650px] w-full flex flex-col space-y-12 mt-10 mx-auto">
-
         <!-- About Section -->
         <div class="anim-box flex flex-col space-y-4">
-          <h1 class="anim-text text-2xl md:text-3xl font-bold tracking-wide text-black">
-            Gilang Abdian
-          </h1>
+          <h1 class="anim-text text-2xl md:text-3xl font-bold tracking-wide text-black">Gilang Abdian</h1>
 
           <div class="anim-text space-y-6 text-sm md:text-base text-gray-700 font-normal leading-relaxed">
             <p>
@@ -104,7 +96,6 @@ watch(isLoading, (newVal) => {
               transform complex ideas into smooth, high-performance web applications that stay relevant as technology
               evolves.
             </p>
-
 
             <!-- What I Do Section -->
             <!-- <div class="anim-box space-y-4">
@@ -122,14 +113,30 @@ watch(isLoading, (newVal) => {
             </div> -->
 
             <p>
-              Outside of programming, I enjoy making <a href="https://www.youtube.com/@jeezfay" target="_blank"
-                class="underline text-black decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">YouTube
-                videos</a>, playing the guitar, and drawing. I post my <RouterLink to="/artworks" class="underline text-black decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">drawings on this page</RouterLink>. Also, I am constantly finding new ways to blend technology with creativity to stay inspired.
+              Outside of programming, I write
+              <RouterLink
+                to="/blogs"
+                class="underline text-black decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                blogs
+              </RouterLink>
+              about coding, technology, etc. Also trying to make
+              <a
+                href="https://www.youtube.com/@jeezfay"
+                target="_blank"
+                class="underline text-black decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                YouTube videos
+              </a>
+              and fill it with some of challenge coding, sometimes share I play guitar and singing, sometimes I also
+              share my drawings. I post my
+              <RouterLink
+                to="/artworks"
+                class="underline text-black decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                drawings on this page.
+              </RouterLink>
+              Also, I am constantly finding new ways to blend technology with creativity to stay inspired.
             </p>
           </div>
         </div>
-
-
       </div>
     </section>
   </div>
