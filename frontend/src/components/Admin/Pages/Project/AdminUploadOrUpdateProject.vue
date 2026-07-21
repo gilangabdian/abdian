@@ -131,6 +131,10 @@ onMounted(async () => {
         selectedSkillIds.value = data.skills.map((item) => item.id);
       }
 
+      if (data.custom_tech_stacks && Array.isArray(data.custom_tech_stacks)) {
+        customTechStacks.value = data.custom_tech_stacks;
+      }
+
       if (data.thumbnail_path) {
         previewImage.value = data.thumbnail_url;
       }
@@ -166,6 +170,26 @@ const removeImage = () => {
   if (input) input.value = "";
 };
 
+// --- CUSTOM TECH STACK STATE ---
+const customTechStacks = ref([]);
+const newCustomTechName = ref("");
+const newCustomTechIcon = ref("");
+
+const addCustomTech = () => {
+  if (newCustomTechName.value.trim() && newCustomTechIcon.value.trim()) {
+    customTechStacks.value.push({
+      name: newCustomTechName.value.trim(),
+      icon_url: newCustomTechIcon.value.trim()
+    });
+    newCustomTechName.value = "";
+    newCustomTechIcon.value = "";
+  }
+};
+
+const removeCustomTech = (index) => {
+  customTechStacks.value.splice(index, 1);
+};
+
 // --- SUBMIT ---
 async function handleSubmit() {
   if (!form.title) {
@@ -174,10 +198,6 @@ async function handleSubmit() {
   }
   if (!isEditMode.value && !file.value) {
     alertError("Thumbnail wajib diisi untuk project baru!");
-    return;
-  }
-  if (selectedSkillIds.value.length === 0) {
-    alertError("Pilih minimal satu Tech Stack!");
     return;
   }
 
@@ -208,6 +228,10 @@ async function handleSubmit() {
     selectedSkillIds.value.forEach((id) => {
       formData.append("tech_stack_ids[]", id);
     });
+
+    if (customTechStacks.value.length > 0) {
+      formData.append("custom_tech_stacks", JSON.stringify(customTechStacks.value));
+    }
 
     let response;
     if (isEditMode.value) {
@@ -469,10 +493,10 @@ async function handleSubmit() {
               Hero Section.
             </div>
           </div>
-          <div class="pt-2">
-            <label class="block font-black mb-3 border-b-2 border-black inline-block text-sm uppercase">
-              Tech Stack
-              <span class="text-black">*</span>
+          <div class="pt-2 border-t-2 border-black border-dashed mt-4">
+            <label class="block font-black mb-3 border-b-2 border-black inline-block text-sm uppercase mt-4">
+              Main Tech Stack
+              <span class="text-gray-400 text-[10px] normal-case ml-1">(optional)</span>
             </label>
 
             <div
@@ -501,7 +525,65 @@ async function handleSubmit() {
                 </div>
               </button>
             </div>
-            <p class="font-mono text-xs text-gray-500 mt-3 text-right">{{ selectedSkillIds.length }} tech selected</p>
+          </div>
+
+          <div class="pt-4 border-t-2 border-black border-dashed">
+            <label class="block font-black mb-3 border-b-2 border-black inline-block text-sm uppercase">
+              Custom Tech Stacks
+              <span class="text-gray-400 text-[10px] normal-case ml-1">(For project-specific tech)</span>
+            </label>
+
+            <!-- Custom Tech Stack Preview -->
+            <div v-if="customTechStacks.length > 0" class="flex flex-wrap gap-3 mb-4 p-4 border-2 border-black border-dashed bg-gray-50">
+              <div class="w-full text-xs font-black uppercase text-gray-400 mb-1">Added Custom Tech:</div>
+              <div
+                v-for="(tech, index) in customTechStacks"
+                :key="index"
+                class="relative px-4 py-2 text-sm font-bold border-2 border-black bg-yellow-100 text-black flex items-center gap-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+                <Icon :icon="tech.icon_url || 'lucide:code'" class="text-lg" />
+                <span class="font-mono uppercase">{{ tech.name }}</span>
+                <button
+                  type="button"
+                  @click.stop="removeCustomTech(index)"
+                  class="absolute -top-2 -right-2 bg-red-500 text-white hover:bg-red-600 border-2 border-black w-5 h-5 flex items-center justify-center rounded-full text-xs transition-colors">
+                  <Icon icon="lucide:x" stroke-width="4" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Custom Tech Form -->
+            <div class="flex flex-col sm:flex-row items-end gap-4 p-4 border-2 border-black bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <div class="w-full sm:w-2/5">
+                <label class="block font-black text-xs uppercase mb-1">Tech Name</label>
+                <input
+                  v-model="newCustomTechName"
+                  type="text"
+                  placeholder="e.g. Figma"
+                  class="w-full p-2 border-2 border-black font-mono text-sm focus:outline-none"
+                  @keydown.enter.prevent="addCustomTech" />
+              </div>
+              <div class="w-full sm:w-2/5">
+                <label class="block font-black text-xs uppercase mb-1">Iconify Name</label>
+                <input
+                  v-model="newCustomTechIcon"
+                  type="text"
+                  placeholder="e.g. logos:figma"
+                  class="w-full p-2 border-2 border-black font-mono text-sm focus:outline-none"
+                  @keydown.enter.prevent="addCustomTech" />
+              </div>
+              <div class="w-full sm:w-1/5">
+                <button
+                  type="button"
+                  @click="addCustomTech"
+                  class="w-full h-[40px] bg-black text-white font-black uppercase text-sm border-2 border-black hover:bg-white hover:text-black transition-colors flex items-center justify-center gap-1">
+                  <Icon icon="lucide:plus" /> ADD
+                </button>
+              </div>
+            </div>
+            
+            <p class="font-mono text-xs text-gray-500 mt-3 text-right">
+              {{ selectedSkillIds.length }} Main Tech + {{ customTechStacks.length }} Custom Tech Selected
+            </p>
           </div>
         </div>
 

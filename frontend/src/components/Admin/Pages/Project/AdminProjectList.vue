@@ -43,8 +43,17 @@ const fetchData = async () => {
   try {
     const response = await getAllProjects();
     const result = await response.json();
-    console.log(result);
-    projects.value = result.data || result;
+    const fetchedProjects = result.data || result;
+    projects.value = fetchedProjects.map(p => {
+      const customTechs = (p.custom_tech_stacks || []).map(c => ({
+        name: c.name,
+        identifier: c.icon_url
+      }));
+      return {
+        ...p,
+        skills: [...(p.skills || []), ...customTechs]
+      };
+    });
   } catch (error) {
     console.error(error);
     alertError("Gagal mengambil data project.");

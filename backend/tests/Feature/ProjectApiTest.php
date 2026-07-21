@@ -189,4 +189,36 @@ class ProjectApiTest extends TestCase
             'end_date' => null,
         ]);
     }
+
+    public function test_can_create_project_with_custom_tech_stacks()
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $customTechs = [
+            ['name' => 'Custom UI', 'icon_url' => 'mdi:design'],
+            ['name' => 'Custom HTML', 'icon_url' => 'mdi:language-html5'],
+        ];
+
+        $response = $this->actingAs($user)->postJson('/api/projects', [
+            'title' => 'Project with Custom Tech',
+            'description' => 'Testing custom tech stacks JSON column',
+            'thumbnail' => UploadedFile::fake()->image('thumb.jpg'),
+            'start_date' => '2025-01-01',
+            'end_date' => null,
+            'status' => 'completed',
+            'custom_tech_stacks' => $customTechs,
+            // tech_stack_ids omitted (nullable)
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertEquals('Custom UI', $response->json('data.custom_tech_stacks.0.name'));
+        $this->assertEquals('mdi:design', $response->json('data.custom_tech_stacks.0.icon_url'));
+
+        // Verify in DB
+        $project = Project::where('title', 'Project with Custom Tech')->first();
+        $this->assertNotNull($project->custom_tech_stacks);
+        $this->assertCount(2, $project->custom_tech_stacks);
+        $this->assertEquals('Custom HTML', $project->custom_tech_stacks[1]['name']);
+    }
 }

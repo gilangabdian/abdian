@@ -45,8 +45,8 @@ class ProjectController extends Controller
 
         $project = Project::create($data);
 
-        if ($request->has('tech_stack_ids')) {
-            $project->skills()->sync($request->tech_stack_ids);
+        if (array_key_exists('tech_stack_ids', $data)) {
+            $project->skills()->sync($data['tech_stack_ids'] ?? []);
         }
 
         return response()->json(['message' => 'Project created', 'data' => $project->load('skills')], 201);
@@ -73,14 +73,15 @@ class ProjectController extends Controller
             'role' => $data['role'] ?? null,
             'live_demo_link' => $data['live_demo_link'] ?? null,
             'repository_link' => $data['repository_link'] ?? null,
+            'custom_tech_stacks' => $data['custom_tech_stacks'] ?? null,
         ]);
 
         if (isset($data['thumbnail_path'])) {
             $project->update(['thumbnail_path' => $data['thumbnail_path']]);
         }
 
-        if ($request->has('tech_stack_ids')) {
-            $project->skills()->sync($request->tech_stack_ids);
+        if (array_key_exists('tech_stack_ids', $data)) {
+            $project->skills()->sync($data['tech_stack_ids'] ?? []);
         }
 
         return response()->json(['message' => 'Project updated', 'data' => $project->load('skills')]);

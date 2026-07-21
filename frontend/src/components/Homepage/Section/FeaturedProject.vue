@@ -47,7 +47,16 @@ const props = defineProps({
 // --- NEW LOGIC: FEATURED PROJECTS (LIMIT 3) ---
 // Best Practice: Gunakan computed untuk memanipulasi tampilan data tanpa mengubah data aslinya
 const featuredProjects = computed(() => {
-  return (props.projects || []).slice(0, 3);
+  return (props.projects || []).slice(0, 3).map(p => {
+    const customTechs = (p.custom_tech_stacks || []).map(c => ({
+      name: c.name,
+      identifier: c.icon_url
+    }));
+    return {
+      ...p,
+      skills: [...(p.skills || []), ...customTechs]
+    };
+  });
 });
 
 // --- LOGIC MODAL & BACK BUTTON ---
