@@ -76,9 +76,6 @@ onUnmounted(() => {
           class="text-4xl font-black text-black mb-6 font-serif tracking-wider inline-block relative border-b border-black/20 pb-2">
           <span class="relative z-10">Featured Certificates</span>
         </h2>
-        <p class="mt-4 font-sans text-gray-700 text-sm md:text-base lowercase tracking-tight max-w-xl mx-auto">
-          validated competence. chronological record of technical milestones and authorized skills.
-        </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

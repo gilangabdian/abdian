@@ -92,13 +92,16 @@ class BlogApiTest extends TestCase
         $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
                          ->postJson('/api/blogs', [
                              'title' => 'Test Auto Slug',
+                             'title_en' => 'Test Auto Slug EN',
                              'content' => $content,
+                             'content_en' => 'Content EN',
                              'is_published' => true
                          ]);
         
         $response->assertStatus(201)
                  ->assertJsonFragment([
                      'title' => 'Test Auto Slug',
+                     'title_en' => 'Test Auto Slug EN',
                      'slug' => 'test-auto-slug',
                      'read_time' => 2 // 400 words / 200 words per min = 2
                  ]);

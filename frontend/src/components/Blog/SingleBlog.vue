@@ -12,6 +12,7 @@ const route = useRoute();
 const router = useRouter();
 const blog = ref(null);
 const isLoading = ref(true);
+const currentLang = ref(localStorage.getItem('blogLang') || 'id');
 
 const toc = ref([]);
 const showToc = ref(false);
@@ -147,7 +148,7 @@ onMounted(async () => {
         <!-- Header -->
         <header class="mb-12">
           <h1 class="text-3xl md:text-5xl font-medium leading-none mb-3 text-black dark:text-white">
-            {{ blog.title }}
+            {{ currentLang === 'en' ? (blog.title_en || blog.title) : blog.title }}
           </h1>
 
           <div class="flex flex-wrap items-center gap-2 text-sm text-neutral-500 dark:text-neutral-500">
@@ -169,7 +170,7 @@ onMounted(async () => {
         <div
           ref="contentRef"
           class="prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg"
-          v-html="blog.content"></div>
+          v-html="currentLang === 'en' ? (blog.content_en || blog.content) : blog.content"></div>
 
         <!-- Back Button at bottom -->
         <router-link

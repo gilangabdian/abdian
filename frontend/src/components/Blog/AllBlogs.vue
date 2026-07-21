@@ -10,6 +10,12 @@ const blogs = ref([]);
 const isLoading = ref(true);
 const router = useRouter();
 
+// Language State (ID or EN)
+const currentLang = ref(localStorage.getItem('blogLang') || 'id');
+const updateLang = () => {
+  localStorage.setItem('blogLang', currentLang.value);
+};
+
 const groupedBlogs = computed(() => {
   const groups = {};
   blogs.value.forEach((blog) => {
@@ -48,13 +54,32 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="pt-16 md:pt-36 pb-16 min-h-screen bg-white dark:bg-black flex flex-col items-center font-[Inter]">
+  <div class="pt-16 md:pt-40 pb-16 min-h-screen bg-white dark:bg-black flex flex-col items-center font-[Inter]">
     <div class="w-full max-w-3xl px-4 md:px-8">
       <!-- Empty State -->
       <div v-if="!isLoading && blogs.length === 0" class="text-center text-neutral-500 py-12">no article yet!</div>
 
       <!-- Blog List by Year -->
-      <div v-else-if="!isLoading && blogs.length > 0" class="w-full flex flex-col gap-24">
+      <div v-else-if="!isLoading && blogs.length > 0" class="w-full flex flex-col gap-24 relative">
+
+        <!-- Language Toggle -->
+        <div class="absolute -top-10 left-2 md:left-8 flex items-center justify-start z-20">
+          <label class="flex items-center gap-2 cursor-pointer text-sm text-black/30 dark:text-white/30">
+            <input
+              type="checkbox"
+              v-model="currentLang"
+              true-value="en"
+              false-value="id"
+              @change="updateLang"
+              class="w-[13px] h-[13px] cursor-pointer appearance-none border-[1.4px] border-black/30 dark:border-white/30 rounded-[1px] bg-transparent flex items-center justify-center
+                     checked:before:content-['']
+                     checked:before:w-[4px] checked:before:h-[6.5px] checked:before:border-r-[1.4px] checked:before:border-b-[1.4px]
+                     checked:before:border-black/30 dark:checked:before:border-white/30 checked:before:rotate-45 checked:before:-mt-[1px]"
+            />
+            <span>Read in English</span>
+          </label>
+        </div>
+
         <div v-for="group in groupedBlogs" :key="group.year" class="relative w-full mt-10 md:mt-16">
           <!-- Background Year (Hollow Text) -->
           <div
@@ -75,7 +100,7 @@ onMounted(async () => {
 
               <h2
                 class="text-lg md:text-xl font-small text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors leading-tight flex items-center gap-[2px]">
-                {{ blog.title }}
+                {{ currentLang === 'en' ? (blog.title_en || blog.title) : blog.title }}
                 <Icon v-if="blog.is_external" icon="carbon:arrow-up-right" class="w-3 h-4 -mt-1 opacity-50 transition-opacity" />
               </h2>
 
