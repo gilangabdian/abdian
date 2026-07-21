@@ -93,7 +93,7 @@ onUnmounted(() => {
           <span class="relative z-10">Featured Projects</span>
         </h2>
         <p class="mt-4 font-sans text-gray-700 text-sm md:text-base lowercase tracking-tight max-w-xl mx-auto">
-          selected works. engineering abstract concepts into scalable production systems.
+          selected works. translating abstract concepts into intuitive, high-performance user interfaces.
         </p>
       </div>
 
@@ -223,7 +223,8 @@ onUnmounted(() => {
                 class="text-xs font-mono text-gray-500 flex items-center gap-1 px-2 py-1">
                 <span class="text-[10px] uppercase tracking-wider font-mono font-normal">Period:</span>
                 <Icon icon="lucide:calendar" class="w-3.5 h-3.5" />
-                {{ formatDate(selectedProject.start_date) }} → {{ selectedProject.end_date ? formatDate(selectedProject.end_date) : 'Ongoing' }}
+                {{ formatDate(selectedProject.start_date) }} →
+                {{ selectedProject.end_date ? formatDate(selectedProject.end_date) : "Ongoing" }}
               </span>
             </div>
 

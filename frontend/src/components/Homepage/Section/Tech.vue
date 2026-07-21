@@ -153,7 +153,7 @@ const onLeave = (el, done) => {
         <p
           class="header-animate mt-4 font-sans text-gray-700 text-sm md:text-base lowercase tracking-tight leading-relaxed">
           here are the tools and technologies I work with. My current stack is centered around modern front-end
-          frameworks to help me build clean, responsive, and functional web interfaces."
+          frameworks to help me build clean, responsive, and functional web interfaces.
         </p>
       </div>
 

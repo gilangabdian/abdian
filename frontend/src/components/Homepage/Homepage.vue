@@ -63,6 +63,8 @@ const projectSWR = useSWR("cache_projects", () => getAllProjects({ featured: 1 }
 const certificateSWR = useSWR("cache_certificates", () => getAllCertificates({ featured: 1 }), []);
 const experienceSWR = useSWR("cache_experiences", getAllExperiences, []);
 
+let fakeProgressInterval = null;
+
 // Watcher untuk nge-track persentase dan selesainya semua fetch
 watch(
   () => [
@@ -76,18 +78,40 @@ watch(
     // Hitung berapa yang sudah selesai (isLoading = false)
     const completed = loadings.filter((l) => !l).length;
 
-    // [OPSI B] Jika ini kunjungan pertama (tab baru) dan semua data instant (SWR Cache),
-    // kita tahan angkanya di 0 dulu sesaat, lalu tembak ke 100 agar animasinya jalan mulus!
-    if (!hasSeenIntro.value && completed === 5 && loadingPercent.value === 0) {
-      setTimeout(() => {
-        loadingPercent.value = 100;
-      }, 50); // Jeda sangat singkat untuk memicu CSS transition
+    // FAKE PROGRESS LOGIC
+    if (!hasSeenIntro.value) {
+      if (completed < 5) {
+        // Mulai fake progress jika belum jalan
+        if (!fakeProgressInterval) {
+          fakeProgressInterval = setInterval(() => {
+            if (loadingPercent.value < 95) {
+              loadingPercent.value += Math.floor(Math.random() * 3) + 1;
+              if (loadingPercent.value > 95) loadingPercent.value = 95;
+            }
+          }, 300);
+        }
+      }
     } else {
       loadingPercent.value = (completed / 5) * 100;
     }
 
     // Jika semuanya sudah false, berarti beres!
     if (completed === 5) {
+      // Hentikan fake progress timer
+      if (fakeProgressInterval) {
+        clearInterval(fakeProgressInterval);
+        fakeProgressInterval = null;
+      }
+
+      // Pastikan mentok ke 100% secara smooth
+      if (!hasSeenIntro.value && loadingPercent.value === 0) {
+        setTimeout(() => {
+          loadingPercent.value = 100;
+        }, 50); // Jeda sangat singkat untuk memicu CSS transition
+      } else if (!hasSeenIntro.value) {
+        loadingPercent.value = 100;
+      }
+
       profileData.value = profileSWR.data.value;
       skillData.value = skillSWR.data.value;
       projectData.value = projectSWR.data.value;
