@@ -168,7 +168,7 @@ onUnmounted(() => {
       </div>
 
       <div v-if="props.experiences.length === 0" class="text-center py-12 border border-dashed border-gray-300">
-        <p class="font-mono text-gray-400">No experience data found.</p>
+        <p class="font-mono text-gray-400"></p>
       </div>
 
       <div v-else class="experience-list relative">
