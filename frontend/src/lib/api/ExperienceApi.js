@@ -1,5 +1,7 @@
-export const getAllExperiences = async () => {
-  return await fetch(`${import.meta.env.VITE_APP_PATH}/experiences`, {
+export const getAllExperiences = async (params = {}) => {
+  const query = new URLSearchParams(params).toString();
+  const url = query ? `${import.meta.env.VITE_APP_PATH}/experiences?${query}` : `${import.meta.env.VITE_APP_PATH}/experiences`;
+  return await fetch(url, {
     method: "GET",
     headers: {
       Accept: "application/json",

@@ -43,6 +43,7 @@
                                         "start_date": "2023-01-01",
                                         "end_date": "2024-01-01",
                                         "description": "Developing scalable web applications using Go and React.",
+                                        "is_active": true,
                                         "created_at": "2024-01-01T10:00:00.000000Z"
                                     },
                                     {
@@ -53,6 +54,7 @@
                                         "start_date": "2022-05-01",
                                         "end_date": null,
                                         "description": "Building landing pages for various clients.",
+                                        "is_active": true,
                                         "created_at": "2024-01-02T10:00:00.000000Z"
                                     }
                                 ]
@@ -115,6 +117,10 @@
                                     "description": {
                                         "type": "string",
                                         "example": "Responsible for API development and maintenance."
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 }
                             }
@@ -135,7 +141,8 @@
                                         "status": "Full-time",
                                         "start_date": "2024-01-01",
                                         "end_date": null,
-                                        "description": "Responsible for API development and maintenance."
+                                        "description": "Responsible for API development and maintenance.",
+                                        "is_active": true
                                     }
                                 }
                             }
@@ -194,7 +201,8 @@
                                     "status": "Full-time",
                                     "start_date": "2023-01-01",
                                     "end_date": "2024-01-01",
-                                    "description": "Detailed description..."
+                                    "description": "Detailed description...",
+                                    "is_active": true
                                 }
                             }
                         }
@@ -274,6 +282,10 @@
                                     "description": {
                                         "type": "string",
                                         "example": "Updated description..."
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": false
                                     }
                                 }
                             }
@@ -292,7 +304,8 @@
                                         "company_name": "Tokopedia Updated",
                                         "role": "Senior Backend Engineer",
                                         "status": "Full-time",
-                                        "end_date": "2025-01-01"
+                                        "end_date": "2025-01-01",
+                                        "is_active": false
                                     }
                                 }
                             }

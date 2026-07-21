@@ -61,7 +61,7 @@ const profileSWR = useSWR("cache_profile", getProfile);
 const skillSWR = useSWR("cache_skills", getSkills, []);
 const projectSWR = useSWR("cache_projects", () => getAllProjects({ featured: 1 }), []);
 const certificateSWR = useSWR("cache_certificates", () => getAllCertificates({ featured: 1 }), []);
-const experienceSWR = useSWR("cache_experiences", getAllExperiences, []);
+const experienceSWR = useSWR("cache_experiences", () => getAllExperiences({ active: 1 }), []);
 
 let fakeProgressInterval = null;
 

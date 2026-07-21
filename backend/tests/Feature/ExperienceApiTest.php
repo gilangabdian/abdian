@@ -45,10 +45,28 @@ class ExperienceApiTest extends TestCase
             'location' => 'Remote',
             'start_date' => '2023-01-01',
             'description' => 'Working hard',
+            'is_active' => true,
+        ]);
+        
+        Experience::create([
+            'company_name' => 'Facebook',
+            'role' => 'Dev',
+            'status' => 'Full-time',
+            'location' => 'Remote',
+            'start_date' => '2022-01-01',
+            'description' => 'Working hard',
+            'is_active' => false,
         ]);
 
+        // Admin (tanpa ?active=1) mendapat semua
         $response = $this->getJson('/api/experiences');
-        $response->assertStatus(200)->assertJsonCount(1);
+        $response->assertStatus(200)->assertJsonCount(2);
+        
+        // Public (dengan ?active=1) mendapat hanya yang active
+        $responsePublic = $this->getJson('/api/experiences?active=1');
+        $responsePublic->assertStatus(200)->assertJsonCount(1);
+        $responsePublic->assertJsonFragment(['company_name' => 'Google']);
+        $responsePublic->assertJsonMissing(['company_name' => 'Facebook']);
     }
 
     public function test_admin_can_create_experience()
