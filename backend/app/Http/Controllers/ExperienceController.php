@@ -8,10 +8,16 @@ use App\Models\Experience;
 
 class ExperienceController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
+        $query = Experience::query();
+        
+        if ($request->has('active') && $request->active == '1') {
+            $query->where('is_active', true);
+        }
+        
         // Urutkan dari yang terbaru (start_date desc)
-        return response()->json(Experience::orderBy('start_date', 'desc')->get());
+        return response()->json($query->orderBy('start_date', 'desc')->get());
     }
 
     public function store(StoreExperienceRequest $request)

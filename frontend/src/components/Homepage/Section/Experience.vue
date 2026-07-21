@@ -167,11 +167,7 @@ onUnmounted(() => {
           class="journey-header mt-4 font-sans text-gray-700 text-sm md:text-base lowercase tracking-tight max-w-xl mx-auto"></p>
       </div>
 
-      <div v-if="props.experiences.length === 0" class="text-center py-12 border border-dashed border-gray-300">
-        <p class="font-mono text-gray-400"></p>
-      </div>
-
-      <div v-else class="experience-list relative">
+      <div class="experience-list relative">
         <div
           class="journey-line absolute left-4 md:left-1/2 top-0 bottom-0 w-[1px] md:-ml-[0.5px] bg-black/20 dark:bg-white/20 z-0 origin-top"></div>
 

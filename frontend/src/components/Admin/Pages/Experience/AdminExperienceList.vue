@@ -40,6 +40,7 @@ const form = reactive({
   end_date: "",
   description: "",
   is_current: false, // Checkbox helper
+  is_active: true, // Toggle visibility
 });
 
 const statusOptions = ["Full-time", "Part-time", "Freelance", "Internship", "Contract", "Education"];
@@ -95,6 +96,7 @@ const resetForm = () => {
   form.end_date = "";
   form.description = "";
   form.is_current = false;
+  form.is_active = true;
   isEditing.value = false;
   editId.value = null;
   isStatusDropdownOpen.value = false;
@@ -112,6 +114,7 @@ const startEdit = (item) => {
   form.end_date = item.end_date ? item.end_date.substring(0, 10) : "";
   form.description = item.description;
   form.is_current = !item.end_date; // Jika end_date null, berarti current
+  form.is_active = item.is_active ?? true;
 
   nextTick(() => {
     if (formTopRef.value) {
@@ -145,6 +148,7 @@ const handleSubmit = async () => {
       // Logic: jika is_current true, kirim null, jika tidak kirim value end_date
       end_date: form.is_current ? null : form.end_date,
       description: form.description,
+      is_active: form.is_active,
     };
 
     let response;
@@ -348,6 +352,17 @@ const formatDate = (dateString) => {
           </div>
         </div>
 
+        <div class="flex items-center gap-3 bg-gray-50 p-4 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] w-max">
+          <input
+            type="checkbox"
+            id="isActive"
+            v-model="form.is_active"
+            class="w-6 h-6 border-2 border-black accent-black focus:ring-0 cursor-pointer" />
+          <label for="isActive" class="font-black uppercase cursor-pointer select-none">
+            Show on Public Homepage
+          </label>
+        </div>
+
         <div class="flex flex-col md:flex-row gap-4 pt-4 border-t-2 border-black border-dashed">
           <button
             type="submit"
@@ -422,6 +437,9 @@ const formatDate = (dateString) => {
               <span
                 class="bg-black text-white px-2 py-0.5 font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_0px_rgba(100,100,100,1)]">
                 {{ exp.status }}
+              </span>
+              <span v-if="!exp.is_active" class="bg-red-500 text-white px-2 py-0.5 font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_0px_rgba(100,100,100,1)] animate-pulse">
+                HIDDEN FROM PUBLIC
               </span>
               <span class="lg:hidden font-mono text-xs font-bold border-2 border-black px-2 py-0.5 bg-gray-100">
                 {{ formatDate(exp.start_date) }} - {{ formatDate(exp.end_date) }}

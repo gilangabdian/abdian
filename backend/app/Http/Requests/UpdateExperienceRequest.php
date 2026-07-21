@@ -29,6 +29,7 @@ class UpdateExperienceRequest extends FormRequest
             'start_date' => 'sometimes|required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date', // End date harus setelah start
             'description' => 'sometimes|required|string',
+            'is_active' => 'sometimes|boolean',
         ];
     }
 }
