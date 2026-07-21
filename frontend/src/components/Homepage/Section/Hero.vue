@@ -203,7 +203,7 @@ watch(
           loading="lazy"
           :src="profile.about.photo_url"
           alt="Gilang Abdian"
-          class="w-[400px] md:w-[300px] -mt-32 md:mt-0 h-auto object-cover border-b border-black/20" />
+          class="w-[400px] md:w-[300px] -mt-32 md:mt-0 h-auto object-cover contrast-110 border-b border-black/20" />
       </div>
     </div>
   </div>
