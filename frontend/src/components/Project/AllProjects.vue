@@ -65,7 +65,16 @@ watch(
   isSWRloading,
   async (newVal) => {
     if (!newVal) {
-      projects.value = projectSWR.value;
+      projects.value = projectSWR.value.map(p => {
+        const customTechs = (p.custom_tech_stacks || []).map(c => ({
+          name: c.name,
+          identifier: c.icon_url
+        }));
+        return {
+          ...p,
+          skills: [...(p.skills || []), ...customTechs]
+        };
+      });
 
       // Preload image
       const imagePromises = (projects.value || [])
