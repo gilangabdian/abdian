@@ -34,19 +34,27 @@ const formatDate = (dateStr) => {
 };
 
 // --- SWR Caching ---
-const { data: certificateSWR, isLoading: isSWRloading, revalidate } = useSWR('cache_all_certificates', getAllCertificates, []);
+const {
+  data: certificateSWR,
+  isLoading: isSWRloading,
+  revalidate,
+} = useSWR("cache_all_certificates", getAllCertificates, []);
 
-watch(isSWRloading, async (newVal) => {
-  if (!newVal) {
-    certificates.value = certificateSWR.value;
-    NProgress.done();
-    // Delay buatan 800ms agar transisi smooth
-    setTimeout(() => {
-      loading.value = false;
-      window.dispatchEvent(new CustomEvent("content-loaded"));
-    }, 800);
-  }
-}, { immediate: true });
+watch(
+  isSWRloading,
+  async (newVal) => {
+    if (!newVal) {
+      certificates.value = certificateSWR.value;
+      NProgress.done();
+      // Delay buatan 800ms agar transisi smooth
+      setTimeout(() => {
+        loading.value = false;
+        window.dispatchEvent(new CustomEvent("content-loaded"));
+      }, 800);
+    }
+  },
+  { immediate: true },
+);
 
 // --- ANIMATION TRIGGER (Menggunakan Watcher) ---
 watch(loading, (newVal) => {
@@ -107,25 +115,27 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen mb-40">
-
-
     <div v-if="!loading" class="-mt-16 md:mt-4 px-4 py-16 md:px-8 max-w-6xl mx-auto">
       <div class="text-center mb-12 mt-4 page-title" style="opacity: 0; visibility: hidden">
-        <h1 class="anim-text text-2xl md:text-3xl font-bold tracking-wide text-black">
-          All Certificates
-        </h1>
+        <h1 class="anim-text text-2xl md:text-3xl font-bold tracking-wide text-black">All Certificates</h1>
         <p class="mt-4 font-sans text-gray-700 text-sm md:text-base max-w-xl mx-auto italic">
-          "A complete archive of validated skills, workshops, and achievements."
+          "Certificates that i get about topics that interest me."
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
-        <div v-for="certificate in certificates" :key="certificate.id" @click="openModal(certificate)"
+        <div
+          v-for="certificate in certificates"
+          :key="certificate.id"
+          @click="openModal(certificate)"
           class="cert-card group flex flex-col p-3 bg-white rounded-xl border border-black/20 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
           style="opacity: 0; visibility: hidden">
           <div
             class="w-full aspect-video bg-gray-50 border border-black/10 rounded-lg mb-3 overflow-hidden relative flex items-center justify-center p-2">
-            <img loading="lazy" :src="certificate.image_url" :alt="certificate.title"
+            <img
+              loading="lazy"
+              :src="certificate.image_url"
+              :alt="certificate.title"
               class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" />
           </div>
 
@@ -160,14 +170,16 @@ onMounted(() => {
                   <span class="text-[10px] text-gray-500 uppercase tracking-wider font-mono font-normal">Issuer:</span>
                   {{ selectedCert?.issuer }}
                 </span>
-                <span v-if="selectedCert?.type"
+                <span
+                  v-if="selectedCert?.type"
                   class="text-xs md:text-sm font-bold px-2 py-1 border border-black/10 rounded-sm bg-white flex items-center gap-1.5 shadow-sm">
                   <span class="text-[10px] text-gray-500 uppercase tracking-wider font-mono font-normal">Type:</span>
                   {{ formatLabel(selectedCert.type) }}
                 </span>
               </div>
 
-              <span v-if="selectedCert?.start_date"
+              <span
+                v-if="selectedCert?.start_date"
                 class="text-xs font-mono text-gray-500 flex items-center gap-1 mt-1">
                 <template v-if="selectedCert.has_no_expiration || !selectedCert.end_date">
                   <span class="text-[10px] uppercase tracking-wider font-mono font-normal">Issued:</span>
@@ -182,7 +194,8 @@ onMounted(() => {
               </span>
             </div>
 
-            <button @click="closeModal"
+            <button
+              @click="closeModal"
               class="hidden md:block p-1 bg-red-500 hover:bg-red-600 border border-transparent text-white transition-colors rounded-full shrink-0 shadow-sm">
               <Icon icon="mdi:close" class="text-xl" />
             </button>
@@ -191,25 +204,34 @@ onMounted(() => {
           <div class="p-6 overflow-y-auto custom-scrollbar">
             <div
               class="w-full aspect-video bg-gray-50 border border-black/10 rounded-lg mb-6 overflow-hidden flex-shrink-0 flex items-center justify-center p-4">
-              <img loading="lazy" :src="selectedCert?.image_url" :alt="selectedCert?.title" class="w-full h-full object-contain" />
+              <img
+                loading="lazy"
+                :src="selectedCert?.image_url"
+                :alt="selectedCert?.title"
+                class="w-full h-full object-contain" />
             </div>
 
             <h4 class="font-bold font-serif uppercase text-sm mb-3 border-b border-black/20 inline-block">
               Description
             </h4>
-            <div v-html="renderMarkdown(selectedCert?.description)"
+            <div
+              v-html="renderMarkdown(selectedCert?.description)"
               class="markdown-preview font-mono text-sm md:text-base text-gray-700 leading-relaxed"></div>
           </div>
 
           <div class="p-6 border-t border-black/10 bg-gray-50 rounded-b-lg shrink-0">
             <div class="flex flex-col gap-3">
-              <a v-if="selectedCert?.credential_link" :href="selectedCert?.credential_link" target="_blank"
+              <a
+                v-if="selectedCert?.credential_link"
+                :href="selectedCert?.credential_link"
+                target="_blank"
                 class="flex items-center justify-center gap-2 w-full py-3 text-sm font-bold border border-transparent rounded bg-black hover:bg-black/90 text-white dark:bg-white dark:hover:bg-gray-200 dark:!text-black transition-colors shadow-sm">
                 <Icon icon="mdi:certificate-outline" class="text-xl" />
                 Verify Credential
               </a>
 
-              <button @click="closeModal"
+              <button
+                @click="closeModal"
                 class="w-full py-3 text-sm font-bold uppercase tracking-wider text-white bg-red-500 border border-transparent rounded hover:bg-red-600 transition-colors flex items-center justify-center gap-2 shadow-sm">
                 <Icon icon="mdi:close-circle-outline" class="text-xl" />
                 Close Details

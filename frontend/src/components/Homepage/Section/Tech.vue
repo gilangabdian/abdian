@@ -149,12 +149,6 @@ const onLeave = (el, done) => {
           class="header-animate text-4xl font-black text-black mb-6 font-serif tracking-wider inline-block relative border-b border-black/20 pb-2">
           <span class="relative z-10">Tech Stack</span>
         </h2>
-
-        <p
-          class="header-animate mt-4 font-sans text-gray-700 text-sm md:text-base lowercase tracking-tight leading-relaxed">
-          here are the tools and technologies I work with. My current stack is centered around modern front-end
-          frameworks to help me build clean, responsive, and functional web interfaces.
-        </p>
       </div>
 
       <!-- FILTER TABS -->

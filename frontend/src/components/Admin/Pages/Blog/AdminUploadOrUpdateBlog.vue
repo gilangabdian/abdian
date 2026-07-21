@@ -29,14 +29,18 @@ const isPreviewMode = ref(false);
 
 const form = ref({
   title: "",
+  title_en: "",
   content: "",
+  content_en: "",
   is_published: true,
   is_external: false,
   external_url: "",
 });
 
 let editor = null;
+let editorEn = null;
 const imageInput = ref(null);
+const activeTab = ref("id"); // "id" or "en"
 
 const setLink = () => {
   const previousUrl = editor.getAttributes("link").href;
@@ -58,7 +62,9 @@ onMounted(async () => {
       const response = await getSingleBlogAdmin(route.params.id);
       const data = await response.json();
       form.value.title = data.title;
+      form.value.title_en = data.title_en || "";
       form.value.content = data.content || "";
+      form.value.content_en = data.content_en || "";
       form.value.is_published = data.is_published;
       form.value.is_external = data.is_external || false;
       form.value.external_url = data.external_url || "";
@@ -102,12 +108,44 @@ onMounted(async () => {
       },
     },
   });
+
+  editorEn = new Editor({
+    content: form.value.content_en,
+    extensions: [
+      StarterKit.configure({
+        codeBlock: false,
+      }),
+      CodeBlockLowlight.extend({
+        addNodeView() {
+          return VueNodeViewRenderer(CodeBlockComponent);
+        },
+      }).configure({ lowlight }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      ImageResize.configure({
+        inline: false,
+        allowBase64: true,
+      }),
+      Link.configure({ openOnClick: false }),
+      Underline,
+      Highlight.configure({ multicolor: true }),
+      RawHtml,
+    ],
+    onUpdate: () => {
+      form.value.content_en = editorEn.getHTML();
+    },
+    editorProps: {
+      attributes: {
+        class: "prose max-w-none min-h-[300px] outline-none p-4 font-[Inter]",
+      },
+    },
+  });
 });
 
 onBeforeUnmount(() => {
-  if (editor) {
-    editor.destroy();
-  }
+  if (editor) editor.destroy();
+  if (editorEn) editorEn.destroy();
 });
 
 const triggerImageUpload = () => {
@@ -139,7 +177,11 @@ const insertHtmlEmbed = async () => {
   });
 
   if (htmlText) {
-    editor.commands.insertRawHtml(htmlText);
+    if (activeTab.value === 'id') {
+      editor.commands.insertRawHtml(htmlText);
+    } else {
+      editorEn.commands.insertRawHtml(htmlText);
+    }
   }
 };
 
@@ -164,7 +206,11 @@ const handleImageUpload = async (event) => {
     const data = await response.json();
 
     if (response.ok && data.url) {
-      editor.chain().focus().setImage({ src: data.url }).run();
+      if (activeTab.value === 'id') {
+        editor.chain().focus().setImage({ src: data.url }).run();
+      } else {
+        editorEn.chain().focus().setImage({ src: data.url }).run();
+      }
       Swal.close();
     } else {
       throw new Error("Gagal mendapatkan URL gambar");
@@ -250,13 +296,31 @@ watch(isPreviewMode, async (newVal) => {
       v-else-if="!isPreviewMode"
       @submit.prevent="saveBlog"
       class="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] space-y-6">
+      
+      <!-- Language Tabs -->
+      <div class="flex gap-4 border-b-4 border-black pb-2 mb-4">
+        <button type="button" @click="activeTab = 'id'" :class="[activeTab === 'id' ? 'bg-black text-white' : 'bg-gray-200 text-black', 'px-4 py-2 font-bold font-mono border-2 border-black transition-colors']">
+          Bahasa Indonesia
+        </button>
+        <button type="button" @click="activeTab = 'en'" :class="[activeTab === 'en' ? 'bg-black text-white' : 'bg-gray-200 text-black', 'px-4 py-2 font-bold font-mono border-2 border-black transition-colors']">
+          English (Optional)
+        </button>
+      </div>
       <!-- Title -->
-      <div>
-        <label class="block font-bold font-mono mb-2 uppercase text-sm">Blog Title</label>
+      <div v-show="activeTab === 'id'">
+        <label class="block font-bold font-mono mb-2 uppercase text-sm">Blog Title (ID)</label>
         <input
           v-model="form.title"
           type="text"
           placeholder="Cara Belajar Coding dengan Seru..."
+          class="w-full p-3 border-4 border-black text-lg focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all" />
+      </div>
+      <div v-show="activeTab === 'en'">
+        <label class="block font-bold font-mono mb-2 uppercase text-sm">Blog Title (EN)</label>
+        <input
+          v-model="form.title_en"
+          type="text"
+          placeholder="How to Learn Coding the Fun Way..."
           class="w-full p-3 border-4 border-black text-lg focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all" />
       </div>
 
@@ -293,174 +357,74 @@ watch(isPreviewMode, async (newVal) => {
       <!-- Editor Toolbar -->
       <div v-if="!form.is_external">
         <label class="block font-bold font-mono mb-2 uppercase text-sm">Content</label>
-        <div class="border-4 border-black mb-[-4px] relative z-10 bg-gray-100 flex flex-wrap gap-2 p-2" v-if="editor">
-          <button
-            type="button"
-            @click="editor.chain().focus().undo().run()"
-            :disabled="!editor.can().undo()"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded disabled:opacity-30"
-            title="Undo">
-            <Icon icon="lucide:undo" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().redo().run()"
-            :disabled="!editor.can().redo()"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded disabled:opacity-30"
-            title="Redo">
-            <Icon icon="lucide:redo" />
-          </button>
-          <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
-
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleBold().run()"
-            :class="{ 'bg-black text-white': editor.isActive('bold') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Bold">
-            <Icon icon="lucide:bold" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleItalic().run()"
-            :class="{ 'bg-black text-white': editor.isActive('italic') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Italic">
-            <Icon icon="lucide:italic" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleUnderline().run()"
-            :class="{ 'bg-black text-white': editor.isActive('underline') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Underline">
-            <Icon icon="lucide:underline" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleStrike().run()"
-            :class="{ 'bg-black text-white': editor.isActive('strike') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Strikethrough">
-            <Icon icon="lucide:strikethrough" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleHighlight().run()"
-            :class="{ 'bg-black text-white': editor.isActive('highlight') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Highlight">
-            <Icon icon="lucide:highlighter" />
-          </button>
-          <button
-            type="button"
-            @click="setLink"
-            :class="{ 'bg-black text-white': editor.isActive('link') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Insert Link">
-            <Icon icon="lucide:link" />
-          </button>
-          <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-            :class="{ 'bg-black text-white': editor.isActive('heading', { level: 2 }) }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded font-bold font-serif">
-            H2
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-            :class="{ 'bg-black text-white': editor.isActive('heading', { level: 3 }) }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded font-bold font-serif">
-            H3
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleBulletList().run()"
-            :class="{ 'bg-black text-white': editor.isActive('bulletList') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Bullet List">
-            <Icon icon="lucide:list" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleOrderedList().run()"
-            :class="{ 'bg-black text-white': editor.isActive('orderedList') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Numbered List">
-            <Icon icon="lucide:list-ordered" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleBlockquote().run()"
-            :class="{ 'bg-black text-white': editor.isActive('blockquote') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Blockquote">
-            <Icon icon="lucide:quote" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().setHorizontalRule().run()"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Horizontal Rule">
-            <Icon icon="lucide:minus" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().toggleCodeBlock().run()"
-            :class="{ 'bg-black text-white': editor.isActive('codeBlock') }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
-            title="Code Block">
-            <Icon icon="lucide:code" />
-          </button>
-          <button
-            type="button"
-            @click="insertHtmlEmbed"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded text-green-700 hover:bg-green-50 font-bold font-mono"
-            title="Embed HTML/CSS/JS Mentah">
-            <Icon icon="lucide:puzzle" class="inline" /> HTML
-          </button>
-          <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
-
-          <!-- Text Align Buttons -->
-          <button
-            type="button"
-            @click="editor.chain().focus().setTextAlign('left').run()"
-            :class="{ 'bg-black text-white': editor.isActive({ textAlign: 'left' }) }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded">
-            <Icon icon="lucide:align-left" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().setTextAlign('center').run()"
-            :class="{ 'bg-black text-white': editor.isActive({ textAlign: 'center' }) }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded">
-            <Icon icon="lucide:align-center" />
-          </button>
-          <button
-            type="button"
-            @click="editor.chain().focus().setTextAlign('right').run()"
-            :class="{ 'bg-black text-white': editor.isActive({ textAlign: 'right' }) }"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded">
-            <Icon icon="lucide:align-right" />
-          </button>
-          <div class="w-px h-6 bg-gray-400 my-auto mx-2"></div>
-
-          <!-- Image Upload Button -->
-          <button
-            type="button"
-            @click="triggerImageUpload"
-            class="p-2 border-2 border-transparent hover:border-black transition-colors rounded text-blue-600 hover:bg-blue-50"
-            title="Insert Image">
-            <Icon icon="lucide:image-plus" />
-          </button>
-          <input type="file" ref="imageInput" @change="handleImageUpload" accept="image/*" class="hidden" />
+        
+        <!-- Editor ID -->
+        <div v-show="activeTab === 'id'">
+          <div class="border-4 border-black mb-[-4px] relative z-10 bg-gray-100 flex flex-wrap gap-2 p-2" v-if="editor">
+            <!-- Toolbar ID -->
+            <button type="button" @click="editor.chain().focus().undo().run()" :disabled="!editor.can().undo()" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded disabled:opacity-30" title="Undo"><Icon icon="lucide:undo" /></button>
+            <button type="button" @click="editor.chain().focus().redo().run()" :disabled="!editor.can().redo()" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded disabled:opacity-30" title="Redo"><Icon icon="lucide:redo" /></button>
+            <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
+            <button type="button" @click="editor.chain().focus().toggleBold().run()" :class="{ 'bg-black text-white': editor.isActive('bold') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Bold"><Icon icon="lucide:bold" /></button>
+            <button type="button" @click="editor.chain().focus().toggleItalic().run()" :class="{ 'bg-black text-white': editor.isActive('italic') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Italic"><Icon icon="lucide:italic" /></button>
+            <button type="button" @click="editor.chain().focus().toggleUnderline().run()" :class="{ 'bg-black text-white': editor.isActive('underline') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Underline"><Icon icon="lucide:underline" /></button>
+            <button type="button" @click="editor.chain().focus().toggleStrike().run()" :class="{ 'bg-black text-white': editor.isActive('strike') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Strikethrough"><Icon icon="lucide:strikethrough" /></button>
+            <button type="button" @click="editor.chain().focus().toggleHighlight().run()" :class="{ 'bg-black text-white': editor.isActive('highlight') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Highlight"><Icon icon="lucide:highlighter" /></button>
+            <button type="button" @click="setLink" :class="{ 'bg-black text-white': editor.isActive('link') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Insert Link"><Icon icon="lucide:link" /></button>
+            <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
+            <button type="button" @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" :class="{ 'bg-black text-white': editor.isActive('heading', { level: 2 }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded font-bold font-serif">H2</button>
+            <button type="button" @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" :class="{ 'bg-black text-white': editor.isActive('heading', { level: 3 }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded font-bold font-serif">H3</button>
+            <button type="button" @click="editor.chain().focus().toggleBulletList().run()" :class="{ 'bg-black text-white': editor.isActive('bulletList') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Bullet List"><Icon icon="lucide:list" /></button>
+            <button type="button" @click="editor.chain().focus().toggleOrderedList().run()" :class="{ 'bg-black text-white': editor.isActive('orderedList') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Numbered List"><Icon icon="lucide:list-ordered" /></button>
+            <button type="button" @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'bg-black text-white': editor.isActive('blockquote') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Blockquote"><Icon icon="lucide:quote" /></button>
+            <button type="button" @click="editor.chain().focus().setHorizontalRule().run()" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Horizontal Rule"><Icon icon="lucide:minus" /></button>
+            <button type="button" @click="editor.chain().focus().toggleCodeBlock().run()" :class="{ 'bg-black text-white': editor.isActive('codeBlock') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Code Block"><Icon icon="lucide:code" /></button>
+            <button type="button" @click="insertHtmlEmbed" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded text-green-700 hover:bg-green-50 font-bold font-mono" title="Embed HTML/CSS/JS Mentah"><Icon icon="lucide:puzzle" class="inline" /> HTML</button>
+            <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
+            <button type="button" @click="editor.chain().focus().setTextAlign('left').run()" :class="{ 'bg-black text-white': editor.isActive({ textAlign: 'left' }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"><Icon icon="lucide:align-left" /></button>
+            <button type="button" @click="editor.chain().focus().setTextAlign('center').run()" :class="{ 'bg-black text-white': editor.isActive({ textAlign: 'center' }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"><Icon icon="lucide:align-center" /></button>
+            <button type="button" @click="editor.chain().focus().setTextAlign('right').run()" :class="{ 'bg-black text-white': editor.isActive({ textAlign: 'right' }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"><Icon icon="lucide:align-right" /></button>
+            <div class="w-px h-6 bg-gray-400 my-auto mx-2"></div>
+            <button type="button" @click="triggerImageUpload" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded text-blue-600 hover:bg-blue-50" title="Insert Image"><Icon icon="lucide:image-plus" /></button>
+            <input type="file" ref="imageInput" @change="handleImageUpload" accept="image/*" class="hidden" />
+          </div>
+          <div class="border-4 border-black bg-white">
+            <editor-content :editor="editor" />
+          </div>
         </div>
 
-        <!-- Editor Content -->
-        <div class="border-4 border-black bg-white">
-          <editor-content :editor="editor" />
+        <!-- Editor EN -->
+        <div v-show="activeTab === 'en'">
+          <div class="border-4 border-black mb-[-4px] relative z-10 bg-gray-100 flex flex-wrap gap-2 p-2" v-if="editorEn">
+            <!-- Toolbar EN -->
+            <button type="button" @click="editorEn.chain().focus().undo().run()" :disabled="!editorEn.can().undo()" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded disabled:opacity-30" title="Undo"><Icon icon="lucide:undo" /></button>
+            <button type="button" @click="editorEn.chain().focus().redo().run()" :disabled="!editorEn.can().redo()" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded disabled:opacity-30" title="Redo"><Icon icon="lucide:redo" /></button>
+            <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
+            <button type="button" @click="editorEn.chain().focus().toggleBold().run()" :class="{ 'bg-black text-white': editorEn.isActive('bold') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Bold"><Icon icon="lucide:bold" /></button>
+            <button type="button" @click="editorEn.chain().focus().toggleItalic().run()" :class="{ 'bg-black text-white': editorEn.isActive('italic') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Italic"><Icon icon="lucide:italic" /></button>
+            <button type="button" @click="editorEn.chain().focus().toggleUnderline().run()" :class="{ 'bg-black text-white': editorEn.isActive('underline') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Underline"><Icon icon="lucide:underline" /></button>
+            <button type="button" @click="editorEn.chain().focus().toggleStrike().run()" :class="{ 'bg-black text-white': editorEn.isActive('strike') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Strikethrough"><Icon icon="lucide:strikethrough" /></button>
+            <button type="button" @click="editorEn.chain().focus().toggleHighlight().run()" :class="{ 'bg-black text-white': editorEn.isActive('highlight') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Highlight"><Icon icon="lucide:highlighter" /></button>
+            <button type="button" @click="setLink" :class="{ 'bg-black text-white': editorEn.isActive('link') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Insert Link"><Icon icon="lucide:link" /></button>
+            <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
+            <button type="button" @click="editorEn.chain().focus().toggleHeading({ level: 2 }).run()" :class="{ 'bg-black text-white': editorEn.isActive('heading', { level: 2 }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded font-bold font-serif">H2</button>
+            <button type="button" @click="editorEn.chain().focus().toggleHeading({ level: 3 }).run()" :class="{ 'bg-black text-white': editorEn.isActive('heading', { level: 3 }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded font-bold font-serif">H3</button>
+            <button type="button" @click="editorEn.chain().focus().toggleBulletList().run()" :class="{ 'bg-black text-white': editorEn.isActive('bulletList') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Bullet List"><Icon icon="lucide:list" /></button>
+            <button type="button" @click="editorEn.chain().focus().toggleOrderedList().run()" :class="{ 'bg-black text-white': editorEn.isActive('orderedList') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Numbered List"><Icon icon="lucide:list-ordered" /></button>
+            <button type="button" @click="editorEn.chain().focus().toggleBlockquote().run()" :class="{ 'bg-black text-white': editorEn.isActive('blockquote') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Blockquote"><Icon icon="lucide:quote" /></button>
+            <button type="button" @click="editorEn.chain().focus().setHorizontalRule().run()" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Horizontal Rule"><Icon icon="lucide:minus" /></button>
+            <button type="button" @click="editorEn.chain().focus().toggleCodeBlock().run()" :class="{ 'bg-black text-white': editorEn.isActive('codeBlock') }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded" title="Code Block"><Icon icon="lucide:code" /></button>
+            <button type="button" @click="insertHtmlEmbed" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded text-green-700 hover:bg-green-50 font-bold font-mono" title="Embed HTML/CSS/JS Mentah"><Icon icon="lucide:puzzle" class="inline" /> HTML</button>
+            <div class="w-px h-6 bg-gray-400 my-auto mx-1"></div>
+            <button type="button" @click="editorEn.chain().focus().setTextAlign('left').run()" :class="{ 'bg-black text-white': editorEn.isActive({ textAlign: 'left' }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"><Icon icon="lucide:align-left" /></button>
+            <button type="button" @click="editorEn.chain().focus().setTextAlign('center').run()" :class="{ 'bg-black text-white': editorEn.isActive({ textAlign: 'center' }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"><Icon icon="lucide:align-center" /></button>
+            <button type="button" @click="editorEn.chain().focus().setTextAlign('right').run()" :class="{ 'bg-black text-white': editorEn.isActive({ textAlign: 'right' }) }" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded"><Icon icon="lucide:align-right" /></button>
+            <div class="w-px h-6 bg-gray-400 my-auto mx-2"></div>
+            <button type="button" @click="triggerImageUpload" class="p-2 border-2 border-transparent hover:border-black transition-colors rounded text-blue-600 hover:bg-blue-50" title="Insert Image"><Icon icon="lucide:image-plus" /></button>
+          </div>
+          <div class="border-4 border-black bg-white">
+            <editor-content :editor="editorEn" />
+          </div>
         </div>
       </div>
 
@@ -496,11 +460,19 @@ watch(isPreviewMode, async (newVal) => {
     <div
       v-else-if="isPreviewMode"
       class="bg-white border-4 border-black p-6 md:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] space-y-8">
+      <div class="flex gap-4 border-b-4 border-black pb-2 mb-4">
+        <button type="button" @click="activeTab = 'id'" :class="[activeTab === 'id' ? 'bg-black text-white' : 'bg-gray-200 text-black', 'px-4 py-2 font-bold font-mono border-2 border-black transition-colors']">
+          Bahasa Indonesia
+        </button>
+        <button type="button" @click="activeTab = 'en'" :class="[activeTab === 'en' ? 'bg-black text-white' : 'bg-gray-200 text-black', 'px-4 py-2 font-bold font-mono border-2 border-black transition-colors']">
+          English
+        </button>
+      </div>
       <article class="relative mt-8">
         <!-- Title and Meta from SingleBlog -->
         <header class="mb-12">
           <h1 class="text-3xl md:text-5xl font-medium leading-tight mb-4 text-black">
-            {{ form.title || "Untitled Blog" }}
+            {{ activeTab === 'id' ? (form.title || "Untitled Blog") : (form.title_en || "Untitled Blog (EN)") }}
           </h1>
           <div class="flex flex-wrap items-center gap-2 text-sm text-neutral-500">
             <span>
@@ -514,7 +486,7 @@ watch(isPreviewMode, async (newVal) => {
         <!-- Content (Tiptap HTML) -->
         <div
           class="prose prose-neutral prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black prose-a:text-neutral-600 hover:prose-a:text-black prose-a:transition-colors prose-img:rounded-lg prose-img:mx-auto"
-          v-html="form.content"></div>
+          v-html="activeTab === 'id' ? form.content : form.content_en"></div>
       </article>
       <div
         class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-8 border-t-4 border-black mt-12">

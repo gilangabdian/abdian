@@ -57,7 +57,9 @@
                                 "required": ["title", "content"],
                                 "properties": {
                                     "title": {"type": "string"},
+                                    "title_en": {"type": "string", "nullable": true},
                                     "content": {"type": "string", "description": "HTML string from Tiptap"},
+                                    "content_en": {"type": "string", "description": "HTML string in English", "nullable": true},
                                     "is_published": {"type": "boolean"}
                                 }
                             }
@@ -142,7 +144,9 @@
                                 "type": "object",
                                 "properties": {
                                     "title": {"type": "string"},
+                                    "title_en": {"type": "string", "nullable": true},
                                     "content": {"type": "string"},
+                                    "content_en": {"type": "string", "nullable": true},
                                     "is_published": {"type": "boolean"}
                                 }
                             }
