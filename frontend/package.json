@@ -35,7 +35,7 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@prerenderer/renderer-puppeteer": "^1.2.4",
+    "@prerenderer/renderer-jsdom": "^1.1.9",
     "@prerenderer/rollup-plugin": "^0.3.12",
     "@vitejs/plugin-vue": "^6.0.1",
     "vite": "^7.2.4"

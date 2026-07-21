@@ -29,7 +29,7 @@ export default defineConfig(async ({ command }) => {
       // Prerenderer dijalankan untuk mengubah SPA menjadi HTML statis saat di-build (SSG)
       prerenderer({
         routes: prerenderRoutes,
-        renderer: "@prerenderer/renderer-puppeteer",
+        renderer: "@prerenderer/renderer-jsdom",
         server: {
           port: 5173,
           host: "127.0.0.1"
