@@ -40,4 +40,8 @@ return [
         ],
     ],
 
+    'vercel' => [
+        'webhook_url' => env('VERCEL_WEBHOOK_URL'),
+    ],
+
 ];

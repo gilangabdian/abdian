@@ -24,5 +24,23 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }
+
+        // Webhook Trigger untuk Vercel SSG Rebuild
+        $models = [
+            \App\Models\Artwork::class,
+            \App\Models\Blog::class,
+            \App\Models\Certificate::class,
+            \App\Models\Contact::class,
+            \App\Models\Experience::class,
+            \App\Models\Photo::class,
+            \App\Models\Profile::class,
+            \App\Models\Project::class,
+            \App\Models\Skill::class,
+        ];
+
+        foreach ($models as $model) {
+            $model::saved(fn() => \App\Services\VercelWebhookService::trigger());
+            $model::deleted(fn() => \App\Services\VercelWebhookService::trigger());
+        }
     }
 }
