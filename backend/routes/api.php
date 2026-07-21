@@ -39,6 +39,7 @@ Route::get('/blogs', [BlogController::class, 'indexPublic']);
 Route::get('/blogs/{slug}', [BlogController::class, 'showPublic']);
 
 Route::get('/sitemap', [\App\Http\Controllers\SitemapController::class, 'index']);
+Route::get('/prerender-routes', [\App\Http\Controllers\SitemapController::class, 'prerenderRoutes']);
 
 // Show Single (Detail untuk Edit) - TAMBAHKAN INI
 Route::get('/projects/{id}', [ProjectController::class, 'show']);

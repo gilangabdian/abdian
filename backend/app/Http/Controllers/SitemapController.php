@@ -62,4 +62,26 @@ class SitemapController extends Controller
 
         return response($xml, 200)->header('Content-Type', 'text/xml');
     }
+
+    public function prerenderRoutes()
+    {
+        $blogs = Blog::where('is_published', true)->get();
+        
+        $routes = [
+            '/',
+            '/about',
+            '/projects',
+            '/blogs',
+            '/certificates',
+            '/artworks',
+            '/photos',
+            '/contacts'
+        ];
+
+        foreach ($blogs as $blog) {
+            $routes[] = '/blogs/' . $blog->slug;
+        }
+
+        return response()->json($routes);
+    }
 }
