@@ -21,6 +21,8 @@ class UpdateProfileRequest extends FormRequest
             'secondary_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'cv' => 'nullable|mimes:pdf|max:10240', // Max 10MB
             'is_available_for_work' => 'nullable|boolean',
+            'hidden_skill_categories' => 'nullable|array',
+            'hidden_skill_categories.*' => 'string',
         ];
     }
 }

@@ -71,10 +71,11 @@ class SkillApiTest extends TestCase
             'name' => 'React',
             'category' => 'Frontend',
             'identifier' => 'simple-icons:react',
+            'is_active_on_home' => false,
         ]);
 
         $response->assertStatus(201);
-        $this->assertDatabaseHas('skills', ['name' => 'React']);
+        $this->assertDatabaseHas('skills', ['name' => 'React', 'is_active_on_home' => false]);
     }
 
     public function test_admin_can_update_skill()
@@ -86,10 +87,11 @@ class SkillApiTest extends TestCase
             'name' => 'New Name',
             'category' => 'Cloud & DevOps',
             'identifier' => 'simple-icons:new',
+            'is_active_on_home' => false,
         ]);
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('skills', ['name' => 'New Name']);
+        $this->assertDatabaseHas('skills', ['name' => 'New Name', 'is_active_on_home' => false]);
     }
 
     public function test_admin_can_delete_skill()

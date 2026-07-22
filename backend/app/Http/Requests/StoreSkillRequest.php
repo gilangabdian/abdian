@@ -27,7 +27,7 @@ class StoreSkillRequest extends FormRequest
             'identifier' => 'required|string|max:255',
             // Category opsional, disesuaikan dengan kategori UI baru
             'category' => 'nullable|string|in:Frontend,Backend,Cloud & DevOps,Mobile,Databases',
-
+            'is_active_on_home' => 'nullable|boolean',
             // HAPUS BAGIAN INI:
             // 'icon' => 'required|image|mimes:svg,png,jpg,webp|max:1024',
         ];

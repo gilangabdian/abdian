@@ -114,6 +114,14 @@
                                         "type": "string",
                                         "format": "binary",
                                         "description": "File dokumen (pdf)"
+                                    },
+                                    "hidden_skill_categories": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "Array of skill categories to hide on home",
+                                        "example": ["Frontend", "Backend"]
                                     }
                                 }
                             }

@@ -15,9 +15,11 @@ class Profile extends Model
         'photo_path',
         'secondary_image',
         'cv_path',
+        'hidden_skill_categories',
     ];
 
     protected $casts = [
         'is_available_for_work' => 'boolean',
+        'hidden_skill_categories' => 'array',
     ];
 }

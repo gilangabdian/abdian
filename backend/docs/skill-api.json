@@ -58,6 +58,7 @@
                                         "id": 1,
                                         "name": "Laravel",
                                         "identifier": "simple-icons:laravel",
+                                        "is_active_on_home": true,
                                         "created_at": "2025-01-10T10:00:00.000000Z",
                                         "updated_at": "2025-01-10T10:00:00.000000Z"
                                     },
@@ -65,6 +66,7 @@
                                         "id": 2,
                                         "name": "Vue.js",
                                         "identifier": "simple-icons:vuedotjs",
+                                        "is_active_on_home": true,
                                         "created_at": "2025-01-10T10:05:00.000000Z",
                                         "updated_at": "2025-01-10T10:05:00.000000Z"
                                     }
@@ -100,6 +102,10 @@
                                         "type": "string",
                                         "description": "Kode icon dari icon set (misal: simple-icons:react)",
                                         "example": "simple-icons:react"
+                                    },
+                                    "is_active_on_home": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 }
                             }
@@ -296,6 +302,10 @@
                                     "identifier": {
                                         "type": "string",
                                         "example": "simple-icons:react"
+                                    },
+                                    "is_active_on_home": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 }
                             }

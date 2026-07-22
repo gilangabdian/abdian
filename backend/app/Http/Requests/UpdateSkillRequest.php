@@ -25,6 +25,7 @@ class UpdateSkillRequest extends FormRequest
             'name' => 'sometimes|required|string|max:255',
             'identifier' => 'sometimes|required|string',
             'category' => 'sometimes|required|string|in:Frontend,Backend,Cloud & DevOps,Mobile,Databases',
+            'is_active_on_home' => 'sometimes|boolean',
             'icon' => 'nullable|image|mimes:svg,png,jpg,webp|max:1024',
         ];
     }
