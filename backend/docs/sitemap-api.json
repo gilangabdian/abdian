@@ -30,6 +30,34 @@
           }
         }
       }
+    },
+    "/prerender-routes": {
+      "get": {
+        "summary": "Get all frontend routes for prerendering",
+        "description": "Returns a JSON array of all public routes (static and dynamic) to be used by Vite/Puppeteer during the build process for prerendering SSG pages.",
+        "tags": ["Sitemap"],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "example": [
+                  "/",
+                  "/projects/1",
+                  "/projects/2",
+                  "/blogs/my-first-blog"
+                ]
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

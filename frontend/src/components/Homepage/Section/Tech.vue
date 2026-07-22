@@ -12,36 +12,70 @@ const props = defineProps({
     required: true,
     default: () => [],
   },
+  profile: {
+    type: Object,
+    default: null,
+  },
 });
 
-const activeCategory = ref("Frontend");
-const isVisible = ref(false);
+const hiddenCategories = computed(() => props.profile?.about?.hidden_skill_categories || []);
 
-const predefinedOrder = ["Frontend", "Backend", "Mobile", "Cloud & DevOps", "Databases"];
+// Priority:
+// 1. If activeCategory is already set (by user click), use it.
+// 2. Otherwise use default_skill_category if it exists.
+// 3. Otherwise "All" (null).
+const activeCategory = ref(null);
+const isVisible = ref(false);
+const isUserChanged = ref(false);
+
+const handleCategoryClick = (cat) => {
+  activeCategory.value = cat;
+  isUserChanged.value = true;
+};
+
+watch(
+  () => props.profile,
+  (newProfile) => {
+    if (newProfile && !isUserChanged.value) {
+      if (newProfile.about?.default_skill_category) {
+        activeCategory.value = newProfile.about.default_skill_category;
+      } else {
+        activeCategory.value = "All";
+      }
+    }
+  },
+  { immediate: true },
+);
 
 const categories = computed(() => {
   const cats = new Set(props.skills.map((s) => s.category || "Frontend"));
   const uniqueCats = Array.from(cats);
 
-  uniqueCats.sort((a, b) => {
-    const indexA = predefinedOrder.indexOf(a);
-    const indexB = predefinedOrder.indexOf(b);
+  const visibleCats = uniqueCats.filter((cat) => !hiddenCategories.value.includes(cat));
+  
+  const customOrder = props.profile?.about?.skill_categories_order || [];
+
+  visibleCats.sort((a, b) => {
+    const indexA = customOrder.indexOf(a);
+    const indexB = customOrder.indexOf(b);
     if (indexA !== -1 && indexB !== -1) return indexA - indexB;
     if (indexA !== -1) return -1;
     if (indexB !== -1) return 1;
     return a.localeCompare(b);
   });
 
-  return ["All", ...uniqueCats];
+  return visibleCats;
 });
 
 const filteredSkills = computed(() => {
-  if (activeCategory.value === "All") return props.skills;
-  return props.skills.filter((s) => (s.category || "Frontend") === activeCategory.value);
+  const activeSkills = props.skills.filter((s) => s.is_active_on_home !== 0 && s.is_active_on_home !== false);
+
+  if (!activeCategory.value || activeCategory.value === "All") return activeSkills;
+  return activeSkills.filter((s) => (s.category || "Frontend") === activeCategory.value);
 });
 
 const setCategory = (cat) => {
-  activeCategory.value = cat;
+  handleCategoryClick(cat);
 };
 
 // Rotasi acak
@@ -155,6 +189,16 @@ const onLeave = (el, done) => {
       <div
         class="tabs-section flex md:flex-wrap overflow-x-auto hide-scrollbar justify-start md:justify-center gap-3 mb-16 pb-2 snap-x">
         <button
+          @click="setCategory('All')"
+          class="tab-pill shrink-0 snap-center px-5 py-2 rounded-full font-mono text-xs md:text-sm uppercase font-bold transition-all duration-300"
+          :class="
+            activeCategory === 'All'
+              ? 'bg-black text-white'
+              : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-black'
+          ">
+          All
+        </button>
+        <button
           v-for="cat in categories"
           :key="cat"
           @click="setCategory(cat)"
@@ -187,7 +231,14 @@ const onLeave = (el, done) => {
                 class="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-black rounded-full z-20 shadow-sm border border-gray-600"></div>
 
               <div
-                class="bg-white p-3 pb-8 border border-black/20 shadow-sm transition-transform duration-300 hover:scale-105 hover:z-10 hover:shadow-md hover:rotate-0 cursor-default rounded-sm">
+                class="bg-white p-3 pb-8 border border-black/20 shadow-sm transition-transform duration-300 hover:scale-105 hover:z-10 hover:shadow-md hover:rotate-0 cursor-default rounded-sm relative">
+                <!-- Minimalist Note Badge -->
+                <div v-if="skill.note" class="absolute -top-3 -right-2 z-20">
+                  <span class="bg-black text-white text-[9px] md:text-[10px] font-mono font-black px-2 py-1">
+                    {{ skill.note }}
+                  </span>
+                </div>
+
                 <div
                   class="aspect-square bg-gray-50 border border-black/10 mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-white transition-colors rounded-sm">
                   <Icon :icon="skill.identifier" class="w-12 h-12 md:w-14 md:h-14 text-black relative z-10" />

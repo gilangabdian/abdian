@@ -40,6 +40,8 @@ class ProfileApiTest extends TestCase
                 'job_title' => 'New Job',
                 'about_description' => 'New Description', // <--- PERBAIKAN DISINI
                 'bio' => 'New Bio',
+                'hidden_skill_categories' => ['Frontend'],
+                'skill_categories_order' => ['Backend', 'UI/UX', 'Frontend'],
             ]);
 
         $response->assertStatus(200)
@@ -49,6 +51,10 @@ class ProfileApiTest extends TestCase
             'name' => 'New Name',
             'job_title' => 'New Job',
         ]);
+        
+        $profile = Profile::first();
+        $this->assertEquals(['Frontend'], $profile->hidden_skill_categories);
+        $this->assertEquals(['Backend', 'UI/UX', 'Frontend'], $profile->skill_categories_order);
     }
 
     public function test_admin_can_upload_photo_secondary_image_and_cv()

@@ -69,12 +69,19 @@ class SkillApiTest extends TestCase
 
         $response = $this->actingAs($user)->postJson('/api/skills', [
             'name' => 'React',
-            'category' => 'Frontend',
+            'category' => 'Custom UI',
             'identifier' => 'simple-icons:react',
+            'is_active_on_home' => false,
+            'note' => 'Main Stack',
         ]);
 
         $response->assertStatus(201);
-        $this->assertDatabaseHas('skills', ['name' => 'React']);
+        $this->assertDatabaseHas('skills', [
+            'name' => 'React', 
+            'is_active_on_home' => false,
+            'category' => 'Custom UI',
+            'note' => 'Main Stack'
+        ]);
     }
 
     public function test_admin_can_update_skill()
@@ -84,12 +91,19 @@ class SkillApiTest extends TestCase
 
         $response = $this->actingAs($user)->putJson("/api/skills/{$skill->id}", [
             'name' => 'New Name',
-            'category' => 'Cloud & DevOps',
+            'category' => 'Another Custom',
             'identifier' => 'simple-icons:new',
+            'is_active_on_home' => false,
+            'note' => 'Learning',
         ]);
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('skills', ['name' => 'New Name']);
+        $this->assertDatabaseHas('skills', [
+            'name' => 'New Name', 
+            'is_active_on_home' => false,
+            'category' => 'Another Custom',
+            'note' => 'Learning'
+        ]);
     }
 
     public function test_admin_can_delete_skill()
@@ -117,5 +131,81 @@ class SkillApiTest extends TestCase
         $this->assertDatabaseMissing('skills', ['id' => $skill1->id]);
         $this->assertDatabaseMissing('skills', ['id' => $skill2->id]);
         $this->assertDatabaseHas('skills', ['id' => $skill3->id]);
+    }
+
+    public function test_admin_can_reorder_skills()
+    {
+        $user = User::factory()->create();
+        $skill1 = Skill::create(['name' => 'Skill 1', 'identifier' => 's1', 'order_number' => 0]);
+        $skill2 = Skill::create(['name' => 'Skill 2', 'identifier' => 's2', 'order_number' => 1]);
+        $skill3 = Skill::create(['name' => 'Skill 3', 'identifier' => 's3', 'order_number' => 2]);
+
+        $response = $this->actingAs($user)->putJson('/api/skills/reorder', [
+            'ordered_ids' => [$skill3->id, $skill1->id, $skill2->id]
+        ]);
+
+        $response->assertStatus(200);
+        
+        $this->assertDatabaseHas('skills', ['id' => $skill3->id, 'order_number' => 0]);
+        $this->assertDatabaseHas('skills', ['id' => $skill1->id, 'order_number' => 1]);
+        $this->assertDatabaseHas('skills', ['id' => $skill2->id, 'order_number' => 2]);
+    }
+
+    public function test_admin_can_update_category_name()
+    {
+        $user = User::factory()->create();
+        $skill1 = Skill::create(['name' => 'Vue', 'identifier' => 'vue', 'category' => 'OldCategory']);
+        $skill2 = Skill::create(['name' => 'React', 'identifier' => 'react', 'category' => 'OldCategory']);
+        
+        $profile = \App\Models\Profile::create([
+            'name' => 'Admin Name',
+            'job_title' => 'Admin Job',
+            'about_description' => 'About Desc',
+            'hero_description' => 'Hero Desc',
+            'default_skill_category' => 'OldCategory',
+            'hidden_skill_categories' => ['OldCategory', 'OtherCategory']
+        ]);
+
+        $response = $this->actingAs($user)->putJson('/api/skills/categories/OldCategory', [
+            'newName' => 'NewCategory'
+        ]);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('skills', ['id' => $skill1->id, 'category' => 'NewCategory']);
+        $this->assertDatabaseHas('skills', ['id' => $skill2->id, 'category' => 'NewCategory']);
+
+        $profile->refresh();
+        $this->assertEquals('NewCategory', $profile->default_skill_category);
+        $this->assertContains('NewCategory', $profile->hidden_skill_categories);
+        $this->assertNotContains('OldCategory', $profile->hidden_skill_categories);
+    }
+
+    public function test_admin_can_delete_category()
+    {
+        $user = User::factory()->create();
+        $skill1 = Skill::create(['name' => 'Vue', 'identifier' => 'vue', 'category' => 'ToDeleteCategory']);
+        $skill2 = Skill::create(['name' => 'React', 'identifier' => 'react', 'category' => 'ToDeleteCategory']);
+        
+        $profile = \App\Models\Profile::create([
+            'name' => 'Admin Name',
+            'job_title' => 'Admin Job',
+            'about_description' => 'About Desc',
+            'hero_description' => 'Hero Desc',
+            'default_skill_category' => 'ToDeleteCategory',
+            'hidden_skill_categories' => ['ToDeleteCategory', 'OtherCategory']
+        ]);
+
+        $response = $this->actingAs($user)->deleteJson('/api/skills/categories/ToDeleteCategory');
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('skills', ['id' => $skill1->id, 'category' => 'Uncategorized']);
+        $this->assertDatabaseHas('skills', ['id' => $skill2->id, 'category' => 'Uncategorized']);
+
+        $profile->refresh();
+        $this->assertNull($profile->default_skill_category);
+        $this->assertNotContains('ToDeleteCategory', $profile->hidden_skill_categories);
+        $this->assertContains('OtherCategory', $profile->hidden_skill_categories);
     }
 }

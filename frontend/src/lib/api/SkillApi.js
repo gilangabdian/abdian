@@ -60,3 +60,37 @@ export const bulkDeleteSkills = async (token, ids) => {
     body: JSON.stringify({ ids }),
   });
 };
+
+export const reorderSkills = async (token, ordered_ids) => {
+  return await fetch(`${import.meta.env.VITE_APP_PATH}/skills/reorder`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ ordered_ids }),
+  });
+};
+
+export const updateSkillCategory = async (token, oldName, newName) => {
+  return await fetch(`${import.meta.env.VITE_APP_PATH}/skills/categories/${encodeURIComponent(oldName)}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ newName }),
+  });
+};
+
+export const deleteSkillCategory = async (token, categoryName) => {
+  return await fetch(`${import.meta.env.VITE_APP_PATH}/skills/categories/${encodeURIComponent(categoryName)}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+};

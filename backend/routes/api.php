@@ -73,7 +73,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Skills CRUD
     Route::post('/skills/bulk-delete', [SkillController::class, 'bulkDelete']);
+    Route::put('/skills/categories/{oldName}', [SkillController::class, 'updateCategory']);
+    Route::delete('/skills/categories/{categoryName}', [SkillController::class, 'destroyCategory']);
     Route::post('/skills', [SkillController::class, 'store']);
+    Route::put('/skills/reorder', [SkillController::class, 'reorder']);
     Route::put('/skills/{id}', [SkillController::class, 'update']);
     Route::delete('/skills/{id}', [SkillController::class, 'destroy']);
 

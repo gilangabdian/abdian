@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Skill extends Model
 {
-    protected $fillable = ['name', 'identifier', 'category'];
+    protected $fillable = ['name', 'identifier', 'category', 'is_active_on_home', 'order_number', 'note'];
+
+    protected $casts = [
+        'is_active_on_home' => 'boolean',
+    ];
 
     public function projects()
     {

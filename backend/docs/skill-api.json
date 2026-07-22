@@ -58,6 +58,10 @@
                                         "id": 1,
                                         "name": "Laravel",
                                         "identifier": "simple-icons:laravel",
+                                        "category": "Backend",
+                                        "is_active_on_home": true,
+                                        "order_number": 0,
+                                        "note": "Main Stack",
                                         "created_at": "2025-01-10T10:00:00.000000Z",
                                         "updated_at": "2025-01-10T10:00:00.000000Z"
                                     },
@@ -65,6 +69,7 @@
                                         "id": 2,
                                         "name": "Vue.js",
                                         "identifier": "simple-icons:vuedotjs",
+                                        "is_active_on_home": true,
                                         "created_at": "2025-01-10T10:05:00.000000Z",
                                         "updated_at": "2025-01-10T10:05:00.000000Z"
                                     }
@@ -100,6 +105,22 @@
                                         "type": "string",
                                         "description": "Kode icon dari icon set (misal: simple-icons:react)",
                                         "example": "simple-icons:react"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "Frontend"
+                                    },
+                                    "is_active_on_home": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "order_number": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Main Stack"
                                     }
                                 }
                             }
@@ -145,6 +166,50 @@
                             "application/json": {
                                 "example": {
                                     "message": "Unauthenticated."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/skills/reorder": {
+            "put": {
+                "summary": "Reorder Skills (🔒 Admin Only)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "ordered_ids"
+                                ],
+                                "properties": {
+                                    "ordered_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [3, 1, 2]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Reordered",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Skills reordered successfully"
                                 }
                             }
                         }
@@ -296,6 +361,10 @@
                                     "identifier": {
                                         "type": "string",
                                         "example": "simple-icons:react"
+                                    },
+                                    "is_active_on_home": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 }
                             }
@@ -381,6 +450,86 @@
                             "application/json": {
                                 "example": {
                                     "message": "No query results for model [App\\Models\\Skill] 99"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/skills/categories/{oldName}": {
+            "put": {
+                "summary": "Update Category Name (🔒 Admin Only)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "oldName",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "newName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["newName"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category Updated",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Kategori berhasil diubah menjadi New Category"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/skills/categories/{categoryName}": {
+            "delete": {
+                "summary": "Delete Category Name (🔒 Admin Only)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "categoryName",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category Deleted",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Kategori berhasil dihapus dan skill didalamnya dipindahkan ke Uncategorized"
                                 }
                             }
                         }
