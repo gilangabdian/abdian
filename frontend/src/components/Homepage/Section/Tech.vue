@@ -3,6 +3,7 @@ import { onMounted, nextTick, ref, computed, watch } from "vue";
 import { Icon } from "@iconify/vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { getProfile } from "../../../lib/api/ProfileApi";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,8 +15,9 @@ const props = defineProps({
   },
 });
 
-const activeCategory = ref("Frontend");
+const activeCategory = ref(null);
 const isVisible = ref(false);
+const hiddenCategories = ref([]);
 
 const predefinedOrder = ["Frontend", "Backend", "Mobile", "Cloud & DevOps", "Databases"];
 
@@ -23,7 +25,9 @@ const categories = computed(() => {
   const cats = new Set(props.skills.map((s) => s.category || "Frontend"));
   const uniqueCats = Array.from(cats);
 
-  uniqueCats.sort((a, b) => {
+  const visibleCats = uniqueCats.filter(cat => !hiddenCategories.value.includes(cat));
+
+  visibleCats.sort((a, b) => {
     const indexA = predefinedOrder.indexOf(a);
     const indexB = predefinedOrder.indexOf(b);
     if (indexA !== -1 && indexB !== -1) return indexA - indexB;
@@ -32,16 +36,22 @@ const categories = computed(() => {
     return a.localeCompare(b);
   });
 
-  return ["All", ...uniqueCats];
+  return visibleCats;
 });
 
 const filteredSkills = computed(() => {
-  if (activeCategory.value === "All") return props.skills;
-  return props.skills.filter((s) => (s.category || "Frontend") === activeCategory.value);
+  const activeSkills = props.skills.filter(s => s.is_active_on_home !== 0 && s.is_active_on_home !== false);
+  
+  if (!activeCategory.value) return activeSkills;
+  return activeSkills.filter((s) => (s.category || "Frontend") === activeCategory.value);
 });
 
 const setCategory = (cat) => {
-  activeCategory.value = cat;
+  if (activeCategory.value === cat) {
+    activeCategory.value = null; // Toggle off
+  } else {
+    activeCategory.value = cat;
+  }
 };
 
 // Rotasi acak
@@ -57,6 +67,14 @@ const getTranslateClass = (index) => {
 };
 
 onMounted(async () => {
+  try {
+    const res = await getProfile();
+    const data = await res.json();
+    hiddenCategories.value = data.about?.hidden_skill_categories || [];
+  } catch (e) {
+    console.error(e);
+  }
+
   await nextTick();
 
   // Animasi Header
