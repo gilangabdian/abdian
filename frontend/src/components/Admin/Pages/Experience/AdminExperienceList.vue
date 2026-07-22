@@ -231,7 +231,7 @@ const formatDate = (dateString) => {
           <div>
             <label class="block font-bold mb-2 text-sm uppercase">
               Company Name
-              <span class="text-black">*</span>
+              <span class="text-red-500">*</span>
             </label>
             <input
               v-model="form.company_name"
@@ -242,7 +242,7 @@ const formatDate = (dateString) => {
           <div>
             <label class="block font-bold mb-2 text-sm uppercase">
               Role / Job Title
-              <span class="text-black">*</span>
+              <span class="text-red-500">*</span>
             </label>
             <input
               v-model="form.role"
@@ -254,7 +254,7 @@ const formatDate = (dateString) => {
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="relative" ref="dropdownRef">
-            <label class="block font-bold mb-2 text-sm uppercase">Employment Type</label>
+            <label class="block font-bold mb-2 text-sm uppercase">Employment Type <span class="text-red-500">*</span></label>
             <div class="relative z-20">
               <button
                 type="button"
@@ -287,7 +287,7 @@ const formatDate = (dateString) => {
           <div>
             <label class="block font-bold mb-2 text-sm uppercase">
               Location
-              <span class="text-black">*</span>
+              <span class="text-red-500">*</span>
             </label>
             <input
               v-model="form.location"
@@ -301,7 +301,7 @@ const formatDate = (dateString) => {
           <div>
             <label class="block font-bold mb-2 text-sm uppercase">
               Start Date
-              <span class="text-black">*</span>
+              <span class="text-red-500">*</span>
             </label>
             <input
               v-model="form.start_date"
@@ -333,7 +333,7 @@ const formatDate = (dateString) => {
 
         <div>
           <label class="block font-bold mb-2 text-sm uppercase flex justify-between">
-            <span>Description / Achievements (Markdown Supported)</span>
+            <span>Description / Achievements (Markdown Supported) <span class="text-red-500">*</span></span>
             <span class="text-[10px] text-gray-400 capitalize font-mono">use **bold**, *italic*, or - bullets</span>
           </label>
 

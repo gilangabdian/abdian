@@ -308,7 +308,7 @@ watch(isPreviewMode, async (newVal) => {
       </div>
       <!-- Title -->
       <div v-show="activeTab === 'id'">
-        <label class="block font-bold font-mono mb-2 uppercase text-sm">Blog Title (ID)</label>
+        <label class="block font-bold font-mono mb-2 uppercase text-sm">Blog Title (ID) <span class="text-red-500">*</span></label>
         <input
           v-model="form.title"
           type="text"
@@ -316,7 +316,7 @@ watch(isPreviewMode, async (newVal) => {
           class="w-full p-3 border-4 border-black text-lg focus:outline-none focus:ring-4 focus:ring-gray-200 transition-all" />
       </div>
       <div v-show="activeTab === 'en'">
-        <label class="block font-bold font-mono mb-2 uppercase text-sm">Blog Title (EN)</label>
+        <label class="block font-bold font-mono mb-2 uppercase text-sm">Blog Title (EN) <span class="text-red-500">*</span></label>
         <input
           v-model="form.title_en"
           type="text"

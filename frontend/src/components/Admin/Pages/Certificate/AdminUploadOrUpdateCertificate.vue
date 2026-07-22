@@ -204,7 +204,7 @@ const handleSubmit = async () => {
           <div>
             <label class="block font-black mb-2 border-b-2 border-black inline-block text-sm uppercase">
               Certificate Title
-              <span class="text-black">*</span>
+              <span class="text-red-500">*</span>
             </label>
             <input
               v-model="form.title"
@@ -218,7 +218,7 @@ const handleSubmit = async () => {
               <label class="block font-black mb-2 text-xs uppercase flex items-center gap-2">
                 <Icon icon="lucide:building-2" class="text-lg" />
                 Issuer (Penerbit)
-                <span class="text-black">*</span>
+                <span class="text-red-500">*</span>
               </label>
               <input
                 v-model="form.issuer"
@@ -244,7 +244,7 @@ const handleSubmit = async () => {
               <label class="block font-black mb-2 text-xs uppercase flex items-center gap-2">
                 <Icon icon="lucide:calendar" class="text-lg" />
                 Start Date
-                <span class="text-black">*</span>
+                <span class="text-red-500">*</span>
               </label>
               <input
                 v-model="form.start_date"
@@ -256,7 +256,7 @@ const handleSubmit = async () => {
                 <label class="font-black text-xs uppercase flex items-center gap-2">
                   <Icon icon="lucide:calendar-check" class="text-lg" />
                   End Date
-                  <span v-if="!form.has_no_expiration" class="text-black">*</span>
+                  <span v-if="!form.has_no_expiration" class="text-red-500">*</span>
                 </label>
                 <div class="flex items-center gap-2">
                   <input
@@ -360,7 +360,7 @@ const handleSubmit = async () => {
           <div>
             <label class="block font-black mb-2 border-b-2 border-black inline-block text-sm uppercase">
               Certificate Image
-              <span v-if="!isEditMode" class="text-black">*</span>
+              <span v-if="!isEditMode" class="text-red-500">*</span>
             </label>
 
             <div

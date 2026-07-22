@@ -177,7 +177,7 @@ onMounted(fetchContacts);
       <form @submit.prevent="handleSubmit" class="flex flex-col gap-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block font-bold mb-2 border-b-2 border-black inline-block text-sm">PLATFORM NAME</label>
+            <label class="block font-bold mb-2 border-b-2 border-black inline-block text-sm">PLATFORM NAME <span class="text-red-500">*</span></label>
             <input
               v-model="form.platform_name"
               type="text"
@@ -186,7 +186,7 @@ onMounted(fetchContacts);
           </div>
 
           <div>
-            <label class="block font-bold mb-2 border-b-2 border-black inline-block text-sm">LINK / URL</label>
+            <label class="block font-bold mb-2 border-b-2 border-black inline-block text-sm">LINK / URL <span class="text-red-500">*</span></label>
             <input
               v-model="form.url"
               type="text"
@@ -196,7 +196,7 @@ onMounted(fetchContacts);
         </div>
 
         <div>
-          <label class="block font-bold mb-2 border-b-2 border-black inline-block text-sm">ICON CODE (Iconify)</label>
+          <label class="block font-bold mb-2 border-b-2 border-black inline-block text-sm">ICON CODE (Iconify) <span class="text-red-500">*</span></label>
           <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
             <div class="flex-1 w-full flex items-center gap-2">
               <input

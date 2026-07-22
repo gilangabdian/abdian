@@ -26,7 +26,7 @@ class StoreSkillRequest extends FormRequest
             // Identifier wajib string (contoh: 'simple-icons:react')
             'identifier' => 'required|string|max:255',
             // Category custom string, no longer enum restricted
-            'category' => 'nullable|string|max:255',
+            'category' => 'required|string|max:255',
             'is_active_on_home' => 'nullable|boolean',
             'order_number' => 'nullable|integer',
             'note' => 'nullable|string|max:20',

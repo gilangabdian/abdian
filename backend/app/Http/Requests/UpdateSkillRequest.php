@@ -24,7 +24,7 @@ class UpdateSkillRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:255',
             'identifier' => 'sometimes|required|string',
-            'category' => 'sometimes|nullable|string|max:255',
+            'category' => 'sometimes|required|string|max:255',
             'is_active_on_home' => 'sometimes|boolean',
             'order_number' => 'sometimes|nullable|integer',
             'note' => 'sometimes|nullable|string|max:20',

@@ -290,7 +290,7 @@ async function handleSubmit() {
           <div>
             <label class="block font-black mb-2 border-b-2 border-black inline-block text-sm uppercase">
               Project Title
-              <span class="text-black">*</span>
+              <span class="text-red-500">*</span>
             </label>
             <input
               v-model="form.title"
@@ -323,7 +323,7 @@ async function handleSubmit() {
               <label class="block font-black mb-2 text-xs uppercase flex items-center gap-2">
                 <Icon icon="lucide:calendar" class="text-lg" />
                 Start Date
-                <span class="text-black">*</span>
+                <span class="text-red-500">*</span>
               </label>
               <input
                 v-model="form.start_date"
@@ -348,7 +348,7 @@ async function handleSubmit() {
               <label class="block font-black mb-2 text-xs uppercase flex items-center gap-2">
                 <Icon icon="lucide:activity" class="text-lg" />
                 Status
-                <span class="text-black">*</span>
+                <span class="text-red-500">*</span>
               </label>
               <div class="relative z-20">
                 <button
@@ -591,7 +591,7 @@ async function handleSubmit() {
           <div>
             <label class="block font-black mb-2 border-b-2 border-black inline-block text-sm uppercase">
               Thumbnail
-              <span v-if="!isEditMode" class="text-black">*</span>
+              <span v-if="!isEditMode" class="text-red-500">*</span>
               <span v-else class="text-gray-400 text-xs normal-case ml-2">(Biarkan kosong jika tidak diganti)</span>
             </label>
             <div
