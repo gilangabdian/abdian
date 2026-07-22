@@ -100,6 +100,7 @@ const selectTech = (tech) => {
 const profileData = ref(null);
 const hiddenCategories = ref([]);
 const defaultCategory = ref("");
+const categoryTooltips = ref({});
 const customOrderedCategories = ref([]);
 const isCategoryManagerOpen = ref(false);
 const isSavingCategory = ref(false);
@@ -111,6 +112,7 @@ const fetchProfile = async () => {
     profileData.value = data.about;
     hiddenCategories.value = data.about?.hidden_skill_categories || [];
     defaultCategory.value = data.about?.default_skill_category || "";
+    categoryTooltips.value = data.about?.skill_categories_info || {};
     const savedOrder = data.about?.skill_categories_order || [];
     
     // Sinkronisasi order dengan activeCategories agar kategori baru tetap muncul
@@ -340,6 +342,15 @@ const saveCategoryVisibility = async () => {
     });
   }
 
+  // Tambahkan tooltips
+  if (Object.keys(categoryTooltips.value).length === 0) {
+    formData.append("skill_categories_info[]", "");
+  } else {
+    Object.entries(categoryTooltips.value).forEach(([cat, tooltip]) => {
+      formData.append(`skill_categories_info[${cat}]`, tooltip);
+    });
+  }
+
   try {
     const res = await saveProfile(token.value, formData);
     if (res.ok) {
@@ -374,6 +385,15 @@ const editCategoryName = async (oldCatName) => {
   } catch (e) {
     console.error(e);
     alertError("Terjadi kesalahan sistem");
+  }
+};
+
+const editCategoryTooltip = async (catName) => {
+  const currentTooltip = categoryTooltips.value[catName] || "";
+  const newTooltip = await alertPrompt(`Edit tooltip untuk kategori "${catName}":`, currentTooltip);
+  
+  if (newTooltip !== null && newTooltip !== undefined) {
+    categoryTooltips.value[catName] = newTooltip.trim();
   }
 };
 
@@ -528,7 +548,7 @@ const deleteCategory = async (catName) => {
         </div>
 
         <div class="w-full md:flex-[0.8]">
-          <label class="block font-bold mb-2 border-b-2 border-black inline-block">CATEGORY</label>
+          <label class="block font-bold mb-2 border-b-2 border-black inline-block">CATEGORY <span class="text-red-500">*</span></label>
           <input
             v-model="form.category"
             list="categories-list"
@@ -723,13 +743,23 @@ const deleteCategory = async (catName) => {
                   <div class="drag-handle cursor-grab active:cursor-grabbing text-gray-400 hover:text-black transition-colors" title="Drag to reorder">
                     <Icon icon="lucide:grip-vertical" width="16" />
                   </div>
-                  <span class="font-bold font-mono">{{ cat }}</span>
+                  <div class="flex flex-col">
+                    <span class="font-bold font-mono leading-tight">{{ cat }}</span>
+                    <span v-if="categoryTooltips[cat]" class="text-[10px] text-gray-500 font-mono leading-tight max-w-[150px] truncate" :title="categoryTooltips[cat]">{{ categoryTooltips[cat] }}</span>
+                  </div>
                   <button 
                     @click.stop="editCategoryName(cat)" 
                     class="text-gray-500 hover:text-black hover:scale-110 transition-all"
                     title="Edit Kategori"
                   >
                     <Icon icon="lucide:edit" width="16" />
+                  </button>
+                  <button 
+                    @click.stop="editCategoryTooltip(cat)" 
+                    class="text-blue-500 hover:text-blue-700 hover:scale-110 transition-all"
+                    title="Edit Tooltip Kategori"
+                  >
+                    <Icon icon="lucide:info" width="16" />
                   </button>
                   <button 
                     @click.stop="deleteCategory(cat)" 

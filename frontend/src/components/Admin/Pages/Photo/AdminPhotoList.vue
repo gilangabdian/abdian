@@ -156,7 +156,7 @@ onMounted(() => {
       <h2 class="text-xl font-bold font-mono border-b-2 border-black pb-2 mb-4">Upload New Photo</h2>
       <div class="flex flex-col md:flex-row gap-6 items-start">
         <div class="w-full md:w-1/2">
-          <label class="block font-bold font-mono mb-2">Select Image</label>
+          <label class="block font-bold font-mono mb-2">Select Image <span class="text-red-500">*</span></label>
           <input
             type="file"
             ref="fileInput"

@@ -269,7 +269,7 @@ onMounted(() => {
 
           <div class="md:col-span-2 space-y-5">
             <div>
-              <label class="block font-bold uppercase mb-2">Full Name</label>
+              <label class="block font-bold uppercase mb-2">Full Name <span class="text-red-500">*</span></label>
               <input
                 v-model="form.name"
                 type="text"
@@ -278,7 +278,7 @@ onMounted(() => {
                 placeholder="Ex: Gilang Ages" />
             </div>
             <div>
-              <label class="block font-bold uppercase mb-2">Job Title / Role</label>
+              <label class="block font-bold uppercase mb-2">Job Title / Role <span class="text-red-500">*</span></label>
               <input
                 v-model="form.job_title"
                 type="text"
@@ -301,7 +301,7 @@ onMounted(() => {
               </label>
             </div>
             <div>
-              <label class="block font-bold uppercase mb-2">About Description</label>
+              <label class="block font-bold uppercase mb-2">About Description <span class="text-red-500">*</span></label>
               <textarea
                 v-model="form.about_description"
                 rows="5"

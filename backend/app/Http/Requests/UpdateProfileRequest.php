@@ -26,6 +26,8 @@ class UpdateProfileRequest extends FormRequest
             'default_skill_category' => 'nullable|string',
             'skill_categories_order' => 'nullable|array',
             'skill_categories_order.*' => 'nullable|string',
+            'skill_categories_info' => 'nullable|array',
+            'skill_categories_info.*' => 'nullable|string',
         ];
     }
 

@@ -18,11 +18,13 @@ class Profile extends Model
         'hidden_skill_categories',
         'default_skill_category',
         'skill_categories_order',
+        'skill_categories_info',
     ];
 
     protected $casts = [
         'is_available_for_work' => 'boolean',
         'hidden_skill_categories' => 'array',
         'skill_categories_order' => 'array',
+        'skill_categories_info' => 'array',
     ];
 }

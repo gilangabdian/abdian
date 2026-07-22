@@ -39,8 +39,8 @@ watch(
     if (newProfile && !isUserChanged.value) {
       if (newProfile.about?.default_skill_category) {
         activeCategory.value = newProfile.about.default_skill_category;
-      } else {
-        activeCategory.value = "All";
+      } else if (categories.value.length > 0) {
+        activeCategory.value = categories.value[0];
       }
     }
   },
@@ -52,7 +52,7 @@ const categories = computed(() => {
   const uniqueCats = Array.from(cats);
 
   const visibleCats = uniqueCats.filter((cat) => !hiddenCategories.value.includes(cat));
-  
+
   const customOrder = props.profile?.about?.skill_categories_order || [];
 
   visibleCats.sort((a, b) => {
@@ -70,7 +70,7 @@ const categories = computed(() => {
 const filteredSkills = computed(() => {
   const activeSkills = props.skills.filter((s) => s.is_active_on_home !== 0 && s.is_active_on_home !== false);
 
-  if (!activeCategory.value || activeCategory.value === "All") return activeSkills;
+  if (!activeCategory.value) return activeSkills;
   return activeSkills.filter((s) => (s.category || "Frontend") === activeCategory.value);
 });
 
@@ -187,29 +187,34 @@ const onLeave = (el, done) => {
 
       <!-- FILTER TABS -->
       <div
-        class="tabs-section flex md:flex-wrap overflow-x-auto hide-scrollbar justify-start md:justify-center gap-3 mb-16 pb-2 snap-x">
-        <button
-          @click="setCategory('All')"
-          class="tab-pill shrink-0 snap-center px-5 py-2 rounded-full font-mono text-xs md:text-sm uppercase font-bold transition-all duration-300"
-          :class="
-            activeCategory === 'All'
-              ? 'bg-black text-white'
-              : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-black'
-          ">
-          All
-        </button>
-        <button
+        class="tabs-section flex md:flex-wrap overflow-x-auto hide-scrollbar justify-start md:justify-center gap-3 mb-16 pt-16 pb-2 snap-x -mt-16">
+        <div
           v-for="cat in categories"
           :key="cat"
-          @click="setCategory(cat)"
-          class="tab-pill shrink-0 snap-center px-5 py-2 rounded-full font-mono text-xs md:text-sm uppercase font-bold transition-all duration-300"
-          :class="
-            activeCategory === cat
-              ? 'bg-black text-white'
-              : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-black'
-          ">
-          {{ cat }}
-        </button>
+          class="shrink-0 snap-center flex items-center justify-center relative hover:z-50">
+          <button
+            @click="setCategory(cat)"
+            class="tab-pill px-5 py-2 rounded-full font-mono text-xs md:text-sm uppercase font-bold transition-all duration-300 flex items-center gap-2"
+            :class="
+              activeCategory === cat
+                ? 'bg-black dark:bg-white dark:text-black text-white'
+                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-100/50 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-black dark:hover:text-white'
+            ">
+            {{ cat }}
+
+            <div class="relative group flex items-center justify-center">
+              <Icon icon="lucide:info" class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
+              <!-- Tooltip -->
+              <div
+                v-if="profile?.about?.skill_categories_info && profile.about.skill_categories_info[cat]"
+                class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max max-w-xs bg-neutral-700 dark:bg-neutral-400 text-white dark:text-black text-[10px] md:text-xs px-3 py-1.5 rounded-md font-sans opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 z-50 shadow-xl text-center leading-tight normal-case cursor-default">
+                {{ profile.about.skill_categories_info[cat] }}
+                <div
+                  class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-neutral-700 dark:bg-neutral-400 rotate-45"></div>
+              </div>
+            </div>
+          </button>
+        </div>
       </div>
 
       <!-- CARDS LIST -->
@@ -228,20 +233,21 @@ const onLeave = (el, done) => {
               class="polaroid-card relative group w-[45%] md:w-[28%] lg:w-[16%] max-w-[180px]"
               :class="[getRotationClass(index), getTranslateClass(index)]">
               <div
-                class="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-black rounded-full z-20 shadow-sm border border-gray-600"></div>
+                class="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-100 rounded-full z-20 shadow-sm border border-gray-600"></div>
 
               <div
                 class="bg-white p-3 pb-8 border border-black/20 shadow-sm transition-transform duration-300 hover:scale-105 hover:z-10 hover:shadow-md hover:rotate-0 cursor-default rounded-sm relative">
-                <!-- Minimalist Note Badge -->
-                <div v-if="skill.note" class="absolute -top-3 -right-2 z-20">
-                  <span class="bg-black text-white text-[9px] md:text-[10px] font-mono font-black px-2 py-1">
-                    {{ skill.note }}
-                  </span>
-                </div>
-
                 <div
                   class="aspect-square bg-gray-50 border border-black/10 mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-white transition-colors rounded-sm">
                   <Icon :icon="skill.identifier" class="w-12 h-12 md:w-14 md:h-14 text-black relative z-10" />
+
+                  <!-- Minimalist Note Badge -->
+                  <div v-if="skill.note" class="absolute bottom-1 right-1 z-20">
+                    <span
+                      class="text-neutral-600 dark:text-neutral-300 bg-neutral-200 dark:bg-neutral-700/90 border border-neutral-200/50 dark:border-neutral-700/50 backdrop-blur-sm text-[8px] md:text-[9px] font-mono px-1.5 py-0.5 rounded-sm">
+                      {{ skill.note }}
+                    </span>
+                  </div>
                 </div>
 
                 <div class="text-center">
