@@ -19,6 +19,12 @@ class ProfileController extends Controller
         // 1. Ambil data teks
         $data = $request->safe()->except(['photo_path', 'cv', 'secondary_image']);
 
+        if (isset($data['hidden_skill_categories']) && is_array($data['hidden_skill_categories'])) {
+            $data['hidden_skill_categories'] = array_values(array_filter($data['hidden_skill_categories'], function($val) {
+                return $val !== null;
+            }));
+        }
+
         // 2. Ambil Profile atau Siapkan Instance Baru
         // PENTING: Gunakan firstOrNew.
         // Ini TIDAK menyimpan ke DB dulu, jadi aman dari error "Field 'name' doesn't have a default value"

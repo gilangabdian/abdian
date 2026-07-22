@@ -22,7 +22,16 @@ class UpdateProfileRequest extends FormRequest
             'cv' => 'nullable|mimes:pdf|max:10240', // Max 10MB
             'is_available_for_work' => 'nullable|boolean',
             'hidden_skill_categories' => 'nullable|array',
-            'hidden_skill_categories.*' => 'string',
+            'hidden_skill_categories.*' => 'nullable|string',
+            'default_skill_category' => 'nullable|string',
+            'skill_categories_order' => 'nullable|array',
+            'skill_categories_order.*' => 'nullable|string',
         ];
+    }
+
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        \Illuminate\Support\Facades\Log::error('Profile Validation Failed', $validator->errors()->toArray());
+        parent::failedValidation($validator);
     }
 }

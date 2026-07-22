@@ -13,7 +13,7 @@ class SkillController extends Controller
     use ImageUploadTrait;
     public function index()
     {
-        return response()->json(Skill::all());
+        return response()->json(Skill::orderBy('order_number', 'asc')->get());
     }
 
     public function store(StoreSkillRequest $request)
@@ -80,6 +80,103 @@ class SkillController extends Controller
 
         return response()->json([
             'message' => 'Skills deleted successfully'
+        ]);
+    }
+
+    public function reorder(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'ordered_ids' => 'required|array',
+            'ordered_ids.*' => 'integer|exists:skills,id'
+        ]);
+
+        $ids = $request->ordered_ids;
+        // Kita loop melalui ID, lalu set order_number berdasarkan posisi index-nya.
+        // Array yang dikirim frontend sudah berurutan dari 0, 1, 2, ...
+        foreach ($ids as $index => $id) {
+            Skill::where('id', $id)->update(['order_number' => $index]);
+        }
+
+        return response()->json([
+            'message' => 'Skills reordered successfully'
+        ]);
+    }
+
+    public function updateCategory(\Illuminate\Http\Request $request, $oldName)
+    {
+        $request->validate([
+            'newName' => 'required|string|max:255'
+        ]);
+
+        $newName = $request->newName;
+
+        // Update di tabel skills
+        Skill::where('category', $oldName)->update(['category' => $newName]);
+
+        // Cek dan update Profile jika kategori ini di-hidden atau jadi default
+        $profile = \App\Models\Profile::first();
+        if ($profile) {
+            $changed = false;
+            
+            if ($profile->default_skill_category === $oldName) {
+                $profile->default_skill_category = $newName;
+                $changed = true;
+            }
+
+            if (is_array($profile->hidden_skill_categories)) {
+                $hidden = $profile->hidden_skill_categories;
+                $index = array_search($oldName, $hidden);
+                if ($index !== false) {
+                    $hidden[$index] = $newName;
+                    $profile->hidden_skill_categories = $hidden;
+                    $changed = true;
+                }
+            }
+
+            if ($changed) {
+                $profile->save();
+            }
+        }
+
+        return response()->json([
+            'message' => 'Kategori berhasil diubah menjadi ' . $newName
+        ]);
+    }
+
+    public function destroyCategory($categoryName)
+    {
+        // 1. Update skills that have this category to 'Uncategorized'
+        Skill::where('category', $categoryName)->update(['category' => 'Uncategorized']);
+
+        // 2. Clean up Profile
+        $profile = \App\Models\Profile::first();
+        if ($profile) {
+            $changed = false;
+            
+            // Remove from default if it was the default
+            if ($profile->default_skill_category === $categoryName) {
+                $profile->default_skill_category = null;
+                $changed = true;
+            }
+
+            // Remove from hidden if it was hidden
+            if (is_array($profile->hidden_skill_categories)) {
+                $hidden = $profile->hidden_skill_categories;
+                $index = array_search($categoryName, $hidden);
+                if ($index !== false) {
+                    unset($hidden[$index]);
+                    $profile->hidden_skill_categories = array_values($hidden);
+                    $changed = true;
+                }
+            }
+
+            if ($changed) {
+                $profile->save();
+            }
+        }
+
+        return response()->json([
+            'message' => 'Kategori berhasil dihapus dan skill didalamnya dipindahkan ke Uncategorized'
         ]);
     }
 }

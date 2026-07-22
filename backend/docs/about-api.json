@@ -127,6 +127,19 @@
                                         },
                                         "description": "Array of skill categories to hide on home",
                                         "example": ["Frontend", "Backend"]
+                                    },
+                                    "default_skill_category": {
+                                        "type": "string",
+                                        "description": "Default category to show on Home Tech section",
+                                        "example": "Frontend"
+                                    },
+                                    "skill_categories_order": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "Custom order of skill categories on the Home Tech section",
+                                        "example": ["Frontend", "Backend", "UI/UX"]
                                     }
                                 }
                             }

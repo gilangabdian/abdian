@@ -16,6 +16,19 @@ export const alertError = async (message) => {
   });
 };
 
+export const alertPrompt = async (title, placeholder = "") => {
+  const result = await Swal.fire({
+    title: title,
+    input: "text",
+    inputPlaceholder: placeholder,
+    showCancelButton: true,
+    confirmButtonColor: "#000",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Simpan",
+  });
+  return result.isConfirmed ? result.value : null;
+};
+
 export const alertConfirm = async (message) => {
   const result = await Swal.fire({
     title: "Hapus Skill?",

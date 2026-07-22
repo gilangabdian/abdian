@@ -2,9 +2,10 @@
 import { ref, onMounted, reactive, computed, nextTick } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import { Icon } from "@iconify/vue";
-import { getSkills, addSkill, deleteSkill, updateSkill, bulkDeleteSkills } from "../../../../lib/api/SkillApi";
+import draggable from "vuedraggable";
+import { getSkills, addSkill, deleteSkill, updateSkill, bulkDeleteSkills, reorderSkills, updateSkillCategory, deleteSkillCategory } from "../../../../lib/api/SkillApi";
 import { getProfile, saveProfile } from "../../../../lib/api/ProfileApi";
-import { alertSuccess, alertError, alertConfirm } from "../../../../lib/alert";
+import { alertSuccess, alertError, alertConfirm, alertPrompt } from "../../../../lib/alert";
 
 const token = useLocalStorage("token", "");
 const skills = ref([]);
@@ -59,29 +60,29 @@ const categorizedTech = {
 };
 
 const isLibraryOpen = ref(false);
-const form = reactive({ name: "", identifier: "", category: "Frontend", is_active_on_home: true });
+const form = reactive({ name: "", identifier: "", category: "Frontend", is_active_on_home: true, note: "" });
 const showSuggestions = ref(false);
 
-const categories = ["Frontend", "Backend", "Cloud & DevOps", "Mobile", "Databases"];
+const formCategories = computed(() => {
+  const cats = new Set(["Frontend", "Backend", "Cloud & DevOps", "Mobile", "Databases"]);
+  skills.value.forEach(s => {
+    if (s.category && s.category !== 'Uncategorized') cats.add(s.category);
+  });
+  return Array.from(cats);
+});
+
+const activeCategories = computed(() => {
+  const cats = new Set();
+  skills.value.forEach(s => {
+    if (s.category && s.category !== 'Uncategorized') cats.add(s.category);
+  });
+  return Array.from(cats);
+});
+
+const notesList = ["Main Stack", "Familiar", "Learning"];
 
 // Computed untuk mengelompokkan skills berdasarkan kategori
-const groupedSkills = computed(() => {
-  const groups = {};
-  skills.value.forEach((skill) => {
-    const cat = skill.category || "Frontend";
-    if (!groups[cat]) groups[cat] = [];
-    groups[cat].push(skill);
-  });
-  // Sort keys based on predefined categories order, put missing ones at the end
-  const sortedGroups = {};
-  categories.forEach(cat => {
-    if (groups[cat]) sortedGroups[cat] = groups[cat];
-  });
-  Object.keys(groups).forEach(cat => {
-    if (!sortedGroups[cat]) sortedGroups[cat] = groups[cat];
-  });
-  return sortedGroups;
-});
+const groupedSkills = ref({});
 
 // Logic pencarian (flatten data kategori menjadi array biasa untuk suggestion)
 const filteredSuggestions = computed(() => {
@@ -98,6 +99,8 @@ const selectTech = (tech) => {
 
 const profileData = ref(null);
 const hiddenCategories = ref([]);
+const defaultCategory = ref("");
+const customOrderedCategories = ref([]);
 const isCategoryManagerOpen = ref(false);
 const isSavingCategory = ref(false);
 
@@ -107,6 +110,14 @@ const fetchProfile = async () => {
     const data = await res.json();
     profileData.value = data.about;
     hiddenCategories.value = data.about?.hidden_skill_categories || [];
+    defaultCategory.value = data.about?.default_skill_category || "";
+    const savedOrder = data.about?.skill_categories_order || [];
+    
+    // Sinkronisasi order dengan activeCategories agar kategori baru tetap muncul
+    const allActive = activeCategories.value;
+    const ordered = savedOrder.filter(cat => allActive.includes(cat));
+    const newCats = allActive.filter(cat => !ordered.includes(cat));
+    customOrderedCategories.value = [...ordered, ...newCats];
   } catch (e) {
     console.error(e);
   }
@@ -118,6 +129,23 @@ const fetchData = async () => {
     const response = await getSkills();
     const responseBody = await response.json();
     skills.value = responseBody.data || responseBody;
+    
+    // Build groupedSkills manually to allow mutation via draggable
+    const groups = {};
+    skills.value.forEach((skill) => {
+      const cat = skill.category || "Frontend";
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(skill);
+    });
+    const sortedGroups = {};
+    formCategories.value.forEach(cat => {
+      if (groups[cat]) sortedGroups[cat] = groups[cat];
+    });
+    Object.keys(groups).forEach(cat => {
+      if (!sortedGroups[cat]) sortedGroups[cat] = groups[cat];
+    });
+    groupedSkills.value = sortedGroups;
+    
   } catch (error) {
     console.error(error);
   } finally {
@@ -125,9 +153,9 @@ const fetchData = async () => {
   }
 };
 
-onMounted(() => {
-  fetchData();
-  fetchProfile();
+onMounted(async () => {
+  await fetchData();
+  await fetchProfile();
 });
 
 const startEdit = (skill) => {
@@ -137,6 +165,7 @@ const startEdit = (skill) => {
   form.identifier = skill.identifier;
   form.category = skill.category || "Frontend";
   form.is_active_on_home = skill.is_active_on_home ?? true;
+  form.note = skill.note || "";
 
   nextTick(() => {
     if (formTopRef.value) {
@@ -155,6 +184,7 @@ const cancelEdit = () => {
   form.identifier = "";
   form.category = "Frontend";
   form.is_active_on_home = true;
+  form.note = "";
 };
 
 const handleSubmit = async () => {
@@ -166,7 +196,7 @@ const handleSubmit = async () => {
   try {
     let response;
     if (isEditing.value) {
-      const payload = { name: form.name, identifier: form.identifier, category: form.category, is_active_on_home: form.is_active_on_home };
+      const payload = { name: form.name, identifier: form.identifier, category: form.category, is_active_on_home: form.is_active_on_home, note: form.note };
       response = await updateSkill(token.value, editId.value, payload);
     } else {
       const formData = new FormData();
@@ -174,6 +204,7 @@ const handleSubmit = async () => {
       formData.append("identifier", form.identifier);
       formData.append("category", form.category);
       formData.append("is_active_on_home", form.is_active_on_home ? "1" : "0");
+      formData.append("note", form.note);
       response = await addSkill(token.value, formData);
     }
 
@@ -190,6 +221,16 @@ const handleSubmit = async () => {
     alertError("Terjadi kesalahan sistem");
   } finally {
     isSubmitting.value = false;
+  }
+};
+
+const onDragEnd = async () => {
+  const orderedIds = Object.values(groupedSkills.value).flat().map(skill => skill.id);
+  try {
+    await reorderSkills(token.value, orderedIds);
+  } catch (error) {
+    console.error("Failed to save new order", error);
+    alertError("Failed to save new order");
   }
 };
 
@@ -280,15 +321,22 @@ const saveCategoryVisibility = async () => {
   formData.append("name", profileData.value.name);
   formData.append("job_title", profileData.value.job_title);
   formData.append("about_description", profileData.value.about_description);
+  formData.append("default_skill_category", defaultCategory.value);
   
   if (hiddenCategories.value.length === 0) {
-    // If empty, append a special empty array so backend clears it
-    // Wait, in Laravel, an empty array in FormData is tricky. We'll send an empty string for array item to clear?
-    // Actually, we can just send it normally, but if empty, don't append it, or we append it as empty array.
     formData.append("hidden_skill_categories[]", "");
   } else {
     hiddenCategories.value.forEach((cat) => {
       formData.append("hidden_skill_categories[]", cat);
+    });
+  }
+
+  // Tambahkan urutan custom ke formData
+  if (customOrderedCategories.value.length === 0) {
+    formData.append("skill_categories_order[]", "");
+  } else {
+    customOrderedCategories.value.forEach((cat) => {
+      formData.append("skill_categories_order[]", cat);
     });
   }
 
@@ -305,6 +353,48 @@ const saveCategoryVisibility = async () => {
     alertError("Terjadi kesalahan");
   } finally {
     isSavingCategory.value = false;
+  }
+};
+
+const editCategoryName = async (oldCatName) => {
+  const newName = await alertPrompt(`Edit nama kategori '${oldCatName}'`, oldCatName);
+  if (!newName || newName.trim() === "" || newName === oldCatName) return;
+
+  try {
+    const res = await updateSkillCategory(token.value, oldCatName, newName);
+    const data = await res.json();
+    if (res.ok) {
+      await alertSuccess(data.message || "Kategori berhasil diubah");
+      // Refresh data
+      await fetchData();
+      await fetchProfile();
+    } else {
+      await alertError(data.message || "Gagal mengubah kategori");
+    }
+  } catch (e) {
+    console.error(e);
+    alertError("Terjadi kesalahan sistem");
+  }
+};
+
+const deleteCategory = async (catName) => {
+  if (!(await alertConfirm(`Yakin ingin menghapus kategori '${catName}'? Semua skill di dalamnya akan dipindahkan ke kategori 'Uncategorized'.`))) {
+    return;
+  }
+  
+  try {
+    const res = await deleteSkillCategory(token.value, catName);
+    const data = await res.json();
+    if (res.ok) {
+      await alertSuccess(data.message || "Kategori berhasil dihapus");
+      await fetchData();
+      await fetchProfile();
+    } else {
+      await alertError(data.message || "Gagal menghapus kategori");
+    }
+  } catch (e) {
+    console.error(e);
+    alertError("Terjadi kesalahan sistem");
   }
 };
 </script>
@@ -393,7 +483,7 @@ const saveCategoryVisibility = async () => {
 
       <form @submit.prevent="handleSubmit" class="flex flex-col md:flex-row gap-6 items-start">
         <div class="w-full md:flex-1 relative">
-          <label class="block font-bold mb-2 border-b-2 border-black inline-block">TECH NAME</label>
+          <label class="block font-bold mb-2 border-b-2 border-black inline-block">TECH NAME <span class="text-red-500">*</span></label>
           <input
             v-model="form.name"
             @focus="showSuggestions = true"
@@ -417,7 +507,7 @@ const saveCategoryVisibility = async () => {
         </div>
 
         <div class="w-full md:flex-1">
-          <label class="block font-bold mb-2 border-b-2 border-black inline-block">ICON CODE (AUTO)</label>
+          <label class="block font-bold mb-2 border-b-2 border-black inline-block">ICON CODE (AUTO) <span class="text-red-500">*</span></label>
           <div class="flex items-center gap-2">
             <input
               v-model="form.identifier"
@@ -439,11 +529,27 @@ const saveCategoryVisibility = async () => {
 
         <div class="w-full md:flex-[0.8]">
           <label class="block font-bold mb-2 border-b-2 border-black inline-block">CATEGORY</label>
-          <select
+          <input
             v-model="form.category"
-            class="w-full p-4 border-2 border-black font-mono focus:bg-gray-100 focus:outline-none transition-colors appearance-none bg-white rounded-none">
-            <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
-          </select>
+            list="categories-list"
+            class="w-full p-4 border-2 border-black font-mono focus:bg-gray-100 focus:outline-none transition-colors bg-white rounded-none"
+            placeholder="Pilih/ketik kategori"
+          />
+          <datalist id="categories-list">
+            <option v-for="cat in formCategories" :key="cat" :value="cat">{{ cat }}</option>
+          </datalist>
+
+          <label class="block font-bold mt-4 mb-2 border-b-2 border-black inline-block">PROFICIENCY/NOTE (Max 20)</label>
+          <input
+            v-model="form.note"
+            list="notes-list"
+            maxlength="20"
+            class="w-full p-4 border-2 border-black font-mono focus:bg-gray-100 focus:outline-none transition-colors bg-white rounded-none"
+            placeholder="e.g. Main Stack"
+          />
+          <datalist id="notes-list">
+            <option v-for="note in notesList" :key="note" :value="note">{{ note }}</option>
+          </datalist>
           
           <div class="mt-4 flex items-center gap-2 border-2 border-black p-3 bg-yellow-50 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
             <input type="checkbox" id="isActiveOnHome" v-model="form.is_active_on_home" class="w-5 h-5 accent-black" />
@@ -492,34 +598,46 @@ const saveCategoryVisibility = async () => {
         <div v-for="(items, categoryName) in groupedSkills" :key="categoryName" class="mb-12">
           <h3 class="font-black text-xl mb-4 uppercase border-b-4 border-black pb-1 inline-block">{{ categoryName }}</h3>
           
-          <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            <div
-              v-for="skill in items"
-              :key="skill.id"
-              @click="toggleSelection(skill.id)"
-              :class="[
-                'group relative bg-white border-2 border-black flex flex-col items-center hover:-translate-y-1 transition-all duration-200',
-                isSelectMode ? 'cursor-pointer' : '',
-                selectedIds.includes(skill.id) ? 'bg-gray-100 shadow-none translate-y-1' : 'shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
-              ]">
-              
-              <!-- Checkbox (Only visible in select mode) -->
-              <div v-if="isSelectMode" class="absolute top-2 left-2 z-10">
-                <div 
-                  :class="[
-                    'w-6 h-6 border-2 border-black flex items-center justify-center transition-colors',
-                    selectedIds.includes(skill.id) ? 'bg-black text-white' : 'bg-white text-transparent'
-                  ]">
-                  <Icon icon="lucide:check" width="16" stroke-width="4" />
+          <draggable 
+            v-model="groupedSkills[categoryName]" 
+            group="skills" 
+            item-key="id" 
+            class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6"
+            @end="onDragEnd"
+          >
+            <template #item="{element: skill}">
+              <div
+                @click="toggleSelection(skill.id)"
+                :class="[
+                  'group relative bg-white border-2 border-black flex flex-col items-center hover:-translate-y-1 transition-all duration-200',
+                  isSelectMode ? 'cursor-pointer' : '',
+                  selectedIds.includes(skill.id) ? 'bg-gray-100 shadow-none translate-y-1' : 'shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
+                ]">
+                
+                <!-- Checkbox (Only visible in select mode) -->
+                <div v-if="isSelectMode" class="absolute top-2 left-2 z-10">
+                  <div 
+                    :class="[
+                      'w-6 h-6 border-2 border-black flex items-center justify-center transition-colors',
+                      selectedIds.includes(skill.id) ? 'bg-black text-white' : 'bg-white text-transparent'
+                    ]">
+                    <Icon icon="lucide:check" width="16" stroke-width="4" />
+                  </div>
                 </div>
-              </div>
-              
-              <!-- Indicator Visibility (Show on Home) -->
-              <div v-if="!skill.is_active_on_home" class="absolute top-2 right-2 text-red-500" title="Hidden on Home">
-                <Icon icon="lucide:eye-off" width="20" stroke-width="2.5" />
-              </div>
-              
-              <div class="p-4 flex flex-col items-center gap-4 w-full">
+                
+                <!-- Indicator Visibility (Show on Home) -->
+                <div v-if="!skill.is_active_on_home" class="absolute top-2 right-2 text-red-500" title="Hidden on Home">
+                  <Icon icon="lucide:eye-off" width="20" stroke-width="2.5" />
+                </div>
+                
+                <!-- Note Badge -->
+                <div v-if="skill.note" class="absolute -top-3 -right-3 z-20">
+                  <span class="bg-black text-white text-[10px] font-black px-2 py-1 uppercase border-2 border-black shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
+                    {{ skill.note }}
+                  </span>
+                </div>
+                
+                <div class="p-4 flex flex-col items-center gap-4 w-full">
                 <div class="w-16 h-16 flex items-center justify-center">
                   <Icon :icon="skill.identifier" :key="skill.identifier" class="text-5xl" />
                 </div>
@@ -558,9 +676,10 @@ const saveCategoryVisibility = async () => {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
+          </template>
+        </draggable>
       </div>
+    </div>
     <!-- Sticky Bottom Bar for Mobile Bulk Delete -->
     <div
       v-if="isSelectMode"
@@ -581,7 +700,7 @@ const saveCategoryVisibility = async () => {
     
     <!-- Modal Category Manager -->
     <div v-if="isCategoryManagerOpen" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div class="bg-white border-4 border-black p-6 md:p-8 max-w-xl w-full shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative">
+      <div class="bg-white border-4 border-black p-6 md:p-8 max-w-xl w-full shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative flex flex-col max-h-[90vh]">
         <button @click="isCategoryManagerOpen = false" class="absolute top-4 right-4 hover:scale-110 transition-transform">
           <Icon icon="lucide:x" width="24" stroke-width="3" />
         </button>
@@ -590,33 +709,75 @@ const saveCategoryVisibility = async () => {
           Pilih kategori yang ingin <strong>disembunyikan</strong> dari tab Home Page. Skill di dalamnya akan tetap muncul secara independen.
         </p>
         
-        <div class="flex flex-col gap-3 mb-6">
-          <label 
-            v-for="cat in categories" 
-            :key="cat"
-            class="flex items-center justify-between border-2 border-black p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+        <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar mb-6">
+          <draggable 
+            v-model="customOrderedCategories" 
+            item-key="cat"
+            class="flex flex-col gap-3"
+            handle=".drag-handle"
+            ghost-class="opacity-50"
           >
-            <span class="font-bold font-mono">{{ cat }}</span>
-            <div class="flex items-center gap-2">
-              <span class="text-xs uppercase font-black" :class="hiddenCategories.includes(cat) ? 'text-red-500' : 'text-green-600'">
-                {{ hiddenCategories.includes(cat) ? 'Hidden' : 'Visible' }}
-              </span>
-              <div 
-                :class="[
-                  'w-6 h-6 border-2 border-black flex items-center justify-center',
-                  hiddenCategories.includes(cat) ? 'bg-black text-white' : 'bg-white text-transparent'
-                ]">
-                <Icon icon="lucide:eye-off" width="16" />
+            <template #item="{ element: cat }">
+              <div class="flex items-center justify-between border-2 border-black p-3 hover:bg-gray-50 transition-colors">
+                <div class="flex items-center gap-3">
+                  <div class="drag-handle cursor-grab active:cursor-grabbing text-gray-400 hover:text-black transition-colors" title="Drag to reorder">
+                    <Icon icon="lucide:grip-vertical" width="16" />
+                  </div>
+                  <span class="font-bold font-mono">{{ cat }}</span>
+                  <button 
+                    @click.stop="editCategoryName(cat)" 
+                    class="text-gray-500 hover:text-black hover:scale-110 transition-all"
+                    title="Edit Kategori"
+                  >
+                    <Icon icon="lucide:edit" width="16" />
+                  </button>
+                  <button 
+                    @click.stop="deleteCategory(cat)" 
+                    class="text-red-500 hover:text-red-700 hover:scale-110 transition-all"
+                    title="Hapus Kategori"
+                  >
+                    <Icon icon="lucide:trash-2" width="16" />
+                  </button>
+                </div>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <span class="text-xs uppercase font-black" :class="hiddenCategories.includes(cat) ? 'text-red-500' : 'text-green-600'">
+                    {{ hiddenCategories.includes(cat) ? 'Hidden' : 'Visible' }}
+                  </span>
+                  <div 
+                    :class="[
+                      'w-6 h-6 border-2 border-black flex items-center justify-center',
+                      hiddenCategories.includes(cat) ? 'bg-black text-white' : 'bg-white text-transparent'
+                    ]">
+                    <Icon icon="lucide:eye-off" width="16" />
+                  </div>
+                  <input type="checkbox" :checked="hiddenCategories.includes(cat)" @change="toggleCategory(cat)" class="hidden" />
+                </label>
               </div>
-            </div>
-            <input type="checkbox" :checked="hiddenCategories.includes(cat)" @change="toggleCategory(cat)" class="hidden" />
-          </label>
+            </template>
+          </draggable>
         </div>
+        
+        <div class="mb-6 shrink-0">
+          <label class="block font-bold font-mono text-sm mb-2 uppercase">Default Active Kategori (Home)</label>
+          <select 
+            v-model="defaultCategory" 
+            class="w-full p-3 border-2 border-black font-mono focus:bg-gray-100 focus:outline-none transition-colors cursor-pointer"
+          >
+            <option value="">-- Pill "All" --</option>
+            <template v-for="cat in activeCategories" :key="'def-'+cat">
+              <!-- Jangan biarkan hidden category jadi default -->
+              <option :value="cat" :disabled="hiddenCategories.includes(cat)">
+                {{ cat }} {{ hiddenCategories.includes(cat) ? '(Hidden)' : '' }}
+              </option>
+            </template>
+          </select>
+        </div>
+        
         
         <button 
           @click="saveCategoryVisibility" 
           :disabled="isSavingCategory"
-          class="w-full bg-black text-white font-black py-4 border-2 border-black hover:bg-white hover:text-black transition-colors disabled:opacity-50"
+          class="w-full shrink-0 bg-black text-white font-black py-4 border-2 border-black hover:bg-white hover:text-black transition-colors disabled:opacity-50"
         >
           {{ isSavingCategory ? 'SAVING...' : 'SAVE CATEGORY VISIBILITY' }}
         </button>

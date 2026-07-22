@@ -131,6 +131,13 @@ watch(
   { immediate: true }, // langsung trigger sekali saat mount
 );
 
+// [CRITICAL FIX]: Sinkronisasi data ketika SWR mendapatkan data fresh dari background!
+watch(() => profileSWR.data.value, (newData) => { if (newData) profileData.value = newData; });
+watch(() => skillSWR.data.value, (newData) => { if (newData) skillData.value = newData; });
+watch(() => projectSWR.data.value, (newData) => { if (newData) projectData.value = newData; });
+watch(() => certificateSWR.data.value, (newData) => { if (newData) certificateData.value = newData; });
+watch(() => experienceSWR.data.value, (newData) => { if (newData) experienceData.value = newData; });
+
 function finalizeLoading() {
   if (hasSeenIntro.value) {
     // Jika sudah pernah melihat intro di sesi ini, lewati delay dan selesaikan NProgress seketika!
@@ -311,7 +318,7 @@ onUnmounted(() => {
 
     <div v-if="!isLoading && !isError" class="animate-in">
       <Hero :profile="profileData" />
-      <Tech :skills="skillData" />
+      <Tech :skills="skillData" :profile="profileData" />
 
       <FeaturedProject ref="projectSectionRef" :projects="projectData" class="relative z-0" />
 

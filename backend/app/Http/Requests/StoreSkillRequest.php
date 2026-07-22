@@ -25,9 +25,11 @@ class StoreSkillRequest extends FormRequest
             'name' => 'required|string|max:255',
             // Identifier wajib string (contoh: 'simple-icons:react')
             'identifier' => 'required|string|max:255',
-            // Category opsional, disesuaikan dengan kategori UI baru
-            'category' => 'nullable|string|in:Frontend,Backend,Cloud & DevOps,Mobile,Databases',
+            // Category custom string, no longer enum restricted
+            'category' => 'nullable|string|max:255',
             'is_active_on_home' => 'nullable|boolean',
+            'order_number' => 'nullable|integer',
+            'note' => 'nullable|string|max:20',
             // HAPUS BAGIAN INI:
             // 'icon' => 'required|image|mimes:svg,png,jpg,webp|max:1024',
         ];
