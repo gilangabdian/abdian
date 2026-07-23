@@ -22,7 +22,7 @@
     "paths": {
         "/api/contacts": {
             "get": {
-                "summary": "List Contacts (🌍 Global/Public)",
+                "summary": "List Contacts (\ud83c\udf0d Global/Public)",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -56,7 +56,7 @@
                 }
             },
             "post": {
-                "summary": "Create Contact (🔒 Admin Only)",
+                "summary": "Create Contact (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -70,7 +70,8 @@
                                 "type": "object",
                                 "required": [
                                     "platform_name",
-                                    "url"
+                                    "url",
+                                    "icon"
                                 ],
                                 "properties": {
                                     "platform_name": {
@@ -180,7 +181,7 @@
                 }
             },
             "put": {
-                "summary": "Update Contact (🔒 Admin Only)",
+                "summary": "Update Contact (\ud83d\udd12 Admin Only)",
                 "description": "Update data contact. \n\n**Note:** Karena keterbatasan PHP dengan method `PUT` pada `multipart/form-data`, Frontend disarankan menggunakan method `POST` dengan tambahan field `_method` = `PUT`.",
                 "security": [
                     {
@@ -273,7 +274,7 @@
                 }
             },
             "delete": {
-                "summary": "Delete Contact (🔒 Admin Only)",
+                "summary": "Delete Contact (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
