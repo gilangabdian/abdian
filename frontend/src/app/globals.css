@@ -11,7 +11,7 @@
 }
 
 body {
-  @apply bg-white text-black transition-colors duration-300 dark:bg-dark-bg dark:text-dark-text;
+  @apply bg-white text-black dark:bg-dark-bg dark:text-dark-text;
 }
 
 /* Custom Selection Color */
@@ -284,4 +284,19 @@ iconify-icon {
   display: inline-block;
   width: 1em;
   height: 1em;
+}
+
+.animate-in {
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
