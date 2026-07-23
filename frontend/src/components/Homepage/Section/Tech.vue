@@ -187,7 +187,7 @@ const onLeave = (el, done) => {
 
       <!-- FILTER TABS -->
       <div
-        class="tabs-section flex md:flex-wrap overflow-x-auto hide-scrollbar justify-start md:justify-center gap-3 mb-16 pt-16 pb-2 snap-x -mt-16">
+        class="tabs-section flex md:flex-wrap overflow-x-auto hide-scrollbar justify-center md:justify-center gap-3 mb-16 pt-16 pb-2 snap-x -mt-16">
         <div
           v-for="cat in categories"
           :key="cat"
@@ -202,7 +202,7 @@ const onLeave = (el, done) => {
             ">
             {{ cat }}
 
-            <div class="relative group flex items-center justify-center">
+            <div class="relative group flex items-center justify-center hidden md:flex">
               <Icon icon="lucide:info" class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
               <!-- Tooltip -->
               <div
