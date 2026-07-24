@@ -41,7 +41,7 @@ export default function RootLayout({
     name: "Gilang Abdian",
     alternateName: ["Gilang", "Abdian", "gilangabdian"],
     url: "https://abdian.vercel.app/",
-    image: "https://abdian.vercel.app/me-index.png",
+    image: "https://abdian.vercel.app/abdian.png",
     jobTitle: "Software Engineer",
     sameAs: ["https://github.com/gilangabdian"],
   };
