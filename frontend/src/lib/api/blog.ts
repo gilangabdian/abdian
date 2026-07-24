@@ -46,6 +46,45 @@ export const getBlogById = async (id: string | number): Promise<Blog | null> => 
   }
 };
 
+export const getAllBlogsAdmin = async (token: string): Promise<Blog[]> => {
+  try {
+    const res = await fetch(`${API_URL}/admin/blogs`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+      // Admin APIs usually shouldn't be cached aggressively
+      cache: 'no-store',
+    });
+    if (!res.ok) return [];
+    const responseData = await res.json();
+    return Array.isArray(responseData) ? responseData : (responseData.data || []);
+  } catch (error) {
+    console.error('Failed to fetch admin blogs', error);
+    return [];
+  }
+};
+
+export const getBlogByIdAdmin = async (token: string, id: string | number): Promise<Blog | null> => {
+  try {
+    const res = await fetch(`${API_URL}/admin/blogs/${id}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+      cache: 'no-store',
+    });
+    if (!res.ok) return null;
+    const responseData = await res.json();
+    return responseData.data !== undefined ? responseData.data : responseData;
+  } catch (error) {
+    console.error('Failed to fetch admin blog by id', error);
+    return null;
+  }
+};
+
 export const createBlog = async (token: string, formData: FormData) => {
   return await fetch(`${API_URL}/blogs`, {
     method: 'POST',
@@ -75,5 +114,16 @@ export const deleteBlog = async (token: string, id: string | number) => {
       Authorization: `Bearer ${token}`,
       Accept: 'application/json',
     },
+  });
+};
+
+export const uploadBlogImage = async (token: string, formData: FormData) => {
+  return await fetch(`${API_URL}/blogs/upload-image`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    },
+    body: formData,
   });
 };

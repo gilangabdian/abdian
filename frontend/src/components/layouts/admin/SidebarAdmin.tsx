@@ -95,7 +95,7 @@ export default function SidebarAdmin({
 
   return (
     <aside
-      className={`fixed md:sticky top-0 left-0 z-50 bg-white border-r-4 border-black flex flex-col h-[100dvh] ${
+      className={`fixed md:sticky top-0 left-0 z-50 bg-white border-r-4 border-black flex flex-col h-full ${
         isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       } ${
         isResizing ? "transition-none" : "transition-[width,transform] duration-300 ease-in-out"

@@ -56,3 +56,37 @@ export const getAllContacts = async (): Promise<any[]> => {
   }
 };
 
+export const adminUploadContact = async (token: string, data: any) => {
+  return await fetch(`${API_URL}/contacts`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+};
+
+export const adminUpdateContact = async (token: string, id: string | number, data: any) => {
+  return await fetch(`${API_URL}/contacts/${id}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+};
+
+export const adminDeleteContact = async (token: string, id: string | number) => {
+  return await fetch(`${API_URL}/contacts/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    },
+  });
+};
+

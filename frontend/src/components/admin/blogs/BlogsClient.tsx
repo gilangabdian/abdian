@@ -1,0 +1,144 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Icon } from "@iconify/react";
+import { getAllBlogsAdmin, deleteBlog } from "@/lib/api/blog";
+import { alertSuccess, alertError } from "@/lib/alert";
+
+export default function BlogsClient() {
+  const router = useRouter();
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchBlogs = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token") || "";
+      const data = await getAllBlogsAdmin(token);
+      setBlogs(data || []);
+    } catch (error) {
+      alertError("Gagal mengambil data blogs");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    // Re-use alertConfirmVisitor to get the generic confirm dialog "Are you sure?" 
+    // Or we could use SweetAlert directly, but let's stick to the lib
+    // Actually, I can use SweetAlert directly here to match the Vue behavior precisely
+    const Swal = (await import('sweetalert2')).default;
+    const result = await Swal.fire({
+      title: "Yakin Hapus?",
+      text: "Artikel ini akan dihapus permanen!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#000",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, Hapus!",
+      customClass: { popup: "border-4 border-black rounded-none" },
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const token = localStorage.getItem("token") || "";
+        const response = await deleteBlog(token, id);
+        if (!response.ok) throw new Error("Gagal menghapus");
+
+        await alertSuccess("Artikel berhasil dihapus.");
+        fetchBlogs();
+      } catch (error) {
+        alertError("Terjadi kesalahan");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center border-b-4 border-black pb-4">
+        <h1 className="text-3xl font-black tracking-tighter uppercase">Manage Blogs</h1>
+        <Link
+          href="/admin/blogs/create"
+          className="bg-black text-white px-6 py-2 font-bold font-mono border-4 border-black hover:bg-white hover:text-black transition-colors flex items-center gap-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+        >
+          <Icon icon="lucide:plus" width="20" height="20" />
+          Write Blog
+        </Link>
+      </div>
+
+      {isLoading ? (
+        <div className="text-center p-8 font-mono font-bold">Loading...</div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+          {blogs.length === 0 && (
+            <div className="col-span-full text-center p-8 border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] font-mono">
+              Belum ada artikel. Klik "Write Blog" untuk mulai menulis!
+            </div>
+          )}
+
+          {blogs.map((blog) => (
+            <div
+              key={blog.id}
+              className="border-4 border-black bg-white p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col relative group"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex flex-col gap-2">
+                  <div
+                    className={`${
+                      blog.is_published ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                    } px-2 py-1 text-xs font-bold font-mono border-2 border-black inline-block w-fit`}
+                  >
+                    {blog.is_published ? "Published" : "Draft"}
+                  </div>
+
+                  {blog.is_external && (
+                    <div className="px-2 py-1 text-xs font-bold font-mono border-2 border-black bg-blue-100 text-blue-800 flex items-center gap-1 w-fit">
+                      <Icon icon="carbon:arrow-up-right" /> External
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => router.push(`/admin/blogs/edit/${blog.id}`)}
+                    className="p-2 bg-yellow-400 border-2 border-black hover:bg-yellow-500 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-transform hover:scale-105"
+                    title="Edit"
+                  >
+                    <Icon icon="lucide:edit" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(blog.id)}
+                    className="p-2 bg-red-500 text-white border-2 border-black hover:bg-red-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-transform hover:scale-105"
+                    title="Delete"
+                  >
+                    <Icon icon="lucide:trash-2" />
+                  </button>
+                </div>
+              </div>
+
+              <h2 className="text-xl font-bold font-serif mb-2 line-clamp-2 leading-tight">{blog.title}</h2>
+
+              <div className="mt-auto pt-4 flex gap-4 text-xs font-mono text-gray-600 border-t-2 border-dashed border-gray-300">
+                {!blog.is_external && (
+                  <span className="flex items-center gap-1">
+                    <Icon icon="lucide:clock" />
+                    {blog.read_time} min read
+                  </span>
+                )}
+                <span className="flex items-center gap-1">
+                  <Icon icon="lucide:calendar" />
+                  {new Date(blog.created_at).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

@@ -259,7 +259,8 @@ html.dark::-webkit-scrollbar-thumb:hover {
 }
 
 /* Global Custom styling for Code Blocks (Tiptap / highlight.js) */
-.prose pre {
+.prose pre,
+.code-block pre {
   background-color: #fafafa !important; /* gray-100 for Light Theme */
   color: #374151 !important; /* gray-700 for Light Theme */
   padding: 1rem;
@@ -269,13 +270,17 @@ html.dark::-webkit-scrollbar-thumb:hover {
   margin-bottom: 1.5em;
 }
 
-.dark .prose pre {
+.dark .prose pre,
+.dark .code-block pre {
   background-color: #1a1a1a !important; /* Pure black for Dark Theme */
   color: #c9d1d9 !important; /* Github dark text */
 }
 
 .prose pre code,
-.prose pre code.hljs {
+.prose pre code.hljs,
+.prose pre div,
+.prose pre div.hljs,
+.code-block .hljs {
   background-color: transparent !important;
   padding: 0;
   border-radius: 0;

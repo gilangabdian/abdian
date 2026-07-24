@@ -30,27 +30,29 @@ export default function Hero({ profile }: HeroProps) {
   }, []);
 
   useEffect(() => {
-    const jobTitleText = profile?.about?.job_title || "";
-    if (!jobTitleText) return;
+    const text = profile?.about?.job_title || "";
+    if (!text) return;
 
     let i = 0;
     setDisplayedJob("");
+    let typingTimer: NodeJS.Timeout;
 
-    const startTypewriter = () => {
-      const typeChar = () => {
-        if (i < jobTitleText.length) {
-          setDisplayedJob((prev) => prev + jobTitleText.charAt(i));
-          i++;
-          setTimeout(typeChar, 100);
-        }
-      };
-      typeChar();
+    const typeChar = () => {
+      if (i < text.length) {
+        // Gunakan substring agar tidak ada race condition pada previous state
+        setDisplayedJob(text.substring(0, i + 1));
+        i++;
+        typingTimer = setTimeout(typeChar, 100);
+      }
     };
 
     // Start after 1s (matching GSAP delay)
-    const timeoutId = setTimeout(startTypewriter, 1000);
+    const startTimer = setTimeout(typeChar, 1000);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(startTimer);
+      clearTimeout(typingTimer);
+    };
   }, [profile?.about?.job_title]);
 
   useGSAP(() => {

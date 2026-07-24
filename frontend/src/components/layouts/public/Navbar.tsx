@@ -10,7 +10,7 @@ import { Icon } from "@iconify/react";
 const menus = [
   { name: "Home", href: "/", icon: "mdi:home-variant-outline", title: "Home" },
   { name: "About", href: "/about", icon: "mdi:card-account-details-outline", title: "About" },
-  { name: "Blogs", href: "/blog", icon: "material-symbols-light:post-outline", title: "Blogs" },
+  { name: "Blog", href: "/blog", icon: "material-symbols-light:post-outline", title: "Blogs" },
   { name: "Projects", href: "/projects", icon: "mdi:folder-outline", title: "Projects" },
   { name: "Certificates", href: "/certificates", icon: "mdi:certificate-outline", title: "Certificates" },
   { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline", title: "Artworks" },

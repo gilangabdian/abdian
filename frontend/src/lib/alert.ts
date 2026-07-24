@@ -29,10 +29,10 @@ export const alertPrompt = async (title: string, placeholder = "") => {
   return result.isConfirmed ? result.value : null;
 };
 
-export const alertConfirm = async (message: string) => {
+export const alertConfirm = async (titleOrMessage: string, text?: string) => {
   const result = await Swal.fire({
-    title: "Hapus Skill?",
-    text: message,
+    title: text ? titleOrMessage : "Hapus Skill?",
+    text: text ? text : titleOrMessage,
     icon: "question",
     showCancelButton: true,
     confirmButtonColor: "#000",
@@ -70,7 +70,7 @@ export const alertConfirmContact = async (message: string) => {
 
 export const alertConfirmCertificate = async (message: string) => {
   const result = await Swal.fire({
-    title: "Hapus Experience?",
+    title: "Hapus Certificate?",
     text: message,
     icon: "question",
     showCancelButton: true,
@@ -83,7 +83,7 @@ export const alertConfirmCertificate = async (message: string) => {
 
 export const alertConfirmExperience = async (message: string) => {
   const result = await Swal.fire({
-    title: "Hapus Certificate?",
+    title: "Hapus Experience?",
     text: message,
     icon: "question",
     showCancelButton: true,
