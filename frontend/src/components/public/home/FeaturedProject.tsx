@@ -120,7 +120,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                     />
                   ) : (
                     <div className="flex flex-col items-center justify-center w-full h-full text-gray-400">
-                      <iconify-icon icon="mdi:image-off-outline" className="text-3xl mb-2" />
+                      <Icon icon="mdi:image-off-outline" className="text-3xl mb-2" />
                       <span className="text-[10px] font-bold uppercase">No Preview</span>
                     </div>
                   )}
@@ -140,9 +140,9 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                           title={skill.name}
                         >
                           {skill.identifier && (
-                            <iconify-icon icon={skill.identifier} className="w-3 h-3 text-black" />
+                            <Icon icon={skill.identifier} className="w-3 h-3 text-black" />
                           )}
-                          <span className="text-[9px] font-bold uppercase tracking-wide leading-none">
+                          <span className="whitespace-nowrap text-[9px] font-bold uppercase tracking-wide leading-none">
                             {skill.name}
                           </span>
                         </div>
@@ -173,7 +173,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
               className="inline-flex items-center gap-2 px-8 py-3 bg-black text-white border border-transparent font-black uppercase tracking-wider text-sm shadow-md hover:bg-black/90 hover:shadow-lg hover:-translate-y-1 transition-all rounded-lg"
             >
               View All Projects
-              <iconify-icon icon="lucide:arrow-right" className="text-lg" />
+              <Icon icon="lucide:arrow-right" className="text-lg" />
             </Link>
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                 onClick={closeModal}
                 className="cursor-pointer hidden md:block p-1.5 bg-red-50 text-red-600 hover:bg-red-100 transition-colors rounded-full shrink-0 shadow-sm"
               >
-                <iconify-icon icon="mdi:close" className="text-xl" />
+                <Icon icon="mdi:close" className="text-xl" />
               </button>
             </div>
 
@@ -218,7 +218,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                         key={skill.id || skill.name}
                         className="flex items-center gap-2 px-3 py-1.5 border border-black/10 rounded-md bg-gray-50 shadow-sm text-xs font-bold uppercase transition-transform hover:-translate-y-0.5 cursor-default text-gray-600"
                       >
-                        {skill.identifier && <iconify-icon icon={skill.identifier} className="text-base" />}
+                        {skill.identifier && <Icon icon={skill.identifier} className="text-base" />}
                         {skill.name}
                       </div>
                     ))}
@@ -252,7 +252,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                     <span className="text-[10px] uppercase tracking-wider font-mono font-normal">
                       Period:
                     </span>
-                    <iconify-icon icon="lucide:calendar" className="w-3.5 h-3.5" />
+                    <Icon icon="lucide:calendar" className="w-3.5 h-3.5" />
                     {formatDate(selectedProject.start_date)} →{" "}
                     {selectedProject.end_date ? formatDate(selectedProject.end_date) : "Ongoing"}
                   </span>
@@ -267,7 +267,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                         Role:
                       </h4>
                       <div className="flex items-center gap-2 font-bold text-sm uppercase">
-                        <iconify-icon icon="lucide:user-cog" className="text-lg" />
+                        <Icon icon="lucide:user-cog" className="text-lg" />
                         {selectedProject.role}
                       </div>
                     </div>
@@ -278,7 +278,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                         Team Size:
                       </h4>
                       <div className="flex items-center gap-2 font-bold text-sm uppercase">
-                        <iconify-icon icon="lucide:users" className="text-lg" />
+                        <Icon icon="lucide:users" className="text-lg" />
                         {selectedProject.team_size} {selectedProject.team_size > 1 ? "People" : "Person"}
                       </div>
                     </div>
@@ -305,7 +305,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                       rel="noopener noreferrer"
                       className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold border border-black/20 rounded-lg bg-white hover:bg-gray-100 text-black transition-colors shadow-sm"
                     >
-                      <iconify-icon icon="mdi:github" className="text-xl" />
+                      <Icon icon="mdi:github" className="text-xl" />
                       View Code
                     </a>
                   )}
@@ -316,7 +316,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                       rel="noopener noreferrer"
                       className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold border border-transparent rounded-lg bg-black hover:bg-black/80 text-white dark:bg-white dark:hover:bg-gray-200 dark:!text-black transition-colors shadow-sm"
                     >
-                      <iconify-icon icon="mdi:external-link" className="text-xl" />
+                      <Icon icon="mdi:external-link" className="text-xl" />
                       Live Demo
                     </a>
                   )}
@@ -326,7 +326,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                   onClick={closeModal}
                   className="cursor-pointer w-full py-3 text-sm font-bold uppercase tracking-wider text-white bg-red-500 border border-transparent rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <iconify-icon icon="mdi:close-circle-outline" className="text-xl" />
+                  <Icon icon="mdi:close-circle-outline" className="text-xl" />
                   Close Details
                 </button>
               </div>

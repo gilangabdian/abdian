@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
+import "highlight.js/styles/night-owl.css";
 import Provider from "./provider";
 
 export const metadata: Metadata = {

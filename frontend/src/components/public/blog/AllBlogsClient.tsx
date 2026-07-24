@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { Icon } from "@iconify/react";
 import { Blog } from "@/types";
 
 interface AllBlogsClientProps {
@@ -116,9 +117,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
                         <h2 className="text-lg md:text-xl font-small text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors leading-tight flex items-center gap-[2px]">
                           {currentLang === "en" ? blog.title_en || blog.title : blog.title}
                           {isExternal && (
-                            <iconify-icon                              icon="carbon:arrow-up-right"
-                              className="w-3 h-4 -mt-1 opacity-50 transition-opacity"
-                            ></iconify-icon>
+                            <Icon icon="carbon:arrow-up-right" className="w-3 h-4 -mt-1 opacity-50 transition-opacity" />
                           )}
                         </h2>
 

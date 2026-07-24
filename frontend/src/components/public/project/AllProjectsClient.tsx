@@ -6,6 +6,7 @@ import "nprogress/nprogress.css";
 import gsap from "gsap";
 import { marked } from "marked";
 import { Project } from "@/types";
+import { Icon } from "@iconify/react";
 
 interface AllProjectsClientProps {
   initialProjects: Project[];
@@ -165,7 +166,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                       />
                     ) : (
                       <div className="flex flex-col items-center justify-center w-full h-full text-gray-400">
-                        <iconify-icon icon="mdi:image-off-outline" className="text-3xl mb-2"></iconify-icon>
+                        <Icon icon="mdi:image-off-outline" className="text-3xl mb-2"></Icon>
                         <span className="text-[10px] font-bold uppercase">No Preview</span>
                       </div>
                     )}
@@ -185,9 +186,9 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                             title={skill.name || skill}
                           >
                             {skill.identifier && (
-                              <iconify-icon icon={skill.identifier} className="w-3 h-3 text-black dark:text-white"></iconify-icon>
+                              <Icon icon={skill.identifier} className="w-3 h-3 text-black dark:text-white" />
                             )}
-                            <span className="text-[9px] font-bold uppercase tracking-wide leading-none text-black dark:text-white">
+                            <span className="whitespace-nowrap text-[9px] font-bold uppercase tracking-wide leading-none text-black dark:text-white">
                               {skill.name || skill}
                             </span>
                           </div>
@@ -226,7 +227,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                 onClick={closeModal}
                 className="hidden md:block p-1.5 bg-red-50 dark:bg-red-500/10 text-red-600 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors rounded-full shrink-0 shadow-sm"
               >
-                <iconify-icon icon="mdi:close" className="text-xl"></iconify-icon>
+                <Icon icon="mdi:close" className="text-xl"></Icon>
               </button>
             </div>
 
@@ -241,7 +242,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                   />
                 ) : (
                   <div className="flex w-full h-full items-center justify-center text-gray-400">
-                    <iconify-icon icon="mdi:image-off-outline" className="text-4xl"></iconify-icon>
+                    <Icon icon="mdi:image-off-outline" className="text-4xl"></Icon>
                   </div>
                 )}
               </div>
@@ -258,7 +259,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                         className="flex items-center gap-2 px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-md bg-gray-50 dark:bg-black/50 shadow-sm text-xs font-bold uppercase transition-transform hover:-translate-y-0.5 cursor-default text-gray-600 dark:text-gray-300"
                       >
                         {skill.identifier && (
-                          <iconify-icon icon={skill.identifier} className="text-base text-black dark:text-white"></iconify-icon>
+                          <Icon icon={skill.identifier} className="text-base text-black dark:text-white" />
                         )}
                         {skill.name || skill}
                       </div>
@@ -293,7 +294,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                     <span className="text-[10px] uppercase tracking-wider font-mono font-normal">
                       Period:
                     </span>
-                    <iconify-icon icon="lucide:calendar" className="w-3.5 h-3.5"></iconify-icon>
+                    <Icon icon="lucide:calendar" className="w-3.5 h-3.5"></Icon>
                     {formatDate(selectedProject.start_date)} &rarr;{" "}
                     {selectedProject.end_date ? formatDate(selectedProject.end_date) : "Ongoing"}
                   </span>
@@ -308,7 +309,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                         Role:
                       </h4>
                       <div className="flex items-center gap-2 font-bold text-sm uppercase text-black dark:text-white">
-                        <iconify-icon icon="lucide:user-cog" className="text-lg"></iconify-icon>
+                        <Icon icon="lucide:user-cog" className="text-lg"></Icon>
                         {selectedProject.role}
                       </div>
                     </div>
@@ -319,7 +320,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                         Team Size:
                       </h4>
                       <div className="flex items-center gap-2 font-bold text-sm uppercase text-black dark:text-white">
-                        <iconify-icon icon="lucide:users" className="text-lg"></iconify-icon>
+                        <Icon icon="lucide:users" className="text-lg"></Icon>
                         {selectedProject.team_size} {selectedProject.team_size > 1 ? "People" : "Person"}
                       </div>
                     </div>
@@ -346,7 +347,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                       rel="noopener noreferrer"
                       className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold border border-black/20 dark:border-white/20 rounded-lg bg-white dark:bg-[#1a1a1a] hover:bg-gray-100 dark:hover:bg-white/10 text-black dark:text-white transition-colors shadow-sm"
                     >
-                      <iconify-icon icon="mdi:github" className="text-xl"></iconify-icon>
+                      <Icon icon="mdi:github" className="text-xl"></Icon>
                       View Code
                     </a>
                   )}
@@ -357,7 +358,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                       rel="noopener noreferrer"
                       className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold border border-transparent rounded-lg bg-black hover:bg-black/80 text-white dark:bg-white dark:hover:bg-gray-200 dark:!text-black transition-colors shadow-sm"
                     >
-                      <iconify-icon icon="mdi:external-link" className="text-xl"></iconify-icon>
+                      <Icon icon="mdi:external-link" className="text-xl"></Icon>
                       Live Demo
                     </a>
                   )}
@@ -367,7 +368,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
                   onClick={closeModal}
                   className="w-full py-3 text-sm font-bold uppercase tracking-wider text-white bg-red-500 border border-transparent rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <iconify-icon icon="mdi:close-circle-outline" className="text-xl"></iconify-icon>
+                  <Icon icon="mdi:close-circle-outline" className="text-xl"></Icon>
                   Close Details
                 </button>
               </div>

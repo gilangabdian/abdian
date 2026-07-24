@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import gsap from "gsap";
+import { Icon } from "@iconify/react";
 
 interface SocialMedia {
   id: string | number;
@@ -19,15 +20,7 @@ interface AllContactsClientProps {
 export default function AllContactsClient({ initialContacts }: AllContactsClientProps) {
   const [contacts] = useState<SocialMedia[]>(initialContacts);
 
-  useEffect(() => {
-    NProgress.done();
-    const timer = setTimeout(() => {
-      animateEntrance();
-    }, 50);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const animateEntrance = () => {
+  const animateEntrance = useCallback(() => {
     const tl = gsap.timeline();
 
     tl.fromTo(
@@ -59,7 +52,16 @@ export default function AllContactsClient({ initialContacts }: AllContactsClient
         "-=0.3"
       );
     }
-  };
+  }, [contacts.length]);
+
+  useEffect(() => {
+    NProgress.done();
+    const timer = setTimeout(() => {
+      animateEntrance();
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [animateEntrance]);
+
 
   return (
     <div className="-mt-16 mb-40 md:-mt-5 comic-container min-h-screen relative overflow-x-hidden text-black dark:text-white font-sans pb-60 md:pb-30">
@@ -78,7 +80,7 @@ export default function AllContactsClient({ initialContacts }: AllContactsClient
           <div className="mb-12 text-center comic-title" style={{ opacity: 0, visibility: "hidden" }}>
             <h1 className="anim-text text-2xl md:text-3xl font-bold tracking-wide text-black dark:text-white">Contacts</h1>
             <p className="mt-4 font-sans text-gray-700 dark:text-gray-300 text-sm md:text-base max-w-xl mx-auto italic">
-              "Find me on"
+              &quot;Find me on&quot;
             </p>
           </div>
 
@@ -93,12 +95,13 @@ export default function AllContactsClient({ initialContacts }: AllContactsClient
                 style={{ opacity: 0, visibility: "hidden" }}
               >
                 {contact.icon && (
-                  <iconify-icon icon={contact.icon} className="w-4 h-4 md:w-5 md:h-5" />
+                  <Icon icon={contact.icon} className="w-4 h-4 md:w-5 md:h-5" />
                 )}
                 <span className="text-sm md:text-base capitalize">
                   {contact.platform_name}
                 </span>
-                <iconify-icon                  icon="mdi:arrow-top-right"
+                <Icon
+                  icon="mdi:arrow-top-right"
                   className="w-3 h-3 md:w-4 md:h-4 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0"
                 />
               </a>
@@ -107,7 +110,7 @@ export default function AllContactsClient({ initialContacts }: AllContactsClient
 
           {contacts.length === 0 && (
             <div className="text-center py-10 bg-gray-50 dark:bg-zinc-900 border border-black/20 dark:border-white/20 border-dashed mt-8 rounded-lg shadow-sm">
-              <iconify-icon icon="mdi:signal-off" className="text-4xl mx-auto mb-2 text-black dark:text-white" />
+              <Icon icon="mdi:signal-off" className="text-4xl mx-auto mb-2 text-black dark:text-white" />
               <p className="text-lg font-bold uppercase tracking-wide text-black dark:text-white">NO SIGNAL DETECTED.</p>
             </div>
           )}

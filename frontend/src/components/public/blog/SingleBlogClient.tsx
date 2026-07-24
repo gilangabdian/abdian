@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -12,24 +12,22 @@ interface SingleBlogClientProps {
   initialBlog: Blog;
 }
 
-export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps) {
-  const [blog] = useState<Blog>(initialBlog);
-  const [currentLang, setCurrentLang] = useState("id");
-  const [toc, setToc] = useState<{ id: string; text: string; level: string }[]>([]);
-  const [showToc, setShowToc] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+const BlogContent = React.memo(
+  ({
+    content,
+    onTocExtracted,
+    onImageClick,
+  }: {
+    content: string;
+    onTocExtracted: (toc: { id: string; text: string; level: string }[]) => void;
+    onImageClick: (url: string) => void;
+  }) => {
+    const contentRef = useRef<HTMLDivElement>(null);
 
-  const contentRef = useRef<HTMLDivElement>(null);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("blogLang");
-    if (savedLang) {
-      setCurrentLang(savedLang);
-    }
-
-    const extractToc = () => {
+    useEffect(() => {
       if (!contentRef.current) return;
+
+      // 1. Extract ToC and apply IDs
       const headings = contentRef.current.querySelectorAll("h2, h3");
       const extractedToc: { id: string; text: string; level: string }[] = [];
 
@@ -37,7 +35,10 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
         let id = el.id;
         if (!id) {
           id = el.textContent
-            ? el.textContent.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "")
+            ? el.textContent
+                .toLowerCase()
+                .replace(/\s+/g, "-")
+                .replace(/[^\w-]/g, "")
             : `heading-${index}`;
           if (!id) id = `heading-${index}`;
           el.id = id;
@@ -48,37 +49,64 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
           level: el.tagName.toLowerCase(),
         });
       });
+      onTocExtracted(extractedToc);
 
-      setToc(extractedToc);
-    };
+      // 2. Highlight code blocks
+      // Using a tiny timeout to ensure DOM is painted before highlighting
+      const t = setTimeout(() => {
+        if (contentRef.current) {
+          const codeBlocks = contentRef.current.querySelectorAll("pre code");
+          codeBlocks.forEach((block) => {
+            block.removeAttribute("data-highlighted");
+            hljs.highlightElement(block as HTMLElement);
+          });
+        }
+      }, 10);
 
-    extractToc();
-
-    // Highlight code blocks
-    if (contentRef.current) {
-      const codeBlocks = contentRef.current.querySelectorAll("pre code");
-      codeBlocks.forEach((block) => {
-        hljs.highlightElement(block as HTMLElement);
-      });
-    }
-
-    // Image click handler
-    if (contentRef.current) {
+      // 3. Image click handler
       const images = contentRef.current.querySelectorAll("img");
       const handleImageClick = (e: Event) => {
-        setSelectedImage((e.target as HTMLImageElement).src);
+        onImageClick((e.target as HTMLImageElement).src);
       };
       images.forEach((img) => {
         img.addEventListener("click", handleImageClick);
       });
 
       return () => {
+        clearTimeout(t);
         images.forEach((img) => {
           img.removeEventListener("click", handleImageClick);
         });
       };
-    }
+    }, [content, onTocExtracted, onImageClick]);
 
+    return (
+      <div
+        ref={contentRef}
+        suppressHydrationWarning={true}
+        className="prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    );
+  },
+);
+
+BlogContent.displayName = "BlogContent";
+
+export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps) {
+  const [blog] = useState<Blog>(initialBlog);
+  const [currentLang, setCurrentLang] = useState("id");
+  const [toc, setToc] = useState<{ id: string; text: string; level: string }[]>([]);
+  const [showToc, setShowToc] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("blogLang");
+    if (savedLang) {
+      setCurrentLang(savedLang);
+    }
     NProgress.done();
   }, []);
 
@@ -130,19 +158,16 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
           showToc ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
         }`}
         onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
+        onMouseLeave={onMouseLeave}>
         <div className="absolute left-0 top-34 pl-7 xl:pl-10 mt-32">
           <ul className="flex flex-col gap-3 text-sm border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
-            {toc.map((item) => (
-              <li key={item.id} className={`w-fit ${item.level === "h3" ? "ml-4 text-xs" : ""}`}>
-                <a
-                  href={`#${item.id}`}
+            {toc.map((item, index) => (
+              <li key={`${index}-${item.id}`} className={`w-fit ${item.level === "h3" ? "ml-4 text-xs" : ""}`}>
+                <span
                   onClick={(e) => scrollToHeading(e, item.id)}
-                  className="cursor-pointer border-b border-neutral-300 dark:border-neutral-700 hover:border-black dark:hover:border-white text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-all leading-snug"
-                >
+                  className="cursor-pointer border-b border-neutral-300 dark:border-neutral-700 hover:border-black dark:hover:border-white text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-all leading-snug">
                   {item.text}
-                </a>
+                </span>
               </li>
             ))}
           </ul>
@@ -171,16 +196,16 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
           </header>
 
           {/* Content (Tiptap HTML) */}
-          <div
-            ref={contentRef}
-            className="prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg"
-            dangerouslySetInnerHTML={{
-              __html: currentLang === "en" ? blog.content_en || blog.content : blog.content,
-            }}
+          <BlogContent
+            content={currentLang === "en" ? blog.content_en || blog.content : blog.content}
+            onTocExtracted={setToc}
+            onImageClick={setSelectedImage}
           />
 
           {/* Back Button at bottom */}
-          <Link href="/blog" className="group cursor-pointer mt-16 font-medium text-neutral-500 flex items-center gap-2 w-fit">
+          <Link
+            href="/blog"
+            className="group cursor-pointer mt-16 font-medium text-neutral-500 flex items-center gap-2 w-fit">
             <span className="font-mono">{">"}</span>
             <span className="border-b border-neutral-300 dark:border-neutral-700 group-hover:border-black dark:group-hover:border-white group-hover:text-black dark:group-hover:text-white transition-all pb-[1px]">
               cd . .
@@ -193,8 +218,7 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
       {selectedImage && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
-          onClick={closeModal}
-        >
+          onClick={closeModal}>
           <img src={selectedImage} className="w-full h-full object-contain" alt="Enlarged Blog Image" />
         </div>
       )}
