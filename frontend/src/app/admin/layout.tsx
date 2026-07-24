@@ -35,7 +35,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`${inter.variable} ${dmSerif.variable} ${playfair.variable} flex flex-col min-h-full bg-gray-50 dark:bg-neutral-900 text-black dark:text-white w-full`}>
+    <div className={`${inter.variable} ${dmSerif.variable} ${playfair.variable} flex flex-col min-h-full bg-gray-50 text-black w-full`}>
       <AdminLayoutWrapper>
         {children}
       </AdminLayoutWrapper>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Icon } from "@iconify/react";
 import { getToken } from "@/utils/auth";
 import { getAllProjects } from "@/lib/api/project";
 import { getAllArtworks } from "@/lib/api/artwork";
@@ -204,7 +205,7 @@ export default function DashboardClient() {
           <p className="font-bold font-mono text-gray-700 mt-2">Welcome back, Admin! Here is your portfolio report.</p>
         </div>
         <div className="hidden md:flex bg-white border-2 border-black p-4 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all">
-          <iconify-icon icon="lucide:layout-dashboard" className="text-4xl" />
+          <Icon icon="lucide:layout-dashboard" className="text-4xl" />
         </div>
       </div>
 
@@ -212,7 +213,7 @@ export default function DashboardClient() {
         {/* Total Projects */}
         <div className="bg-white border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 transition-all cursor-default relative overflow-hidden group">
           <div className="absolute -right-6 -top-6 opacity-10 group-hover:opacity-20 transition-opacity">
-            <iconify-icon icon="lucide:folder-kanban" className="text-9xl" />
+            <Icon icon="lucide:folder-kanban" className="text-9xl" />
           </div>
           <div className="flex justify-between items-start relative z-10">
             <div>
@@ -222,11 +223,11 @@ export default function DashboardClient() {
               <h3 className="text-5xl font-black mt-2">{isLoading ? "..." : stats.projects}</h3>
             </div>
             <div className="bg-black text-white p-2 border-2 border-black rotate-3 group-hover:-rotate-3 transition-transform">
-              <iconify-icon icon="lucide:folder-kanban" className="text-3xl" />
+              <Icon icon="lucide:folder-kanban" className="text-3xl" />
             </div>
           </div>
           <div className="mt-4 pt-4 border-t-4 border-black text-xs font-bold font-mono flex items-center gap-2 relative z-10">
-            <iconify-icon icon="lucide:history" />
+            <Icon icon="lucide:history" />
             Updated recently
           </div>
         </div>
@@ -234,7 +235,7 @@ export default function DashboardClient() {
         {/* Artworks */}
         <div className="bg-white border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 transition-all cursor-default relative overflow-hidden group">
           <div className="absolute -right-6 -top-6 opacity-10 group-hover:opacity-20 transition-opacity">
-            <iconify-icon icon="lucide:palette" className="text-9xl" />
+            <Icon icon="lucide:palette" className="text-9xl" />
           </div>
           <div className="flex justify-between items-start relative z-10">
             <div>
@@ -244,11 +245,11 @@ export default function DashboardClient() {
               <h3 className="text-5xl font-black mt-2">{isLoading ? "..." : stats.artworks}</h3>
             </div>
             <div className="bg-black text-white p-2 border-2 border-black rotate-2 group-hover:-rotate-3 transition-transform">
-              <iconify-icon icon="lucide:palette" className="text-3xl" />
+              <Icon icon="lucide:palette" className="text-3xl" />
             </div>
           </div>
           <div className="mt-4 pt-4 border-t-4 border-black text-xs font-bold font-mono flex items-center gap-2 relative z-10">
-            <iconify-icon icon="lucide:image" />
+            <Icon icon="lucide:image" />
             Gallery items
           </div>
         </div>
@@ -256,7 +257,7 @@ export default function DashboardClient() {
         {/* Certificates */}
         <div className="bg-white border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 transition-all cursor-default relative overflow-hidden group">
           <div className="absolute -right-6 -top-6 opacity-10 group-hover:opacity-20 transition-opacity">
-            <iconify-icon icon="lucide:award" className="text-9xl" />
+            <Icon icon="lucide:award" className="text-9xl" />
           </div>
           <div className="flex justify-between items-start relative z-10">
             <div>
@@ -266,11 +267,11 @@ export default function DashboardClient() {
               <h3 className="text-5xl font-black mt-2">{isLoading ? "..." : stats.certificates}</h3>
             </div>
             <div className="bg-black text-white p-2 border-2 border-black rotate-6 group-hover:-rotate-3 transition-transform">
-              <iconify-icon icon="lucide:award" className="text-3xl" />
+              <Icon icon="lucide:award" className="text-3xl" />
             </div>
           </div>
           <div className="mt-4 pt-4 border-t-4 border-black text-xs font-bold font-mono flex items-center gap-2 relative z-10">
-            <iconify-icon icon="lucide:check-circle" />
+            <Icon icon="lucide:check-circle" />
             Valid credentials
           </div>
         </div>
@@ -278,7 +279,7 @@ export default function DashboardClient() {
         {/* Photos */}
         <div className="bg-white border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 transition-all cursor-default relative overflow-hidden group">
           <div className="absolute -right-6 -top-6 opacity-10 group-hover:opacity-20 transition-opacity">
-            <iconify-icon icon="ri:camera-3-line" className="text-9xl" />
+            <Icon icon="ri:camera-3-line" className="text-9xl" />
           </div>
           <div className="flex justify-between items-start relative z-10">
             <div>
@@ -286,11 +287,11 @@ export default function DashboardClient() {
               <h3 className="text-5xl font-black mt-2">{isLoading ? "..." : stats.photos}</h3>
             </div>
             <div className="bg-black text-white p-2 border-2 border-black rotate-2 group-hover:rotate-6 transition-transform">
-              <iconify-icon icon="ri:camera-3-line" className="text-3xl" />
+              <Icon icon="ri:camera-3-line" className="text-3xl" />
             </div>
           </div>
           <div className="mt-4 pt-4 border-t-4 border-black text-xs font-bold font-mono flex items-center gap-2 relative z-10">
-            <iconify-icon icon="lucide:image" />
+            <Icon icon="lucide:image" />
             Photographic memories
           </div>
         </div>
@@ -298,7 +299,7 @@ export default function DashboardClient() {
         {/* Blogs */}
         <div className="bg-white border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 transition-all cursor-default relative overflow-hidden group">
           <div className="absolute -right-6 -top-6 opacity-10 group-hover:opacity-20 transition-opacity">
-            <iconify-icon icon="material-symbols-light:post-outline" className="text-9xl" />
+            <Icon icon="material-symbols-light:post-outline" className="text-9xl" />
           </div>
           <div className="flex justify-between items-start relative z-10">
             <div>
@@ -306,11 +307,11 @@ export default function DashboardClient() {
               <h3 className="text-5xl font-black mt-2">{isLoading ? "..." : stats.blogs}</h3>
             </div>
             <div className="bg-black text-white p-2 border-2 border-black -rotate-3 group-hover:-rotate-6 transition-transform">
-              <iconify-icon icon="material-symbols-light:post-outline" className="text-3xl" />
+              <Icon icon="material-symbols-light:post-outline" className="text-3xl" />
             </div>
           </div>
           <div className="mt-4 pt-4 border-t-4 border-black text-xs font-bold font-mono flex items-center gap-2 relative z-10">
-            <iconify-icon icon="lucide:file-text" />
+            <Icon icon="lucide:file-text" />
             Articles & Stories
           </div>
         </div>
@@ -318,7 +319,7 @@ export default function DashboardClient() {
         {/* Tech Stack */}
         <div className="bg-white border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 transition-all cursor-default relative overflow-hidden group">
           <div className="absolute -right-6 -top-6 opacity-10 group-hover:opacity-20 transition-opacity">
-            <iconify-icon icon="lucide:zap" className="text-9xl" />
+            <Icon icon="lucide:zap" className="text-9xl" />
           </div>
           <div className="flex justify-between items-start relative z-10">
             <div>
@@ -328,11 +329,11 @@ export default function DashboardClient() {
               <h3 className="text-5xl font-black mt-2">{isLoading ? "..." : stats.skills}</h3>
             </div>
             <div className="bg-black text-white p-2 border-2 border-black -rotate-6 group-hover:rotate-3 transition-transform">
-              <iconify-icon icon="lucide:zap" className="text-3xl" />
+              <Icon icon="lucide:zap" className="text-3xl" />
             </div>
           </div>
           <div className="mt-4 pt-4 border-t-4 border-black text-xs font-bold font-mono flex items-center gap-2 relative z-10">
-            <iconify-icon icon="lucide:code" />
+            <Icon icon="lucide:code" />
             Active skills
           </div>
         </div>
@@ -340,7 +341,7 @@ export default function DashboardClient() {
         {/* Social Links */}
         <div className="bg-white border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 transition-all cursor-default relative overflow-hidden group">
           <div className="absolute -right-6 -top-6 opacity-10 group-hover:opacity-20 transition-opacity">
-            <iconify-icon icon="lucide:share-2" className="text-9xl" />
+            <Icon icon="lucide:share-2" className="text-9xl" />
           </div>
           <div className="flex justify-between items-start relative z-10">
             <div>
@@ -350,11 +351,11 @@ export default function DashboardClient() {
               <h3 className="text-5xl font-black mt-2">{isLoading ? "..." : stats.contacts}</h3>
             </div>
             <div className="bg-black text-white p-2 border-2 border-black rotate-3 group-hover:-rotate-3 transition-transform">
-              <iconify-icon icon="lucide:share-2" className="text-3xl" />
+              <Icon icon="lucide:share-2" className="text-3xl" />
             </div>
           </div>
           <div className="mt-4 pt-4 border-t-4 border-black text-xs font-bold font-mono flex items-center gap-2 relative z-10">
-            <iconify-icon icon="lucide:globe" />
+            <Icon icon="lucide:globe" />
             Active platforms
           </div>
         </div>
@@ -362,7 +363,7 @@ export default function DashboardClient() {
         {/* Total Visitors */}
         <div className="bg-white border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-4px] hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 transition-all cursor-default relative overflow-hidden group">
           <div className="absolute -right-6 -top-6 opacity-10 group-hover:opacity-20 transition-opacity">
-            <iconify-icon icon="lucide:users" className="text-9xl" />
+            <Icon icon="lucide:users" className="text-9xl" />
           </div>
           <div className="flex justify-between items-start relative z-10">
             <div>
@@ -372,11 +373,11 @@ export default function DashboardClient() {
               <h3 className="text-5xl font-black mt-2">{isLoading ? "..." : stats.visitors}</h3>
             </div>
             <div className="bg-black text-white p-2 border-2 border-black -rotate-3 group-hover:rotate-6 transition-transform">
-              <iconify-icon icon="lucide:users" className="text-3xl" />
+              <Icon icon="lucide:users" className="text-3xl" />
             </div>
           </div>
           <div className="mt-4 pt-4 border-t-4 border-black text-xs font-bold font-mono flex items-center gap-2 relative z-10">
-            <iconify-icon icon="lucide:activity" />
+            <Icon icon="lucide:activity" />
             Unique Homepage Visits
           </div>
         </div>
@@ -407,12 +408,12 @@ export default function DashboardClient() {
               <span className="uppercase tracking-widest text-xs">Database Status</span>
               {isDbConnected ? (
                 <span className="text-black flex items-center gap-2 transition-all duration-500">
-                  <iconify-icon icon="lucide:database" className="text-lg" />
+                  <Icon icon="lucide:database" className="text-lg" />
                   CONNECTED
                 </span>
               ) : (
                 <span className="text-black flex items-center gap-2 animate-pulse transition-all duration-500">
-                  <iconify-icon icon="lucide:database-zap" className="text-lg" />
+                  <Icon icon="lucide:database-zap" className="text-lg" />
                   DISCONNECTED
                 </span>
               )}
@@ -438,14 +439,14 @@ export default function DashboardClient() {
               onClick={clearAllVisitors}
               className="bg-red-500 text-white border-2 border-black px-3 py-1 text-xs font-bold shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[1px] active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center gap-2"
             >
-              <iconify-icon icon="lucide:trash-2" />
+              <Icon icon="lucide:trash-2" />
               CLEAR ALL LOGS
             </button>
           </h3>
 
           {visitorsList.length === 0 ? (
             <div className="text-center py-8 border-2 border-dashed border-gray-400 mt-6">
-              <iconify-icon icon="lucide:ghost" className="text-4xl mx-auto mb-2 text-gray-400" />
+              <Icon icon="lucide:ghost" className="text-4xl mx-auto mb-2 text-gray-400" />
               <p className="font-mono font-bold text-gray-500">No visitors logged yet.</p>
             </div>
           ) : (
@@ -474,7 +475,7 @@ export default function DashboardClient() {
                       </td>
                       <td className="p-3 border-r-2 border-black" title={visitor.device_id}>
                         <div className="flex justify-center items-center gap-2 font-bold uppercase">
-                          <iconify-icon icon={getDeviceIcon(visitor.device_type)} className="text-xl" />
+                          <Icon icon={getDeviceIcon(visitor.device_type)} className="text-xl" />
                           <span className="hidden md:inline">{visitor.device_type || "Unknown"}</span>
                         </div>
                       </td>
@@ -503,7 +504,7 @@ export default function DashboardClient() {
                           onClick={() => deleteVisitor(visitor.id)}
                           className="bg-white text-red-500 border-2 border-black p-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-red-50 active:translate-y-[1px] active:shadow-none transition-all"
                         >
-                          <iconify-icon icon="lucide:trash-2" />
+                          <Icon icon="lucide:trash-2" />
                         </button>
                       </td>
                     </tr>
@@ -522,7 +523,7 @@ export default function DashboardClient() {
                     disabled={pagination.current_page === 1}
                     className="bg-white border-2 border-black px-4 py-2 font-black text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] disabled:opacity-30 disabled:translate-y-0 disabled:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center gap-2"
                   >
-                    <iconify-icon icon="lucide:chevron-left" />
+                    <Icon icon="lucide:chevron-left" />
                     PREV
                   </button>
 
@@ -532,7 +533,7 @@ export default function DashboardClient() {
                     className="bg-black text-white border-2 border-black px-4 py-2 font-black text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] disabled:opacity-30 disabled:translate-y-0 disabled:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center gap-2 font-mono"
                   >
                     NEXT
-                    <iconify-icon icon="lucide:chevron-right" />
+                    <Icon icon="lucide:chevron-right" />
                   </button>
                 </div>
               </div>

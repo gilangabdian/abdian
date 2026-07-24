@@ -21,12 +21,12 @@ export default function AdminLayoutWrapper({
 
   useEffect(() => {
     const token = getToken();
-    if (!token) {
+    if (!token && pathname !== "/admin/login") {
       router.push("/admin/login");
     } else {
       setIsAuthChecking(false);
     }
-  }, [router]);
+  }, [router, pathname]);
 
   useEffect(() => {
     // Handle NProgress for routing inside admin

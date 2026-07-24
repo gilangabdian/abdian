@@ -12,11 +12,13 @@ export const adminLogin = async (payload: AdminLoginPayload): Promise<AdminLogin
     body: JSON.stringify(payload),
   });
   
+  const responseBody = await res.json();
+
   if (!res.ok) {
-    throw new Error('Login failed');
+    throw new Error(responseBody.errors || responseBody.message || 'Login failed');
   }
   
-  return await res.json();
+  return responseBody;
 };
 
 export const adminLogout = async (token: string) => {

@@ -12,7 +12,10 @@
 }
 
 body {
-  @apply bg-white text-black dark:bg-dark-bg dark:text-dark-text;
+  @apply bg-white text-black;
+}
+body:has(.public-theme) {
+  @apply dark:bg-dark-bg dark:text-dark-text;
 }
 
 /* Custom Selection Color */
@@ -32,83 +35,83 @@ body {
 
 /* Magic Dark Mode Overrides for existing hardcoded utility classes */
 @layer utilities {
-  .dark .bg-white {
+  .dark .public-theme .bg-white {
     background-color: var(--color-dark-bg) !important;
   }
 
-  .dark .text-black {
+  .dark .public-theme .text-black {
     color: var(--color-dark-text) !important;
   }
 
-  .dark .border-black {
+  .dark .public-theme .border-black {
     border-color: rgba(255, 255, 255, 0.2) !important;
   }
 
-  .dark .border-black\/20 {
+  .dark .public-theme .border-black\/20 {
     border-color: rgba(255, 255, 255, 0.15) !important;
   }
 
-  .dark .border-black\/10 {
+  .dark .public-theme .border-black\/10 {
     border-color: rgba(255, 255, 255, 0.05) !important;
   }
 
-  .dark .bg-gray-50 {
+  .dark .public-theme .bg-gray-50 {
     background-color: var(--color-dark-card) !important;
   }
 
-  .dark .bg-gray-100 {
+  .dark .public-theme .bg-gray-100 {
     background-color: #262626 !important;
   }
 
-  .dark .bg-gray-200 {
+  .dark .public-theme .bg-gray-200 {
     background-color: #333333 !important;
   }
 
-  .dark .text-gray-600 {
+  .dark .public-theme .text-gray-600 {
     color: var(--color-dark-text-muted) !important;
   }
 
-  .dark .text-gray-700 {
+  .dark .public-theme .text-gray-700 {
     color: #e5e7eb !important;
   }
 
-  .dark .text-gray-800 {
+  .dark .public-theme .text-gray-800 {
     color: #f3f4f6 !important;
   }
 
-  .dark .text-gray-500 {
+  .dark .public-theme .text-gray-500 {
     color: #9ca3af !important;
   }
 
-  .dark .hover\:bg-black\/5:hover {
+  .dark .public-theme .hover\:bg-black\/5:hover {
     background-color: rgba(255, 255, 255, 0.05) !important;
   }
 
-  .dark .hover\:bg-gray-50:hover {
+  .dark .public-theme .hover\:bg-gray-50:hover {
     background-color: #262626 !important;
   }
 
-  .dark .hover\:bg-gray-100:hover {
+  .dark .public-theme .hover\:bg-gray-100:hover {
     background-color: var(--color-dark-hover) !important;
   }
 
-  .dark .hover\:text-gray-800:hover {
+  .dark .public-theme .hover\:text-gray-800:hover {
     color: #ffffff !important;
   }
 
-  .dark .hover\:text-black:hover {
+  .dark .public-theme .hover\:text-black:hover {
     color: #ffffff !important;
   }
 
-  .dark .hover\:bg-white:hover {
+  .dark .public-theme .hover\:bg-white:hover {
     background-color: var(--color-dark-hover) !important;
   }
 
-  .dark .focus\:border-black:focus {
+  .dark .public-theme .focus\:border-black:focus {
     border-color: rgba(255, 255, 255, 0.5) !important;
   }
 
-  .dark .placeholder-gray-400::placeholder {
+  .dark .public-theme .placeholder-gray-400::placeholder {
     color: #6b7280 !important;
   }
 }
@@ -148,13 +151,13 @@ body {
 }
 
 /* Navbar active item fix */
-.dark .active-nav-item.text-gray-700 {
+.dark .public-theme .active-nav-item.text-gray-700 {
   color: #000000 !important;
 }
 
-.dark .active-nav-item.text-gray-700 svg,
-.dark .active-nav-item.text-gray-700 span,
-.dark .active-nav-item.text-gray-700 iconify-icon {
+.dark .public-theme .active-nav-item.text-gray-700 svg,
+.dark .public-theme .active-nav-item.text-gray-700 span,
+.dark .public-theme .active-nav-item.text-gray-700 iconify-icon {
   color: #000000 !important;
 }
 

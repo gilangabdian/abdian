@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Icon } from "@iconify/react";
 
 export default function SidebarAdmin({
   isMobileOpen,
@@ -101,7 +102,7 @@ export default function SidebarAdmin({
       }`}
       style={computedSidebarStyle}
     >
-      <div className="h-16 flex items-center justify-between md:justify-center px-4 md:px-0 border-b-4 border-black bg-white overflow-hidden whitespace-nowrap relative">
+      <div className="h-16 shrink-0 flex items-center justify-between md:justify-center px-4 md:px-0 border-b-4 border-black bg-white overflow-hidden whitespace-nowrap relative">
         {showContent ? (
           <h1 className="font-black text-xl tracking-tighter text-black">
             ADMIN <span className="bg-black text-white px-1">PANEL</span>
@@ -114,11 +115,11 @@ export default function SidebarAdmin({
           onClick={onCloseMobile}
           className="md:hidden p-1 border-2 border-black bg-black text-white hover:bg-gray-800 flex items-center justify-center"
         >
-          <iconify-icon icon="lucide:x" width="20" height="20" />
+          <Icon icon="lucide:x" width="20" height="20" />
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-2 space-y-2">
+      <nav className="flex-1 overflow-y-auto p-2 space-y-2 min-h-0">
         {menuItems.map((item) => {
           const isActive = pathname === item.route;
           return (
@@ -132,7 +133,7 @@ export default function SidebarAdmin({
                   : "border-transparent hover:border-black hover:bg-gray-100 text-black"
               } ${!showContent ? "justify-center" : ""}`}
             >
-              <iconify-icon icon={item.icon} className="text-2xl shrink-0" />
+              <Icon icon={item.icon} className="text-2xl shrink-0" />
               {showContent && (
                 <span className="ml-3 font-bold font-mono truncate">{item.name}</span>
               )}
@@ -143,9 +144,9 @@ export default function SidebarAdmin({
 
       <button
         onClick={handleSidebarToggle}
-        className="flex p-2 border-t-4 border-black hover:bg-gray-100 hover:text-black justify-center items-center cursor-pointer w-full text-black"
+        className="flex p-2 border-t-4 border-black hover:bg-gray-100 hover:text-black justify-center items-center cursor-pointer w-full text-black shrink-0"
       >
-        <iconify-icon          icon={!showContent ? "lucide:chevron-right" : "lucide:chevron-left"}
+        <Icon icon={!showContent ? "lucide:chevron-right" : "lucide:chevron-left"}
           width="24"
           height="24"
         />
