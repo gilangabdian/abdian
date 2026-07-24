@@ -1,10 +1,10 @@
-import { Metadata } from 'next';
-import { getAllArtworks } from '@/lib/api/artwork';
-import AllArtworksClient from '@/components/public/artwork/AllArtworksClient';
+import { Metadata } from "next";
+import { getAllArtworks } from "@/lib/api/artwork";
+import AllArtworksClient from "@/components/public/artwork/AllArtworksClient";
 
 export const metadata: Metadata = {
-  title: 'All Artworks - Abdian',
-  description: 'My personal artworks collection.',
+  title: "All Artworks - Abdian",
+  description: "My side hobby.",
 };
 
 export default async function ArtworksPage() {

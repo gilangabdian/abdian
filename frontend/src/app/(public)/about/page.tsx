@@ -1,10 +1,10 @@
-import { Metadata } from 'next';
-import { getProfile } from '@/lib/api/profile';
-import AboutClient from '@/components/public/about/AboutClient';
+import { Metadata } from "next";
+import { getProfile } from "@/lib/api/profile";
+import AboutClient from "@/components/public/about/AboutClient";
 
 export const metadata: Metadata = {
-  title: 'About - Gilang Abdian',
-  description: 'About Gilang Abdian Anggara.',
+  title: "About - Gilang Abdian",
+  description: "About Gilang Abdian.",
 };
 
 export default async function AboutPage() {
