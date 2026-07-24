@@ -7,21 +7,28 @@ const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
 interface InitialLoadingScreenProps {
   percent?: number;
+  isFadingOut?: boolean;
 }
 
-export default function InitialLoadingScreen({ percent = 0 }: InitialLoadingScreenProps) {
+export default function InitialLoadingScreen({ percent = 0, isFadingOut = false }: InitialLoadingScreenProps) {
   const [smoothPercent, setSmoothPercent] = useState(0);
   
   // To handle the animation
-  const prevPercentRef = useRef(0);
+  const currentAnimatedValueRef = useRef(0);
   const targetPercent = Math.min(100, Math.max(0, percent));
 
   useEffect(() => {
-    const startValue = prevPercentRef.current;
+    let animationFrame: number;
+    let startTime: number | null = null;
+    
+    // We must capture the current smoothPercent value to animate FROM it
+    // We can't just read smoothPercent directly because it's a state and might be stale in the closure,
+    // so we use a ref to track the actual current animated value.
+    const startValue = currentAnimatedValueRef.current;
     const endValue = targetPercent;
     const duration = 800;
-    let startTime: number | null = null;
-    let animationFrame: number;
+
+    if (startValue === endValue) return;
 
     const animate = (currentTime: number) => {
       if (!startTime) startTime = currentTime;
@@ -31,12 +38,11 @@ export default function InitialLoadingScreen({ percent = 0 }: InitialLoadingScre
       const easedProgress = easeOutCubic(progress);
       const currentValue = startValue + (endValue - startValue) * easedProgress;
       
+      currentAnimatedValueRef.current = currentValue;
       setSmoothPercent(currentValue);
 
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);
-      } else {
-        prevPercentRef.current = endValue;
       }
     };
 
@@ -49,7 +55,7 @@ export default function InitialLoadingScreen({ percent = 0 }: InitialLoadingScre
   const statusText = "Curating the best experience for you...";
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-colors duration-700">
+    <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-all duration-500 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
       <div className="flex flex-col items-center gap-8 max-w-xs w-full px-6">
         {/* Minimalist Progress Tracker */}
         <div className="relative w-full">

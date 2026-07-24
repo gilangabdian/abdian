@@ -10,7 +10,8 @@ export const getAllExperiences = async (queryParams: Record<string, string> = {}
       next: { revalidate: 60, tags: ['experiences'] },
     });
     if (!res.ok) return [];
-    return await res.json();
+    const json = await res.json();
+    return json.data !== undefined ? json.data : json;
   } catch (error) {
     console.error('Failed to fetch experiences', error);
     return [];

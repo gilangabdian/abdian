@@ -41,3 +41,18 @@ export const deleteMessage = async (token: string, id: string | number) => {
     },
   });
 };
+
+export const getAllContacts = async (): Promise<any[]> => {
+  try {
+    const res = await fetch(`${API_URL}/contacts`, {
+      next: { revalidate: 60, tags: ['contacts'] },
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.data !== undefined ? json.data : json;
+  } catch (error) {
+    console.error('Failed to fetch contacts', error);
+    return [];
+  }
+};
+

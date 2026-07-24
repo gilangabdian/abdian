@@ -8,7 +8,8 @@ export const getProfile = async (): Promise<Profile | null> => {
       next: { revalidate: 60, tags: ['profile'] },
     });
     if (!res.ok) return null;
-    return await res.json();
+    const json = await res.json();
+    return json.data !== undefined ? json.data : json;
   } catch (error) {
     console.error('Failed to fetch profile', error);
     return null;

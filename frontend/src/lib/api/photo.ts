@@ -10,7 +10,8 @@ export const getAllPhotos = async (queryParams: Record<string, string> = {}): Pr
       next: { revalidate: 60, tags: ['photos'] },
     });
     if (!res.ok) return [];
-    return await res.json();
+    const responseData = await res.json();
+    return Array.isArray(responseData) ? responseData : (responseData.data || []);
   } catch (error) {
     console.error('Failed to fetch photos', error);
     return [];
@@ -23,7 +24,8 @@ export const getPhotoById = async (id: string | number): Promise<Photo | null> =
       next: { revalidate: 60, tags: ['photos', `photo-${id}`] },
     });
     if (!res.ok) return null;
-    return await res.json();
+    const responseData = await res.json();
+    return responseData.data !== undefined ? responseData.data : responseData;
   } catch (error) {
     console.error('Failed to fetch photo', error);
     return null;

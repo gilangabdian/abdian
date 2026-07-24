@@ -8,7 +8,8 @@ export const getSkills = async (): Promise<Skill[]> => {
       next: { revalidate: 60, tags: ['skills'] },
     });
     if (!res.ok) return [];
-    return await res.json();
+    const json = await res.json();
+    return json.data !== undefined ? json.data : json;
   } catch (error) {
     console.error('Failed to fetch skills', error);
     return [];

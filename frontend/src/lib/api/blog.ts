@@ -10,7 +10,8 @@ export const getAllBlogs = async (queryParams: Record<string, string> = {}): Pro
       next: { revalidate: 60, tags: ['blogs'] },
     });
     if (!res.ok) return [];
-    return await res.json();
+    const responseData = await res.json();
+    return Array.isArray(responseData) ? responseData : (responseData.data || []);
   } catch (error) {
     console.error('Failed to fetch blogs', error);
     return [];
@@ -19,11 +20,12 @@ export const getAllBlogs = async (queryParams: Record<string, string> = {}): Pro
 
 export const getBlogBySlug = async (slug: string): Promise<Blog | null> => {
   try {
-    const res = await fetch(`${API_URL}/blogs/slug/${slug}`, {
+    const res = await fetch(`${API_URL}/blogs/${slug}`, {
       next: { revalidate: 60, tags: ['blogs', `blog-${slug}`] },
     });
     if (!res.ok) return null;
-    return await res.json();
+    const responseData = await res.json();
+    return responseData.data !== undefined ? responseData.data : responseData;
   } catch (error) {
     console.error('Failed to fetch blog by slug', error);
     return null;
@@ -36,7 +38,8 @@ export const getBlogById = async (id: string | number): Promise<Blog | null> => 
       next: { revalidate: 60, tags: ['blogs', `blog-${id}`] },
     });
     if (!res.ok) return null;
-    return await res.json();
+    const responseData = await res.json();
+    return responseData.data !== undefined ? responseData.data : responseData;
   } catch (error) {
     console.error('Failed to fetch blog by id', error);
     return null;

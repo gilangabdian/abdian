@@ -10,7 +10,8 @@ export const getAllCertificates = async (queryParams: Record<string, string> = {
       next: { revalidate: 60, tags: ['certificates'] },
     });
     if (!res.ok) return [];
-    return await res.json();
+    const json = await res.json();
+    return json.data !== undefined ? json.data : json;
   } catch (error) {
     console.error('Failed to fetch certificates', error);
     return [];
@@ -23,7 +24,8 @@ export const getSingleCertificate = async (id: string | number): Promise<Certifi
       next: { revalidate: 60, tags: ['certificates', `certificate-${id}`] },
     });
     if (!res.ok) return null;
-    return await res.json();
+    const json = await res.json();
+    return json.data !== undefined ? json.data : json;
   } catch (error) {
     console.error('Failed to fetch certificate', error);
     return null;

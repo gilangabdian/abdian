@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   description: "Admin panel for Gilang Abdian's portfolio",
 };
 
+import AdminLayoutWrapper from "@/components/layouts/admin/AdminLayoutWrapper";
+
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -34,7 +36,9 @@ export default function AdminLayout({
 }>) {
   return (
     <div className={`${inter.variable} ${dmSerif.variable} ${playfair.variable} flex flex-col min-h-full bg-gray-50 dark:bg-neutral-900 text-black dark:text-white w-full`}>
-      {children}
+      <AdminLayoutWrapper>
+        {children}
+      </AdminLayoutWrapper>
     </div>
   );
 }

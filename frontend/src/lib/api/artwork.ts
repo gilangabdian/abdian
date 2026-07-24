@@ -10,7 +10,8 @@ export const getAllArtworks = async (queryParams: Record<string, string> = {}): 
       next: { revalidate: 60, tags: ['artworks'] },
     });
     if (!res.ok) return [];
-    return await res.json();
+    const responseData = await res.json();
+    return Array.isArray(responseData) ? responseData : (responseData.data || []);
   } catch (error) {
     console.error('Failed to fetch artworks', error);
     return [];
@@ -23,7 +24,8 @@ export const getArtworkById = async (id: string | number): Promise<Artwork | nul
       next: { revalidate: 60, tags: ['artworks', `artwork-${id}`] },
     });
     if (!res.ok) return null;
-    return await res.json();
+    const responseData = await res.json();
+    return responseData.data !== undefined ? responseData.data : responseData;
   } catch (error) {
     console.error('Failed to fetch artwork', error);
     return null;

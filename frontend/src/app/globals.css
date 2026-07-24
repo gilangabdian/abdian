@@ -152,7 +152,8 @@ body {
 }
 
 .dark .active-nav-item.text-gray-700 svg,
-.dark .active-nav-item.text-gray-700 span {
+.dark .active-nav-item.text-gray-700 span,
+.dark .active-nav-item.text-gray-700 iconify-icon {
   color: #000000 !important;
 }
 
@@ -280,11 +281,6 @@ html.dark::-webkit-scrollbar-thumb:hover {
   font-variant-ligatures: none;
 }
 
-iconify-icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-}
 
 .animate-in {
   animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);

@@ -20,7 +20,12 @@ export interface Blog {
   published_at?: string;
   cover_image?: string;
   cover_image_url?: string;
-  created_at?: string;
+  is_external?: boolean;
+  external_url?: string;
+  title_en?: string;
+  content_en?: string;
+  read_time?: number;
+  created_at: string;
   updated_at?: string;
 }
 
@@ -28,14 +33,21 @@ export interface Blog {
 export interface Certificate {
   id: number;
   name: string;
+  title?: string;
   issuer: string;
   issue_date?: string;
+  start_date?: string;
+  end_date?: string;
   expiration_date?: string;
+  has_no_expiration?: boolean;
   credential_id?: string;
   credential_url?: string;
+  credential_link?: string;
   image_path?: string;
   is_featured: boolean;
   order_number: number;
+  type?: string;
+  description?: string;
   created_at?: string;
   updated_at?: string;
   image_url?: string;
@@ -57,9 +69,11 @@ export interface ContactMessage {
 export interface Experience {
   id: number;
   title: string;
+  role?: string;
   company_name: string;
   location?: string;
   employment_type?: string;
+  status?: string;
   start_date?: string;
   end_date?: string;
   is_current: boolean;
@@ -135,6 +149,11 @@ export interface ProjectCategory {
   updated_at?: string;
 }
 
+export interface CustomTechStack {
+  name: string;
+  icon_url: string;
+}
+
 export interface Project {
   id: number;
   title: string;
@@ -147,10 +166,19 @@ export interface Project {
   end_date?: string;
   url?: string;
   github_url?: string;
+  repository_link?: string;
+  live_demo_link?: string;
   technologies?: string[];
   is_featured: boolean;
   order_number: number;
   category_id?: number;
+  thumbnail_path?: string;
+  thumbnail_url?: string;
+  type?: string;
+  status?: string;
+  team_size?: number;
+  custom_tech_stacks?: CustomTechStack[];
+  skills?: any[];
   created_at?: string;
   updated_at?: string;
   

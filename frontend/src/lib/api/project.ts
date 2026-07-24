@@ -10,7 +10,8 @@ export const getAllProjects = async (queryParams: Record<string, string> = {}): 
       next: { revalidate: 60, tags: ['projects'] },
     });
     if (!res.ok) return [];
-    return await res.json();
+    const json = await res.json();
+    return json.data !== undefined ? json.data : json;
   } catch (error) {
     console.error('Failed to fetch projects', error);
     return [];
@@ -23,7 +24,8 @@ export const getSingleProject = async (idOrSlug: string | number): Promise<Proje
       next: { revalidate: 60, tags: ['projects', `project-${idOrSlug}`] },
     });
     if (!res.ok) return null;
-    return await res.json();
+    const json = await res.json();
+    return json.data !== undefined ? json.data : json;
   } catch (error) {
     console.error('Failed to fetch single project', error);
     return null;
