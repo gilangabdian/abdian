@@ -39,8 +39,6 @@ export default function HomepageClient({
   const [loadingPercent, setLoadingPercent] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const projectSectionRef = useRef<HTMLDivElement>(null);
-  const certificateSectionRef = useRef<HTMLDivElement>(null);
 
   // Initialize Visitor Tracking
   useEffect(() => {
@@ -98,6 +96,7 @@ export default function HomepageClient({
       setHasSeenIntro(true);
       setIsLoading(false);
       window.dispatchEvent(new CustomEvent("content-loaded"));
+      setTimeout(() => ScrollTrigger.refresh(), 200);
       return;
     }
 
@@ -135,6 +134,7 @@ export default function HomepageClient({
           setHasSeenIntro(true);
           sessionStorage.setItem("has_seen_intro", "true");
           window.dispatchEvent(new CustomEvent("content-loaded"));
+          setTimeout(() => ScrollTrigger.refresh(), 200);
         }, 500); 
       }, 850); 
     };
@@ -153,53 +153,7 @@ export default function HomepageClient({
     return () => clearInterval(interval);
   }, [profile?.about?.photo_url]);
 
-  // Setup GSAP Stacking Animation
-  useGSAP(
-    () => {
-      if (isLoading) return; 
-
-      const projectEl = projectSectionRef.current;
-      const certEl = certificateSectionRef.current;
-
-      if (projectEl && certEl) {
-        gsap.set([projectEl, certEl], {
-          willChange: "transform, position",
-        });
-
-        gsap.set(certEl, {
-          position: "relative",
-          zIndex: 10,
-        });
-
-        gsap.to(projectEl, {
-          opacity: 0.4,
-          scale: 0.97,
-          ease: "none",
-          scrollTrigger: {
-            trigger: projectEl,
-            start: "bottom bottom",
-            end: "bottom 30%",
-            scrub: 0.6,
-          },
-        });
-
-        ScrollTrigger.create({
-          trigger: projectEl,
-          start: () => (window.innerWidth < 768 ? "bottom bottom-=120px" : "bottom bottom"),
-          end: "bottom top",
-          pin: true,
-          pinSpacing: false,
-          anticipatePin: 1,
-          pinType: "fixed",
-          fastScrollEnd: true,
-        });
-
-        // Trigger refresh after setting up
-        setTimeout(() => ScrollTrigger.refresh(), 100);
-      }
-    },
-    { dependencies: [isLoading], scope: containerRef }
-  );
+  // Removed GSAP Stacking Animation per user request because it caused visual bugs in Next.js
 
   return (
     <div className="min-h-screen bg-white text-black font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0" ref={containerRef}>
@@ -244,11 +198,11 @@ export default function HomepageClient({
         <Hero profile={profile} />
         <Tech skills={skills} profile={profile} />
 
-        <div ref={projectSectionRef} className="relative z-0">
+        <div className="relative z-0">
           <FeaturedProject projects={projects} />
         </div>
 
-        <div ref={certificateSectionRef} className="relative z-10 bg-white">
+        <div className="relative z-10 bg-white">
           <FeaturedCertificate certificates={certificates} />
         </div>
 

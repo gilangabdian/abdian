@@ -1,3 +1,4 @@
+import React from "react";
 import "iconify-icon";
 import Navbar from "@/components/layouts/public/Navbar";
 import Footer from "@/components/layouts/public/Footer";
@@ -22,7 +23,9 @@ export default function PublicLayout({
       
       <main className="flex-grow">{children}</main>
       <Footer />
-      <Navbar />
+      <React.Suspense fallback={null}>
+        <Navbar />
+      </React.Suspense>
       <ScrollToTop />
       <ProgressBarProvider />
     </div>
