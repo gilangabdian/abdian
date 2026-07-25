@@ -40,6 +40,8 @@ export default function LeaveMark() {
   const [alreadyMarked, setAlreadyMarked] = useState<boolean>(false);
   const [tooltips, setTooltips] = useState<{ id: number }[]>([]);
   const [deviceId, setDeviceId] = useState<string | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [showNumberTemporary, setShowNumberTemporary] = useState(false);
   
   const countRef = useRef<HTMLSpanElement>(null);
   const prevCountRef = useRef<number | null>(null);
@@ -103,6 +105,14 @@ export default function LeaveMark() {
     const newId = Date.now() + Math.random();
     setTooltips((prev) => [...prev, { id: newId }]);
 
+    // Show temporary number on click
+    setShowNumberTemporary(true);
+    
+    // Hide temporary number after 4 seconds
+    setTimeout(() => {
+      setShowNumberTemporary(false);
+    }, 4000);
+
     if (alreadyMarked) return; // Don't send request if already marked
 
     try {
@@ -118,18 +128,29 @@ export default function LeaveMark() {
     }
   };
 
+  const isNumberVisible = (alreadyMarked && isHovered) || showNumberTemporary;
+
   return (
     <div className="relative w-full flex justify-start py-2 font-[Inter] z-20">
-      <button
+      <button 
         onClick={handleLeaveMark}
-        className="group flex flex-col items-center gap-0.5 text-neutral-400 hover:text-black dark:text-neutral-500 dark:hover:text-white transition-colors duration-300 relative cursor-pointer">
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="group flex flex-col items-center gap-0.5 text-neutral-400 hover:text-black dark:text-neutral-500 dark:hover:text-white transition-colors duration-300 relative cursor-pointer"
+      >
         <span className="text-xs tracking-wider font-medium opacity-70 group-hover:opacity-100 transition-opacity">
           Leave a mark
         </span>
-        <div className="h-5 overflow-hidden flex items-center justify-center">
-          <span ref={countRef} className="text-sm font-bold block">
-            {markCount !== null ? markCount : "..."}
-          </span>
+        <div 
+          className={`absolute top-full left-1/2 -translate-x-1/2 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+            isNumberVisible ? "max-h-5 opacity-100 pt-0.5" : "max-h-0 opacity-0 pt-0"
+          }`}
+        >
+          <div className="h-5 flex items-center justify-center">
+            <span ref={countRef} className="text-sm font-bold block">
+              {markCount !== null ? markCount : "..."}
+            </span>
+          </div>
         </div>
       </button>
 
