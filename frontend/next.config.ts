@@ -5,6 +5,15 @@ const nextConfig: any = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/sitemap.xml',
+        destination: 'https://qbdian-api.onrender.com/api/sitemap',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
