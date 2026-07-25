@@ -137,7 +137,7 @@ export default function AllCertificatesClient({ initialCertificates }: AllCertif
                   <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                     {certificate.issuer}
                   </span>
-                  <h3 className="text-sm font-bold font-serif leading-tight group-hover:underline decoration-2 underline-offset-2 text-black dark:text-white">
+                  <h3 className="text-sm font-bold font-sans leading-tight group-hover:underline decoration-2 underline-offset-2 text-black dark:text-white">
                     {certificate.title}
                   </h3>
                 </div>
@@ -153,7 +153,7 @@ export default function AllCertificatesClient({ initialCertificates }: AllCertif
           <div className="relative bg-white dark:bg-dark-card w-full max-w-2xl max-h-[85vh] flex flex-col rounded-xl border border-black/20 dark:border-white/20 shadow-xl animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-start p-6 border-b border-black/10 dark:border-white/10 bg-gray-50 dark:bg-black/50 rounded-t-lg shrink-0">
               <div>
-                <h3 className="text-2xl font-black font-serif uppercase pr-4 leading-none mb-2 text-black dark:text-white">
+                <h3 className="text-2xl font-black font-sans uppercase pr-4 leading-none mb-2 text-black dark:text-white">
                   {selectedCert?.title}
                 </h3>
 
@@ -216,7 +216,7 @@ export default function AllCertificatesClient({ initialCertificates }: AllCertif
                 />
               </div>
 
-              <h4 className="font-bold font-serif uppercase text-sm mb-3 border-b border-black/20 dark:border-white/20 inline-block text-black dark:text-white">
+              <h4 className="font-bold font-sans uppercase text-sm mb-3 border-b border-black/20 dark:border-white/20 inline-block text-black dark:text-white">
                 Description
               </h4>
               <div

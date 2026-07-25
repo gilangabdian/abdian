@@ -98,7 +98,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
       {projects && projects.length > 0 && (
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-black text-black mb-6 font-serif tracking-wider inline-block relative border-b border-black/20 pb-2">
+            <h2 className="text-4xl font-black text-black mb-6 font-sans tracking-wider inline-block relative border-b border-black/20 pb-2">
               <span className="relative z-10">Featured Projects</span>
             </h2>
           </div>
@@ -127,7 +127,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                 </div>
 
                 <div className="flex flex-col flex-grow px-1">
-                  <h3 className="text-base font-bold font-serif leading-tight mb-2 group-hover:underline decoration-2 underline-offset-2">
+                  <h3 className="text-base font-bold font-sans leading-tight mb-2 group-hover:underline decoration-2 underline-offset-2">
                     {project.title}
                   </h3>
 
@@ -185,7 +185,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
 
           <div className="relative bg-white w-full max-w-2xl max-h-[85vh] flex flex-col rounded-xl border border-black/20 shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-start p-6 border-b border-black/10 bg-gray-50 rounded-t-lg shrink-0">
-              <h3 className="text-2xl font-black font-serif uppercase pr-4 leading-none">
+              <h3 className="text-2xl font-black font-sans uppercase pr-4 leading-none">
                 {selectedProject?.title}
               </h3>
 
@@ -209,7 +209,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
 
               {selectedProject?.skills && selectedProject.skills.length > 0 && (
                 <div className="mb-6">
-                  <h4 className="font-bold font-serif uppercase text-sm mb-3 border-b border-black/20 inline-block">
+                  <h4 className="font-bold font-sans uppercase text-sm mb-3 border-b border-black/20 inline-block">
                     Tech Stack
                   </h4>
                   <div className="flex flex-wrap gap-2">
@@ -286,7 +286,7 @@ export default function FeaturedProject({ projects = [] }: FeaturedProjectProps)
                 </div>
               )}
 
-              <h4 className="font-bold font-serif uppercase text-sm mb-3 border-b border-black/20 inline-block">
+              <h4 className="font-bold font-sans uppercase text-sm mb-3 border-b border-black/20 inline-block">
                 Description
               </h4>
               <div

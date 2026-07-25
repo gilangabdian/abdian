@@ -49,7 +49,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
           {/* Description */}
           {project.description && (
             <div>
-              <h4 className="font-bold font-serif uppercase text-sm border-b border-neutral-200 dark:border-neutral-800 inline-block text-black dark:text-white">
+              <h4 className="font-bold font-sans uppercase text-sm border-b border-neutral-200 dark:border-neutral-800 inline-block text-black dark:text-white">
                 Description
               </h4>
               <div
@@ -62,7 +62,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
           {/* Tech Stack */}
           {project.skills && project.skills.length > 0 && (
             <div>
-              <h4 className="font-bold font-serif uppercase text-sm border-b border-neutral-200 dark:border-neutral-800 inline-block text-black dark:text-white">
+              <h4 className="font-bold font-sans uppercase text-sm border-b border-neutral-200 dark:border-neutral-800 inline-block text-black dark:text-white">
                 Tech Stack
               </h4>
               <div className="flex flex-wrap gap-2 mt-3">
@@ -86,7 +86,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
         <div className="md:col-span-2 flex flex-col gap-6">
           {/* Quick Facts */}
           <div>
-            <h4 className="font-bold font-serif uppercase text-sm border-b border-neutral-200 dark:border-neutral-800 inline-block text-black dark:text-white">
+            <h4 className="font-bold font-sans uppercase text-sm border-b border-neutral-200 dark:border-neutral-800 inline-block text-black dark:text-white">
               Quick Facts
             </h4>
             <div className="mt-3 space-y-3">
@@ -149,7 +149,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
           {/* Action Buttons */}
           {(project.repository_link || project.live_demo_link) && (
             <div className="flex flex-col gap-2.5">
-              <h4 className="font-bold font-serif uppercase text-sm border-b border-neutral-200 dark:border-neutral-800 inline-block text-black dark:text-white">
+              <h4 className="font-bold font-sans uppercase text-sm border-b border-neutral-200 dark:border-neutral-800 inline-block text-black dark:text-white">
                 Links
               </h4>
               <div className="mt-1 flex flex-col gap-2">

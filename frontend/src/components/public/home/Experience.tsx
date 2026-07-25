@@ -153,7 +153,7 @@ export default function Experience({ experiences = [] }: ExperienceProps) {
       <div className="max-w-5xl mx-auto px-4 md:px-6">
         <div className="text-center mb-12">
           <div className="journey-header inline-block">
-            <h2 className="text-4xl font-black text-black mb-6 font-serif tracking-wider inline-block relative border-b border-black/20 pb-2">
+            <h2 className="text-4xl font-black text-black mb-6 font-sans tracking-wider inline-block relative border-b border-black/20 pb-2">
               <span className="relative z-10">My Journey</span>
             </h2>
           </div>

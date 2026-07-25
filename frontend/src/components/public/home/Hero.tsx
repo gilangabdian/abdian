@@ -125,7 +125,7 @@ export default function Hero({ profile }: HeroProps) {
               </span>
             </h1>
 
-            <h2 className="hero-text text-xl md:text-2xl lg:text-3xl font-[Playfair_Display] italic text-gray-800 dark:text-gray-200 pt-1 min-h-[1.5em] flex items-center">
+            <h2 className="hero-text text-xl md:text-2xl lg:text-3xl font-[Inter] font-medium text-gray-800 dark:text-gray-200 pt-1 min-h-[1.5em] flex items-center">
               <span>{displayedJob}</span>
               <span
                 className={`inline-block w-[2px] h-[24px] md:h-[32px] bg-black dark:bg-white ml-1 align-middle transition-opacity duration-100 ${
