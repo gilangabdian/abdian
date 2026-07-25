@@ -105,6 +105,90 @@
                 }
             }
         },
+        "/api/visitors/mark/count": {
+            "get": {
+                "summary": "Get Mark Count (🌍 Global/Public)",
+                "description": "Get the total count of visitors who left a mark, and optionally check if a specific device has already marked.",
+                "parameters": [
+                    {
+                        "name": "device_id",
+                        "in": "query",
+                        "description": "Optional device identifier to check if this device has already left a mark",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Mark count retrieved successfully",
+                                    "data": {
+                                        "total_marks": 42,
+                                        "already_marked": false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/visitors/mark": {
+            "post": {
+                "summary": "Leave a Mark (🌍 Global/Public)",
+                "description": "Allow a visitor to leave a mark. Will only increment the count once per device_id.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "device_id"
+                                ],
+                                "properties": {
+                                    "device_id": {
+                                        "type": "string",
+                                        "description": "Unique device identifier UUID or Fingerprint"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Mark left successfully",
+                                    "data": {
+                                        "already_marked": false,
+                                        "total_marks": 43
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "device_id is required"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/admin/visitors": {
             "get": {
                 "summary": "Get Paginated Visitors (🔒 Admin Only)",

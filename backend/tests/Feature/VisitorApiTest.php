@@ -159,4 +159,43 @@ class VisitorApiTest extends TestCase
             'city' => 'San Francisco',
         ]);
     }
+
+    public function test_can_leave_mark_and_get_count()
+    {
+        $response = $this->postJson('/api/visitors/mark', [
+            'device_id' => 'mark-device-1',
+        ]);
+
+        $response->assertStatus(200)
+                 ->assertJsonPath('data.total_marks', 1)
+                 ->assertJsonPath('data.already_marked', false);
+
+        $this->assertDatabaseHas('visitors', [
+            'device_id' => 'mark-device-1',
+            'left_mark' => true,
+        ]);
+
+        $getCount = $this->getJson('/api/visitors/mark/count');
+        $getCount->assertStatus(200)
+                 ->assertJsonPath('data.total_marks', 1);
+    }
+
+    public function test_cannot_leave_mark_twice_for_same_device()
+    {
+        $this->postJson('/api/visitors/mark', [
+            'device_id' => 'mark-device-2',
+        ]);
+
+        $response = $this->postJson('/api/visitors/mark', [
+            'device_id' => 'mark-device-2',
+        ]);
+
+        $response->assertStatus(200)
+                 ->assertJsonPath('data.total_marks', 1)
+                 ->assertJsonPath('data.already_marked', true);
+
+        $getCount = $this->getJson('/api/visitors/mark/count');
+        $getCount->assertStatus(200)
+                 ->assertJsonPath('data.total_marks', 1);
+    }
 }

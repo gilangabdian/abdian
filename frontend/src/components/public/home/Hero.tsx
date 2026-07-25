@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Profile } from "@/types";
 import { Icon } from "@iconify/react";
+import LeaveMark from "./LeaveMark";
 
 gsap.registerPlugin(useGSAP);
 
@@ -190,6 +191,10 @@ export default function Hero({ profile }: HeroProps) {
                 </a>
               ))}
             </div>
+          </div>
+          
+          <div className="hero-content mt-4 w-full flex justify-start">
+            <LeaveMark />
           </div>
         </div>
 

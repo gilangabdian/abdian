@@ -38,6 +38,7 @@ export default function Navbar() {
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blogs" },
     { name: "Projects", href: "/projects" },
+    { name: "Certificates", href: "/certificates" },
   ];
 
   // Mobile nav items — icon only
@@ -45,6 +46,7 @@ export default function Navbar() {
     { name: "About", href: "/about", icon: "mdi:card-account-details-outline" },
     { name: "Blog", href: "/blogs", icon: "material-symbols-light:post-outline" },
     { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
+    { name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" },
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
     { name: "Contacts", href: "/contacts", icon: "mdi:email-outline" },
@@ -94,7 +96,7 @@ export default function Navbar() {
 
   // ─── MOBILE NAVBAR MARKUP ────────────────────────
   const mobileNavbar = (
-    <div className="absolute top-0 left-0 right-0 z-50 lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-black">
+    <div className="absolute top-2 left-0 right-0 z-50 lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-black">
       {/* Kiri: SVG Logo */}
       <Link href="/" title="Gilang Abdian">
         {renderLogoSvg("mask0_mobile", 30, 30)}
