@@ -6,15 +6,7 @@ const nextConfig: any = {
     ignoreBuildErrors: true,
   },
   staticPageGenerationTimeout: 300, // Menunggu maksimal 5 menit untuk Render bangun
-  async redirects() {
-    return [
-      {
-        source: "/sitemap.xml",
-        destination: "https://qbdian-api.onrender.com/api/sitemap",
-        permanent: false,
-      },
-    ];
-  },
+
 };
 
 export default nextConfig;
