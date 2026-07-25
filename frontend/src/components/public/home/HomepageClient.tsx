@@ -196,15 +196,19 @@ export default function HomepageClient({
         <Hero profile={profile} />
         <Tech skills={skills} profile={profile} />
 
-        <div className="relative z-0">
-          <FeaturedProject projects={projects} />
-        </div>
+        {profile?.about?.show_featured_projects_on_home !== false && (
+          <div className="relative z-0">
+            <FeaturedProject projects={projects} />
+          </div>
+        )}
 
-        <div className="relative z-10 bg-white">
-          <FeaturedCertificate certificates={certificates} />
-        </div>
+        {profile?.about?.show_featured_certificates_on_home !== false && (
+          <div className="relative z-10 bg-white">
+            <FeaturedCertificate certificates={certificates} />
+          </div>
+        )}
 
-        {experiences && experiences.length > 0 && (
+        {profile?.about?.show_experiences_on_home !== false && experiences && experiences.length > 0 && (
           <div className="relative z-20 bg-white">
             <Experience experiences={experiences} />
           </div>
