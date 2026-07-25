@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -39,6 +39,13 @@ export default function HomepageClient({
   const [loadingPercent, setLoadingPercent] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem('has_seen_intro') === 'true') {
+      document.documentElement.classList.add('skip-intro');
+      setHasSeenIntro(true);
+    }
+  }, []);
 
   // Initialize Visitor Tracking
   useEffect(() => {
@@ -158,15 +165,6 @@ export default function HomepageClient({
   return (
     <div className="min-h-screen bg-white text-black font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0" ref={containerRef}>
       
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            if (sessionStorage.getItem('has_seen_intro') === 'true') {
-              document.documentElement.classList.add('skip-intro');
-            }
-          `,
-        }}
-      />
       <style
         dangerouslySetInnerHTML={{
           __html: `

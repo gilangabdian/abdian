@@ -36,7 +36,10 @@ export const RawHtml = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', { 'data-raw-html': '' }, HTMLAttributes.html];
+    const div = document.createElement('div');
+    div.innerHTML = HTMLAttributes.html;
+    div.setAttribute('data-raw-html', '');
+    return div;
   },
 
   addNodeView() {

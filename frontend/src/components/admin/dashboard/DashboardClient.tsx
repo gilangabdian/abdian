@@ -16,6 +16,7 @@ import {
   adminDeleteVisitor,
   adminClearAllVisitors,
 } from "@/lib/api/visitor";
+import { alertConfirmVisitor, alertConfirmClearAllVisitors, alertSuccessVisitor } from "@/lib/alert";
 
 export default function DashboardClient() {
   const [stats, setStats] = useState({
@@ -161,14 +162,14 @@ export default function DashboardClient() {
   }, []);
 
   const deleteVisitor = async (id: number | string) => {
-    const confirmed = confirm("Are you sure you want to delete this visitor? You won't be able to revert this!");
+    const confirmed = await alertConfirmVisitor("You won't be able to revert this!");
     if (confirmed) {
       const token = getToken();
       if (!token) return;
       try {
         const response = await adminDeleteVisitor(token, id);
-        if (response.ok) {
-          alert("Visitor record has been deleted.");
+        if (response.status === 200) {
+          await alertSuccessVisitor("Deleted!", "Visitor record has been deleted.");
           fetchVisitorsList(pagination.current_page);
           loadAllData(); // reload counts
         }
@@ -179,14 +180,14 @@ export default function DashboardClient() {
   };
 
   const clearAllVisitors = async () => {
-    const confirmed = confirm("This will permanently delete ALL visitor records. Are you sure?");
+    const confirmed = await alertConfirmClearAllVisitors("This will permanently delete ALL visitor records. Are you sure?");
     if (confirmed) {
       const token = getToken();
       if (!token) return;
       try {
         const response = await adminClearAllVisitors(token);
-        if (response.ok) {
-          alert("All visitor records have been deleted.");
+        if (response.status === 200) {
+          await alertSuccessVisitor("Cleared!", "All visitor records have been deleted.");
           fetchVisitorsList(1);
           loadAllData();
         }

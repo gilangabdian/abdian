@@ -204,7 +204,7 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
 
           {/* Back Button at bottom */}
           <Link
-            href="/blog"
+            href="/blogs"
             className="group cursor-pointer mt-16 font-medium text-neutral-500 flex items-center gap-2 w-fit">
             <span className="font-mono">{">"}</span>
             <span className="border-b border-neutral-300 dark:border-neutral-700 group-hover:border-black dark:group-hover:border-white group-hover:text-black dark:group-hover:text-white transition-all pb-[1px]">

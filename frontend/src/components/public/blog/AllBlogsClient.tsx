@@ -100,7 +100,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
                 <div className="relative z-10 w-full flex flex-col items-start px-2 pt-6 md:pt-0 md:px-8">
                   {group.blogs.map((blog) => {
                     const isExternal = blog.is_external;
-                    const href = isExternal ? blog.external_url || "#" : `/blog/${blog.slug}`;
+                    const href = isExternal ? blog.external_url || "#" : `/blogs/${blog.slug}`;
                     const target = isExternal ? "_blank" : undefined;
                     const rel = isExternal ? "noopener noreferrer" : undefined;
                     

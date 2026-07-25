@@ -3,8 +3,8 @@ import { getAllBlogs } from "@/lib/api/blog";
 import AllBlogsClient from "@/components/public/blog/AllBlogsClient";
 
 export const metadata: Metadata = {
-  title: "Blog - Abdian",
-  description: "Read my latest articles, insights, and thoughts on software engineering and design.",
+  title: "Blog - Gilang Abdian",
+  description: "A poorly writer. Trying to write about something that interest me",
 };
 
 export default async function BlogPage() {
