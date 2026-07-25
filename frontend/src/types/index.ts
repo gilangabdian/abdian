@@ -122,6 +122,7 @@ export interface ProfileAbout {
   show_featured_projects_on_home?: boolean;
   show_featured_certificates_on_home?: boolean;
   show_experiences_on_home?: boolean;
+  show_tech_on_home?: boolean;
   created_at?: string;
   updated_at?: string;
   photo_url?: string;

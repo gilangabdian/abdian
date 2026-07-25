@@ -194,7 +194,10 @@ export default function HomepageClient({
         className={`transition-opacity duration-500 ${hasSeenIntro || isFadingOut ? "opacity-100 animate-in" : "opacity-0 h-screen overflow-hidden"}`}
       >
         <Hero profile={profile} />
-        <Tech skills={skills} profile={profile} />
+
+        {profile?.about?.show_tech_on_home !== false && (
+          <Tech skills={skills} profile={profile} />
+        )}
 
         {profile?.about?.show_featured_projects_on_home !== false && (
           <div className="relative z-0">

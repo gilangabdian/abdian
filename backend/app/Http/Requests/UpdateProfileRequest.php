@@ -31,6 +31,7 @@ class UpdateProfileRequest extends FormRequest
             'show_featured_projects_on_home' => 'nullable|boolean',
             'show_featured_certificates_on_home' => 'nullable|boolean',
             'show_experiences_on_home' => 'nullable|boolean',
+            'show_tech_on_home' => 'nullable|boolean',
         ];
     }
 

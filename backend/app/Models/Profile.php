@@ -22,6 +22,7 @@ class Profile extends Model
         'show_featured_projects_on_home',
         'show_featured_certificates_on_home',
         'show_experiences_on_home',
+        'show_tech_on_home',
     ];
 
     protected $casts = [
@@ -32,5 +33,6 @@ class Profile extends Model
         'show_featured_projects_on_home' => 'boolean',
         'show_featured_certificates_on_home' => 'boolean',
         'show_experiences_on_home' => 'boolean',
+        'show_tech_on_home' => 'boolean',
     ];
 }

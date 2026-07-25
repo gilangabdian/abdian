@@ -18,6 +18,7 @@ export default function ProfileClient() {
     show_featured_projects_on_home: true,
     show_featured_certificates_on_home: true,
     show_experiences_on_home: true,
+    show_tech_on_home: true,
   });
 
   const [originalForm, setOriginalForm] = useState({
@@ -28,6 +29,7 @@ export default function ProfileClient() {
     show_featured_projects_on_home: true,
     show_featured_certificates_on_home: true,
     show_experiences_on_home: true,
+    show_tech_on_home: true,
   });
 
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -56,7 +58,8 @@ export default function ProfileClient() {
       form.is_available_for_work !== originalForm.is_available_for_work ||
       form.show_featured_projects_on_home !== originalForm.show_featured_projects_on_home ||
       form.show_featured_certificates_on_home !== originalForm.show_featured_certificates_on_home ||
-      form.show_experiences_on_home !== originalForm.show_experiences_on_home;
+      form.show_experiences_on_home !== originalForm.show_experiences_on_home ||
+      form.show_tech_on_home !== originalForm.show_tech_on_home;
 
     return hasNewFiles || hasTextChanges;
   }, [form, originalForm, photoFile, secondaryImageFile, cvFile]);
@@ -75,6 +78,7 @@ export default function ProfileClient() {
           show_featured_projects_on_home: result.about.show_featured_projects_on_home ?? true,
           show_featured_certificates_on_home: result.about.show_featured_certificates_on_home ?? true,
           show_experiences_on_home: result.about.show_experiences_on_home ?? true,
+          show_tech_on_home: result.about.show_tech_on_home ?? true,
         });
 
         setOriginalForm({
@@ -85,6 +89,7 @@ export default function ProfileClient() {
           show_featured_projects_on_home: result.about.show_featured_projects_on_home ?? true,
           show_featured_certificates_on_home: result.about.show_featured_certificates_on_home ?? true,
           show_experiences_on_home: result.about.show_experiences_on_home ?? true,
+          show_tech_on_home: result.about.show_tech_on_home ?? true,
         });
 
         if (result.about.photo_url) setPhotoPreview(result.about.photo_url);
@@ -148,6 +153,7 @@ export default function ProfileClient() {
       formData.append("show_featured_projects_on_home", form.show_featured_projects_on_home ? "1" : "0");
       formData.append("show_featured_certificates_on_home", form.show_featured_certificates_on_home ? "1" : "0");
       formData.append("show_experiences_on_home", form.show_experiences_on_home ? "1" : "0");
+      formData.append("show_tech_on_home", form.show_tech_on_home ? "1" : "0");
 
       if (photoFile) formData.append("photo_path", photoFile);
       if (secondaryImageFile) formData.append("secondary_image", secondaryImageFile);
@@ -333,7 +339,26 @@ export default function ProfileClient() {
               </h3>
               <p className="text-sm font-mono text-gray-600 mb-6">Toggle which sections should be displayed on the public landing page (/).</p>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold uppercase text-sm">Tech Stack</label>
+                  <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={form.show_tech_on_home} 
+                        onChange={(e) => setForm({ ...form, show_tech_on_home: e.target.checked })} 
+                        className="sr-only" 
+                      />
+                      <div className={`block w-14 h-8 transition-colors border-2 border-black ${form.show_tech_on_home ? 'bg-black' : 'bg-gray-300'}`}></div>
+                      <div className={`absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black ${form.show_tech_on_home ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    </div>
+                    <span className="font-bold font-mono text-sm text-gray-700">
+                      {form.show_tech_on_home ? 'Visible' : 'Hidden'}
+                    </span>
+                  </label>
+                </div>
+
                 <div className="flex flex-col gap-2">
                   <label className="font-bold uppercase text-sm">Featured Projects</label>
                   <label className="flex items-center gap-3 cursor-pointer select-none">

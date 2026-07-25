@@ -4,6 +4,7 @@ import Navbar from "@/components/layouts/public/Navbar";
 import Footer from "@/components/layouts/public/Footer";
 import ScrollToTop from "@/components/global/ScrollToTop";
 import ProgressBarProvider from "@/components/global/ProgressBarProvider";
+import RainEffect from "@/components/global/RainEffect";
 import Script from "next/script";
 
 export default function PublicLayout({
@@ -29,6 +30,7 @@ export default function PublicLayout({
         <Footer />
         <ScrollToTop />
         <ProgressBarProvider />
+        <RainEffect />
       </div>
     </>
   );
