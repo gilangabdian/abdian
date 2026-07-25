@@ -272,7 +272,7 @@ html.dark::-webkit-scrollbar-thumb:hover {
 
 .dark .public-theme .prose pre,
 .dark .public-theme .code-block pre {
-  background-color: #1a1a1a !important; /* Pure black for Dark Theme */
+  background-color: var(--color-dark-card) !important; /* Dark Card for Dark Theme */
   color: #c9d1d9 !important; /* Github dark text */
 }
 

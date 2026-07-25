@@ -197,8 +197,8 @@ export default function Tech({ skills = [], profile = null }: TechProps) {
               >
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-100 dark:bg-neutral-300 rounded-full z-20 shadow-sm border border-gray-600 dark:border-neutral-500"></div>
 
-                <div className="bg-white dark:bg-[#1a1a1a] p-3 pb-8 border border-black/20 dark:border-white/10 shadow-sm transition-transform duration-300 hover:scale-105 hover:z-10 hover:shadow-md hover:rotate-0 cursor-default rounded-sm relative">
-                  <div className="aspect-square bg-gray-50 dark:bg-black/40 border border-black/10 dark:border-white/5 mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-white dark:group-hover:bg-[#222222] transition-colors rounded-sm">
+                <div className="bg-white dark:bg-dark-card p-3 pb-8 border border-black/20 dark:border-white/10 shadow-sm transition-transform duration-300 hover:scale-105 hover:z-10 hover:shadow-md hover:rotate-0 cursor-default rounded-sm relative">
+                  <div className="aspect-square bg-gray-50 dark:bg-black/40 border border-black/10 dark:border-white/5 mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-white dark:group-hover:bg-dark-hover transition-colors rounded-sm">
                     <Icon icon={skill.identifier} className="text-5xl md:text-[56px] text-black dark:text-white relative z-10" />
 
                     {skill.note && (
