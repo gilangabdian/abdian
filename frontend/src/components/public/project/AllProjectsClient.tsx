@@ -106,7 +106,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
         {projects.length > 0 ? (
           <>
             {/* Desktop View */}
-            <div className="hidden md:grid grid-cols-12 gap-8 lg:gap-16 desktop-view invisible opacity-0 max-w-5xl mx-auto">
+            <div className="hidden md:grid grid-cols-12 gap-6 lg:gap-10 desktop-view invisible opacity-0 max-w-6xl mx-auto">
               {/* Sidebar List */}
               <div className="col-span-4 lg:col-span-4">
                 <div className="sticky top-28 max-h-[75vh] overflow-y-auto custom-scrollbar pr-4">

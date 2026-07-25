@@ -290,7 +290,6 @@ html.dark::-webkit-scrollbar-thumb:hover {
   font-variant-ligatures: none;
 }
 
-
 .animate-in {
   animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
