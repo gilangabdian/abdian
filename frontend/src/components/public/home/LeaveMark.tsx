@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import gsap from "gsap";
+import { getVisitorMarkCount, leaveVisitorMark } from "@/lib/api/visitor";
 
 const Tooltip = ({ id, onRemove }: { id: number; onRemove: (id: number) => void }) => {
   const [isLeaving, setIsLeaving] = useState(false);
@@ -68,9 +69,8 @@ export default function LeaveMark() {
   }, []);
 
   useEffect(() => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
     if (deviceId) {
-      fetch(`${API_URL}/visitors/mark/count?device_id=${deviceId}`)
+      getVisitorMarkCount(deviceId)
         .then((res) => res.json())
         .then((data) => {
           if (data.data) {
@@ -81,7 +81,7 @@ export default function LeaveMark() {
         .catch((err) => console.error("Failed to fetch mark count", err));
     } else {
       // Fetch initial count without device_id just to show the number quickly
-      fetch(`${API_URL}/visitors/mark/count`)
+      getVisitorMarkCount()
         .then((res) => res.json())
         .then((data) => {
           if (data.data && markCount === null) {
@@ -106,16 +106,9 @@ export default function LeaveMark() {
     if (alreadyMarked) return; // Don't send request if already marked
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
-      const res = await fetch(`${API_URL}/visitors/mark`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ device_id: deviceId }),
-      });
+      const res = await leaveVisitorMark(deviceId);
       const data = await res.json();
-
+      
       if (res.ok && data.data) {
         setMarkCount(data.data.total_marks);
         setAlreadyMarked(true);

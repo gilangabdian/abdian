@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
+import { getSitemapXml } from '@/lib/api/sitemap';
 
 export const revalidate = 3600; // Cache sitemap selama 1 jam agar tidak membebani Render API
 
 export async function GET() {
   try {
-    const res = await fetch('https://qbdian-api.onrender.com/api/sitemap');
+    const res = await getSitemapXml();
     
     if (!res.ok) {
       throw new Error(`Failed to fetch sitemap from API: ${res.status}`);

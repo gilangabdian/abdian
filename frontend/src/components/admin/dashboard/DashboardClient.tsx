@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { getToken } from "@/utils/auth";
-import { getAllProjects } from "@/lib/api/project";
+import { getAllProjects, checkProjectsHealth } from "@/lib/api/project";
 import { getAllArtworks } from "@/lib/api/artwork";
 import { getAllCertificates } from "@/lib/api/certificate";
 import { getSkills } from "@/lib/api/skill";
@@ -144,7 +144,7 @@ export default function DashboardClient() {
 
     const statusInterval = setInterval(async () => {
       try {
-        const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/projects');
+        const response = await checkProjectsHealth();
         if (response.ok) {
           setIsDbConnected(true);
         } else {

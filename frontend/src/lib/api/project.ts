@@ -18,6 +18,10 @@ export const getAllProjects = async (queryParams: Record<string, string> = {}): 
   }
 };
 
+export const checkProjectsHealth = async () => {
+  return await fetch(`${API_URL}/projects`);
+};
+
 export const getSingleProject = async (idOrSlug: string | number): Promise<Project | null> => {
   try {
     const res = await fetch(`${API_URL}/projects/${idOrSlug}`, {

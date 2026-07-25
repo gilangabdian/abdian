@@ -52,3 +52,35 @@ export const adminClearAllVisitors = async (token: string) => {
     },
   });
 };
+
+export const getVisitorMarkCount = async (deviceId?: string) => {
+  const url = deviceId 
+    ? `${API_URL}/visitors/mark/count?device_id=${deviceId}`
+    : `${API_URL}/visitors/mark/count`;
+  return await fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    }
+  });
+};
+
+export const leaveVisitorMark = async (deviceId: string) => {
+  return await fetch(`${API_URL}/visitors/mark`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ device_id: deviceId }),
+  });
+};
+
+export const getGeoJSLocation = async () => {
+  return await fetch("https://get.geojs.io/v1/ip/geo.json", {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    }
+  });
+};

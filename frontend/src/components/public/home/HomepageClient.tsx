@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import NProgress from "nprogress";
 import fpPromise from "@fingerprintjs/fingerprintjs";
-import { logVisitor } from "@/lib/api/visitor";
+import { logVisitor, getGeoJSLocation } from "@/lib/api/visitor";
 
 import Hero from "./Hero";
 import Tech from "./Tech";
@@ -62,7 +62,7 @@ export default function HomepageClient({
 
         let locationData = {};
         try {
-          const geoRes = await fetch("https://get.geojs.io/v1/ip/geo.json");
+          const geoRes = await getGeoJSLocation();
           const geoData = await geoRes.json();
           if (geoData.ip) {
             locationData = {
