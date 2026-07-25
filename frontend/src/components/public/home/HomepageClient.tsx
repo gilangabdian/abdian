@@ -163,7 +163,7 @@ export default function HomepageClient({
   // Removed GSAP Stacking Animation per user request because it caused visual bugs in Next.js
 
   return (
-    <div className="min-h-screen bg-white text-black font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0" ref={containerRef}>
+    <div className="min-h-screen bg-transparent font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0" ref={containerRef}>
       
       <style
         dangerouslySetInnerHTML={{
@@ -206,13 +206,13 @@ export default function HomepageClient({
         )}
 
         {profile?.about?.show_featured_certificates_on_home !== false && (
-          <div className="relative z-10 bg-white">
+          <div className="relative z-10">
             <FeaturedCertificate certificates={certificates} />
           </div>
         )}
 
         {profile?.about?.show_experiences_on_home !== false && experiences && experiences.length > 0 && (
-          <div className="relative z-20 bg-white">
+          <div className="relative z-20">
             <Experience experiences={experiences} />
           </div>
         )}
