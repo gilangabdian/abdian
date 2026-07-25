@@ -143,7 +143,7 @@ export default function Tech({ skills = [], profile = null }: TechProps) {
   }, [filteredSkills, isVisible]);
 
   return (
-    <section ref={containerRef} className="py-24 px-4 md:px-10 bg-white dark:bg-[#121212] overflow-hidden min-h-screen relative">
+    <section ref={containerRef} className="py-24 px-4 md:px-10 bg-white dark:bg-dark-bg overflow-hidden min-h-screen relative">
       <style>{`
         .header-animate, .tab-pill { will-change: transform, opacity; }
         .polaroid-card { will-change: transform, opacity; }

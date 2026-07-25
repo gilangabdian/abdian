@@ -221,7 +221,7 @@ export default function Navbar() {
       <nav
         ref={navRef as any}
         className="fixed bottom-4 lg:top-4 lg:bottom-auto left-1/2 -translate-x-1/2 z-[51] w-[95%] lg:max-w-fit">
-        <div className="bg-white/90 dark:bg-[#1e1e1e]/90 backdrop-blur-md border border-black/20 dark:border-white/10 rounded-2xl lg:rounded-full px-2 py-2 lg:px-6 lg:py-2 shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex items-center transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.05)] overflow-hidden">
+        <div className="bg-white/90 dark:bg-dark-card/90 backdrop-blur-md border border-black/20 dark:border-white/10 rounded-2xl lg:rounded-full px-2 py-2 lg:px-6 lg:py-2 shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex items-center transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.05)] overflow-hidden">
           <div
             title="Gilang Abdian"
             className="hidden lg:block font-bold text-xl tracking-tighter mr-4 border-r border-black/20 dark:border-white/20 pr-4 text-black dark:text-white">

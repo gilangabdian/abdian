@@ -12,7 +12,7 @@ export default function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="public-theme flex flex-col min-h-screen bg-white dark:bg-[#121212] text-black dark:text-white w-full">
+    <div className="public-theme flex flex-col min-h-screen bg-white dark:bg-dark-bg text-black dark:text-white w-full">
       <Script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" strategy="beforeInteractive" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
