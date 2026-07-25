@@ -5,6 +5,7 @@ const nextConfig: any = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  staticPageGenerationTimeout: 300, // Menunggu maksimal 5 menit untuk Render bangun
   async redirects() {
     return [
       {
