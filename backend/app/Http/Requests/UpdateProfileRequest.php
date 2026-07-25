@@ -28,6 +28,10 @@ class UpdateProfileRequest extends FormRequest
             'skill_categories_order.*' => 'nullable|string',
             'skill_categories_info' => 'nullable|array',
             'skill_categories_info.*' => 'nullable|string',
+            'show_featured_projects_on_home' => 'nullable|boolean',
+            'show_featured_certificates_on_home' => 'nullable|boolean',
+            'show_experiences_on_home' => 'nullable|boolean',
+            'show_tech_on_home' => 'nullable|boolean',
         ];
     }
 

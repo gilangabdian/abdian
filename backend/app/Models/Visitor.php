@@ -27,6 +27,11 @@ class Visitor extends Model
         'city',
         'region',
         'country',
-        'isp'
+        'isp',
+        'left_mark'
+    ];
+
+    protected $casts = [
+        'left_mark' => 'boolean',
     ];
 }

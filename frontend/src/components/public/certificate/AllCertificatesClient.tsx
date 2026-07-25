@@ -96,8 +96,8 @@ export default function AllCertificatesClient({ initialCertificates }: AllCertif
         .custom-scrollbar::-webkit-scrollbar-thumb { background: black; border: 1px solid white; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #333; }
         
-        .dark .custom-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; border-left: 2px solid rgba(255,255,255,0.1); }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #444; border: 1px solid #1a1a1a; }
+        .dark .custom-scrollbar::-webkit-scrollbar-track { background: #111111; border-left: 2px solid rgba(255,255,255,0.1); }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #444; border: 1px solid #111111; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
         
         .markdown-preview ul { list-style-type: disc !important; margin-left: 1.5rem !important; margin-bottom: 0.5rem !important; }
@@ -121,7 +121,7 @@ export default function AllCertificatesClient({ initialCertificates }: AllCertif
               <div
                 key={certificate.id}
                 onClick={() => openModal(certificate)}
-                className="cert-card group flex flex-col p-3 bg-white dark:bg-[#1a1a1a] rounded-xl border border-black/20 dark:border-white/20 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                className="cert-card group flex flex-col p-3 bg-white dark:bg-dark-card rounded-xl border border-black/20 dark:border-white/20 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer"
                 style={{ opacity: 0, visibility: "hidden" }}
               >
                 <div className="w-full aspect-video bg-gray-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg mb-3 overflow-hidden relative flex items-center justify-center p-2">
@@ -137,7 +137,7 @@ export default function AllCertificatesClient({ initialCertificates }: AllCertif
                   <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                     {certificate.issuer}
                   </span>
-                  <h3 className="text-sm font-bold font-serif leading-tight group-hover:underline decoration-2 underline-offset-2 text-black dark:text-white">
+                  <h3 className="text-sm font-bold font-sans leading-tight group-hover:underline decoration-2 underline-offset-2 text-black dark:text-white">
                     {certificate.title}
                   </h3>
                 </div>
@@ -150,10 +150,10 @@ export default function AllCertificatesClient({ initialCertificates }: AllCertif
         <div className="fixed inset-0 z-[999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300" onClick={closeModal}></div>
 
-          <div className="relative bg-white dark:bg-[#1a1a1a] w-full max-w-2xl max-h-[85vh] flex flex-col rounded-xl border border-black/20 dark:border-white/20 shadow-xl animate-in fade-in zoom-in duration-200">
+          <div className="relative bg-white dark:bg-dark-card w-full max-w-2xl max-h-[85vh] flex flex-col rounded-xl border border-black/20 dark:border-white/20 shadow-xl animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-start p-6 border-b border-black/10 dark:border-white/10 bg-gray-50 dark:bg-black/50 rounded-t-lg shrink-0">
               <div>
-                <h3 className="text-2xl font-black font-serif uppercase pr-4 leading-none mb-2 text-black dark:text-white">
+                <h3 className="text-2xl font-black font-sans uppercase pr-4 leading-none mb-2 text-black dark:text-white">
                   {selectedCert?.title}
                 </h3>
 
@@ -216,7 +216,7 @@ export default function AllCertificatesClient({ initialCertificates }: AllCertif
                 />
               </div>
 
-              <h4 className="font-bold font-serif uppercase text-sm mb-3 border-b border-black/20 dark:border-white/20 inline-block text-black dark:text-white">
+              <h4 className="font-bold font-sans uppercase text-sm mb-3 border-b border-black/20 dark:border-white/20 inline-block text-black dark:text-white">
                 Description
               </h4>
               <div

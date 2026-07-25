@@ -54,7 +54,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
   };
 
   return (
-    <div className="pt-16 md:pt-40 pb-16 min-h-screen bg-white dark:bg-black flex flex-col items-center font-[Inter]">
+    <div className="pt-16 md:pt-40 pb-16 min-h-screen flex flex-col items-center font-[Inter]">
       <style>{`
         .year-watermark {
           color: transparent;

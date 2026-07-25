@@ -143,7 +143,7 @@ export default function Tech({ skills = [], profile = null }: TechProps) {
   }, [filteredSkills, isVisible]);
 
   return (
-    <section ref={containerRef} className="py-24 px-4 md:px-10 bg-white dark:bg-[#121212] overflow-hidden min-h-screen relative">
+    <section ref={containerRef} className="py-24 px-4 md:px-10 bg-white dark:bg-dark-bg overflow-hidden min-h-screen relative">
       <style>{`
         .header-animate, .tab-pill { will-change: transform, opacity; }
         .polaroid-card { will-change: transform, opacity; }
@@ -154,7 +154,7 @@ export default function Tech({ skills = [], profile = null }: TechProps) {
         
         {/* HEADER */}
         <div className="header-section text-center mb-10 max-w-3xl mx-auto">
-          <h2 className="header-animate text-4xl font-black text-black dark:text-white mb-6 font-[Playfair_Display] tracking-wider inline-block relative border-b border-black/20 dark:border-white/20 pb-2">
+          <h2 className="header-animate text-4xl font-black text-black dark:text-white mb-6 font-[Inter] tracking-wider inline-block relative border-b border-black/20 dark:border-white/20 pb-2">
             <span className="relative z-10">Tech Stack</span>
           </h2>
         </div>
@@ -197,8 +197,8 @@ export default function Tech({ skills = [], profile = null }: TechProps) {
               >
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-100 dark:bg-neutral-300 rounded-full z-20 shadow-sm border border-gray-600 dark:border-neutral-500"></div>
 
-                <div className="bg-white dark:bg-[#1a1a1a] p-3 pb-8 border border-black/20 dark:border-white/10 shadow-sm transition-transform duration-300 hover:scale-105 hover:z-10 hover:shadow-md hover:rotate-0 cursor-default rounded-sm relative">
-                  <div className="aspect-square bg-gray-50 dark:bg-black/40 border border-black/10 dark:border-white/5 mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-white dark:group-hover:bg-[#222222] transition-colors rounded-sm">
+                <div className="bg-white dark:bg-dark-card p-3 pb-8 border border-black/20 dark:border-white/10 shadow-sm transition-transform duration-300 hover:scale-105 hover:z-10 hover:shadow-md hover:rotate-0 cursor-default rounded-sm relative">
+                  <div className="aspect-square bg-gray-50 dark:bg-black/40 border border-black/10 dark:border-white/5 mb-4 flex items-center justify-center relative overflow-hidden group-hover:bg-white dark:group-hover:bg-dark-hover transition-colors rounded-sm">
                     <Icon icon={skill.identifier} className="text-5xl md:text-[56px] text-black dark:text-white relative z-10" />
 
                     {skill.note && (
@@ -211,7 +211,7 @@ export default function Tech({ skills = [], profile = null }: TechProps) {
                   </div>
 
                   <div className="text-center">
-                    <span className="font-serif font-bold text-black dark:text-white text-xs md:text-sm uppercase tracking-widest border-b border-transparent group-hover:border-black/20 dark:group-hover:border-white/20 transition-all pb-1">
+                    <span className="font-sans font-bold text-black dark:text-white text-xs md:text-sm uppercase tracking-widest border-b border-transparent group-hover:border-black/20 dark:group-hover:border-white/20 transition-all pb-1">
                       {skill.name}
                     </span>
                   </div>

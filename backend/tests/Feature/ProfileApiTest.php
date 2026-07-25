@@ -42,6 +42,10 @@ class ProfileApiTest extends TestCase
                 'bio' => 'New Bio',
                 'hidden_skill_categories' => ['Frontend'],
                 'skill_categories_order' => ['Backend', 'UI/UX', 'Frontend'],
+                'show_featured_projects_on_home' => false,
+                'show_featured_certificates_on_home' => false,
+                'show_experiences_on_home' => false,
+                'show_tech_on_home' => false,
             ]);
 
         $response->assertStatus(200)
@@ -55,6 +59,10 @@ class ProfileApiTest extends TestCase
         $profile = Profile::first();
         $this->assertEquals(['Frontend'], $profile->hidden_skill_categories);
         $this->assertEquals(['Backend', 'UI/UX', 'Frontend'], $profile->skill_categories_order);
+        $this->assertFalse($profile->show_featured_projects_on_home);
+        $this->assertFalse($profile->show_featured_certificates_on_home);
+        $this->assertFalse($profile->show_experiences_on_home);
+        $this->assertFalse($profile->show_tech_on_home);
     }
 
     public function test_admin_can_upload_photo_secondary_image_and_cv()

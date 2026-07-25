@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Profile } from "@/types";
 import { Icon } from "@iconify/react";
+import LeaveMark from "./LeaveMark";
 
 gsap.registerPlugin(useGSAP);
 
@@ -125,7 +126,7 @@ export default function Hero({ profile }: HeroProps) {
               </span>
             </h1>
 
-            <h2 className="hero-text text-xl md:text-2xl lg:text-3xl font-[Playfair_Display] italic text-gray-800 dark:text-gray-200 pt-1 min-h-[1.5em] flex items-center">
+            <h2 className="hero-text text-xl md:text-2xl lg:text-3xl font-[Inter] font-medium text-gray-800 dark:text-gray-200 pt-1 min-h-[1.5em] flex items-center">
               <span>{displayedJob}</span>
               <span
                 className={`inline-block w-[2px] h-[24px] md:h-[32px] bg-black dark:bg-white ml-1 align-middle transition-opacity duration-100 ${
@@ -167,7 +168,7 @@ export default function Hero({ profile }: HeroProps) {
               rel="noreferrer"
               className={`${
                 profile.about.is_available_for_work ? "flex-1 md:flex-none px-0 md:px-5" : "flex-none px-6"
-              } flex items-center justify-center gap-2 bg-white text-black dark:bg-[#121212] dark:text-white py-2 rounded-xl border border-black/20 dark:border-white/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] dark:shadow-[0_4px_14px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all`}>
+              } flex items-center justify-center gap-2 bg-white text-black dark:bg-dark-bg dark:text-white py-2 rounded-xl border border-black/20 dark:border-white/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] dark:shadow-[0_4px_14px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all`}>
               <Icon icon="mdi:file-download-outline" className="w-4 h-4 md:w-5 md:h-5" />
               <span>Download CV</span>
             </a>
@@ -190,6 +191,10 @@ export default function Hero({ profile }: HeroProps) {
                 </a>
               ))}
             </div>
+          </div>
+          
+          <div className="hero-content mt-4 w-full flex justify-start">
+            <LeaveMark />
           </div>
         </div>
 

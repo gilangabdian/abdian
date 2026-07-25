@@ -3,8 +3,8 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-dark-bg: #121212;
-  --color-dark-card: #1e1e1e;
+  --color-dark-bg: #000000;
+  --color-dark-card: #111111;
   --color-dark-border: rgba(255, 255, 255, 0.1);
   --color-dark-text: #f3f4f6;
   --color-dark-text-muted: #9ca3af;
@@ -272,7 +272,7 @@ html.dark::-webkit-scrollbar-thumb:hover {
 
 .dark .public-theme .prose pre,
 .dark .public-theme .code-block pre {
-  background-color: #1a1a1a !important; /* Pure black for Dark Theme */
+  background-color: var(--color-dark-card) !important; /* Dark Card for Dark Theme */
   color: #c9d1d9 !important; /* Github dark text */
 }
 
@@ -289,7 +289,6 @@ html.dark::-webkit-scrollbar-thumb:hover {
   font-size: 0.875em;
   font-variant-ligatures: none;
 }
-
 
 .animate-in {
   animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);

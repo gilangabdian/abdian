@@ -54,6 +54,10 @@
                                         "is_available_for_work": true,
                                         "photo_path": "profile/my-photo.jpg",
                                         "cv_path": "cv/my-cv-2025.pdf",
+                                        "show_featured_projects_on_home": true,
+                                        "show_featured_certificates_on_home": true,
+                                        "show_experiences_on_home": true,
+                                        "show_tech_on_home": true,
                                         "created_at": "2025-01-01T00:00:00.000000Z",
                                         "updated_at": "2025-02-01T10:00:00.000000Z"
                                     },
@@ -157,6 +161,26 @@
                                         "example": {
                                             "Frontend": "My frontend stack"
                                         }
+                                    },
+                                    "show_featured_projects_on_home": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "description": "Toggle visibility of Featured Projects on Homepage"
+                                    },
+                                    "show_featured_certificates_on_home": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "description": "Toggle visibility of Featured Certificates on Homepage"
+                                    },
+                                    "show_experiences_on_home": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "description": "Toggle visibility of Experiences on Homepage"
+                                    },
+                                    "show_tech_on_home": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "description": "Toggle visibility of Tech Stack on Homepage"
                                     }
                                 }
                             }
@@ -178,6 +202,10 @@
                                         "is_available_for_work": true,
                                         "photo_path": "profile/hashname.jpg",
                                         "cv_path": "cv/hashname.pdf",
+                                        "show_featured_projects_on_home": true,
+                                        "show_featured_certificates_on_home": true,
+                                        "show_experiences_on_home": true,
+                                        "show_tech_on_home": true,
                                         "updated_at": "2025-02-08T10:00:00.000000Z"
                                     }
                                 }

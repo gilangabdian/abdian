@@ -119,6 +119,10 @@ export interface ProfileAbout {
   default_skill_category?: string;
   skill_categories_order?: string[];
   skill_categories_info?: Record<string, string>;
+  show_featured_projects_on_home?: boolean;
+  show_featured_certificates_on_home?: boolean;
+  show_experiences_on_home?: boolean;
+  show_tech_on_home?: boolean;
   created_at?: string;
   updated_at?: string;
   photo_url?: string;

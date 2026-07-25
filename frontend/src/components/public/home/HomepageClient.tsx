@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import NProgress from "nprogress";
 import fpPromise from "@fingerprintjs/fingerprintjs";
-import { logVisitor } from "@/lib/api/visitor";
+import { logVisitor, getGeoJSLocation } from "@/lib/api/visitor";
 
 import Hero from "./Hero";
 import Tech from "./Tech";
@@ -62,7 +62,7 @@ export default function HomepageClient({
 
         let locationData = {};
         try {
-          const geoRes = await fetch("https://get.geojs.io/v1/ip/geo.json");
+          const geoRes = await getGeoJSLocation();
           const geoData = await geoRes.json();
           if (geoData.ip) {
             locationData = {
@@ -163,7 +163,7 @@ export default function HomepageClient({
   // Removed GSAP Stacking Animation per user request because it caused visual bugs in Next.js
 
   return (
-    <div className="min-h-screen bg-white text-black font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0" ref={containerRef}>
+    <div className="min-h-screen bg-transparent font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0" ref={containerRef}>
       
       <style
         dangerouslySetInnerHTML={{
@@ -194,18 +194,25 @@ export default function HomepageClient({
         className={`transition-opacity duration-500 ${hasSeenIntro || isFadingOut ? "opacity-100 animate-in" : "opacity-0 h-screen overflow-hidden"}`}
       >
         <Hero profile={profile} />
-        <Tech skills={skills} profile={profile} />
 
-        <div className="relative z-0">
-          <FeaturedProject projects={projects} />
-        </div>
+        {profile?.about?.show_tech_on_home !== false && (
+          <Tech skills={skills} profile={profile} />
+        )}
 
-        <div className="relative z-10 bg-white">
-          <FeaturedCertificate certificates={certificates} />
-        </div>
+        {profile?.about?.show_featured_projects_on_home !== false && (
+          <div className="relative z-0">
+            <FeaturedProject projects={projects} />
+          </div>
+        )}
 
-        {experiences && experiences.length > 0 && (
-          <div className="relative z-20 bg-white">
+        {profile?.about?.show_featured_certificates_on_home !== false && (
+          <div className="relative z-10">
+            <FeaturedCertificate certificates={certificates} />
+          </div>
+        )}
+
+        {profile?.about?.show_experiences_on_home !== false && experiences && experiences.length > 0 && (
+          <div className="relative z-20">
             <Experience experiences={experiences} />
           </div>
         )}

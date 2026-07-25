@@ -26,6 +26,8 @@ Route::get('/user', function (Request $request) {
 Route::post('/admin/login', [AuthController::class, 'login']);
 
 Route::post('/visitors', [VisitorController::class, 'store']);
+Route::get('/visitors/mark/count', [VisitorController::class, 'getMarkCount']);
+Route::post('/visitors/mark', [VisitorController::class, 'leaveMark']);
 
 Route::get('/profile', [ProfileController::class, 'index']);
 Route::get('/projects', [ProjectController::class, 'index']);

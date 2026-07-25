@@ -66,6 +66,73 @@ class VisitorController extends Controller
     }
 
     /**
+     * Get the total count of 'left_mark'.
+     */
+    public function getMarkCount(Request $request)
+    {
+        $totalMarks = Visitor::where('left_mark', true)->count();
+        $alreadyMarked = false;
+
+        if ($request->device_id) {
+            $visitor = Visitor::where('device_id', $request->device_id)->first();
+            if ($visitor && $visitor->left_mark) {
+                $alreadyMarked = true;
+            }
+        }
+
+        return response()->json([
+            'message' => 'Mark count retrieved successfully',
+            'data' => [
+                'total_marks' => $totalMarks,
+                'already_marked' => $alreadyMarked
+            ]
+        ], 200);
+    }
+
+    /**
+     * Set left_mark to true for a specific device_id.
+     */
+    public function leaveMark(Request $request)
+    {
+        if (!$request->device_id) {
+            return response()->json(['message' => 'device_id is required'], 400);
+        }
+
+        $visitor = Visitor::where('device_id', $request->device_id)->first();
+
+        if (!$visitor) {
+            // Log visitor silently if not exists
+            $agent = new Agent();
+            $agent->setUserAgent($request->userAgent());
+            $visitor = Visitor::create([
+                'device_id' => $request->device_id,
+                'left_mark' => false,
+                'device_type' => $agent->isTablet() ? 'tablet' : ($agent->isMobile() ? 'mobile' : 'desktop'),
+                'os' => $agent->platform() ?: null,
+                'browser' => $agent->browser() ?: null,
+                'device_name' => $agent->device() ?: null,
+            ]);
+        }
+
+        $alreadyMarked = $visitor->left_mark;
+
+        if (!$alreadyMarked) {
+            $visitor->left_mark = true;
+            $visitor->save();
+        }
+
+        $totalMarks = Visitor::where('left_mark', true)->count();
+
+        return response()->json([
+            'message' => $alreadyMarked ? 'Already marked' : 'Mark left successfully',
+            'data' => [
+                'already_marked' => $alreadyMarked,
+                'total_marks' => $totalMarks
+            ]
+        ], 200);
+    }
+
+    /**
      * Get all visitors (Admin Only)
      */
     public function index()
