@@ -22,7 +22,7 @@
     "paths": {
         "/api/photos": {
             "get": {
-                "summary": "List All Photos (🌍 Global/Public)",
+                "summary": "List All Photos (\ud83c\udf0d Global/Public)",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -48,7 +48,7 @@
                 }
             },
             "post": {
-                "summary": "Create Photo (🔒 Admin Only)",
+                "summary": "Create Photo (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -101,7 +101,7 @@
                 }
             },
             "post": {
-                "summary": "Update Photo (🔒 Admin Only)",
+                "summary": "Update Photo (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -140,7 +140,7 @@
                 }
             },
             "delete": {
-                "summary": "Delete Photo (🔒 Admin Only)",
+                "summary": "Delete Photo (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []

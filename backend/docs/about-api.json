@@ -22,7 +22,7 @@
     "paths": {
         "/api/profile": {
             "get": {
-                "summary": "Get Full Profile & Socials (🌍 Global/Public)",
+                "summary": "Get Full Profile & Socials (\ud83c\udf0d Global/Public)",
                 "description": "Mengambil object 'about' (data diri) DAN array 'social_media' (kontak) sekaligus.",
                 "responses": {
                     "200": {
@@ -80,7 +80,7 @@
                 }
             },
             "post": {
-                "summary": "Save/Update Profile (🔒 Admin Only)",
+                "summary": "Save/Update Profile (\ud83d\udd12 Admin Only)",
                 "description": "Satu endpoint untuk Membuat ATAU Mengupdate data diri (Singleton). Menggunakan POST agar support upload file (Multipart).",
                 "security": [
                     {
@@ -126,7 +126,10 @@
                                             "type": "string"
                                         },
                                         "description": "Array of skill categories to hide on home",
-                                        "example": ["Frontend", "Backend"]
+                                        "example": [
+                                            "Frontend",
+                                            "Backend"
+                                        ]
                                     },
                                     "default_skill_category": {
                                         "type": "string",
@@ -139,7 +142,21 @@
                                             "type": "string"
                                         },
                                         "description": "Custom order of skill categories on the Home Tech section",
-                                        "example": ["Frontend", "Backend", "UI/UX"]
+                                        "example": [
+                                            "Frontend",
+                                            "Backend",
+                                            "UI/UX"
+                                        ]
+                                    },
+                                    "skill_categories_info": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "Tooltips/notes for skill categories",
+                                        "example": {
+                                            "Frontend": "My frontend stack"
+                                        }
                                     }
                                 }
                             }

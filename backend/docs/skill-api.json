@@ -22,7 +22,7 @@
     "paths": {
         "/api/skills": {
             "get": {
-                "summary": "List Skills (🌍 Global/Public)",
+                "summary": "List Skills (\ud83c\udf0d Global/Public)",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -80,7 +80,7 @@
                 }
             },
             "post": {
-                "summary": "Create Skill (🔒 Admin Only)",
+                "summary": "Create Skill (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -94,7 +94,8 @@
                                 "type": "object",
                                 "required": [
                                     "name",
-                                    "identifier"
+                                    "identifier",
+                                    "category"
                                 ],
                                 "properties": {
                                     "name": {
@@ -116,11 +117,16 @@
                                     },
                                     "order_number": {
                                         "type": "integer",
-                                        "example": 0
+                                        "example": 1
                                     },
                                     "note": {
                                         "type": "string",
-                                        "example": "Main Stack"
+                                        "example": "Featured"
+                                    },
+                                    "icon": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "Optional icon override"
                                     }
                                 }
                             }
@@ -175,7 +181,7 @@
         },
         "/api/skills/reorder": {
             "put": {
-                "summary": "Reorder Skills (🔒 Admin Only)",
+                "summary": "Reorder Skills (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -196,7 +202,11 @@
                                         "items": {
                                             "type": "integer"
                                         },
-                                        "example": [3, 1, 2]
+                                        "example": [
+                                            3,
+                                            1,
+                                            2
+                                        ]
                                     }
                                 }
                             }
@@ -219,7 +229,7 @@
         },
         "/api/skills/bulk-delete": {
             "post": {
-                "summary": "Bulk Delete Skills (🔒 Admin Only)",
+                "summary": "Bulk Delete Skills (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -240,7 +250,11 @@
                                         "items": {
                                             "type": "integer"
                                         },
-                                        "example": [1, 2, 3]
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
                                     }
                                 }
                             }
@@ -327,7 +341,7 @@
                 }
             },
             "put": {
-                "summary": "Update Skill (🔒 Admin Only)",
+                "summary": "Update Skill (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -365,6 +379,18 @@
                                     "is_active_on_home": {
                                         "type": "boolean",
                                         "example": true
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "Frontend"
+                                    },
+                                    "order_number": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Featured"
                                     }
                                 }
                             }
@@ -417,7 +443,7 @@
                 }
             },
             "delete": {
-                "summary": "Delete Skill (🔒 Admin Only)",
+                "summary": "Delete Skill (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -459,7 +485,7 @@
         },
         "/api/skills/categories/{oldName}": {
             "put": {
-                "summary": "Update Category Name (🔒 Admin Only)",
+                "summary": "Update Category Name (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -486,7 +512,9 @@
                                         "type": "string"
                                     }
                                 },
-                                "required": ["newName"]
+                                "required": [
+                                    "newName"
+                                ]
                             }
                         }
                     }
@@ -507,7 +535,7 @@
         },
         "/api/skills/categories/{categoryName}": {
             "delete": {
-                "summary": "Delete Category Name (🔒 Admin Only)",
+                "summary": "Delete Category Name (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []

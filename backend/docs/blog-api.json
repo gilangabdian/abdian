@@ -47,20 +47,41 @@
             },
             "post": {
                 "summary": "Create Blog (Admin Only)",
-                "security": [{"bearerAuth": []}],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "required": ["title", "content"],
+                                "required": [
+                                    "title",
+                                    "content"
+                                ],
                                 "properties": {
-                                    "title": {"type": "string"},
-                                    "title_en": {"type": "string", "nullable": true},
-                                    "content": {"type": "string", "description": "HTML string from Tiptap"},
-                                    "content_en": {"type": "string", "description": "HTML string in English", "nullable": true},
-                                    "is_published": {"type": "boolean"}
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "title_en": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "description": "HTML string from Tiptap"
+                                    },
+                                    "content_en": {
+                                        "type": "string",
+                                        "description": "HTML string in English",
+                                        "nullable": true
+                                    },
+                                    "is_published": {
+                                        "type": "boolean"
+                                    }
                                 }
                             }
                         }
@@ -92,12 +113,26 @@
             "get": {
                 "summary": "Get Single Blog by Slug (Public)",
                 "parameters": [
-                    {"name": "slug", "in": "path", "required": true, "schema": {"type": "string"}}
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
                         "description": "Success",
-                        "content": {"application/json": {"example": {"id": 1, "title": "Test"}}}
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": 1,
+                                    "title": "Test"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Blog Not Found or Not Published"
@@ -108,7 +143,11 @@
         "/api/admin/blogs": {
             "get": {
                 "summary": "Get All Blogs including Drafts (Admin Only)",
-                "security": [{"bearerAuth": []}],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success"
@@ -119,9 +158,20 @@
         "/api/admin/blogs/{id}": {
             "get": {
                 "summary": "Get Single Blog by ID for Editing (Admin Only)",
-                "security": [{"bearerAuth": []}],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
-                    {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -133,9 +183,20 @@
         "/api/blogs/{id}": {
             "put": {
                 "summary": "Update Blog (Admin Only)",
-                "security": [{"bearerAuth": []}],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
-                    {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "requestBody": {
                     "content": {
@@ -143,11 +204,23 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "title": {"type": "string"},
-                                    "title_en": {"type": "string", "nullable": true},
-                                    "content": {"type": "string"},
-                                    "content_en": {"type": "string", "nullable": true},
-                                    "is_published": {"type": "boolean"}
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "title_en": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    },
+                                    "content_en": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "is_published": {
+                                        "type": "boolean"
+                                    }
                                 }
                             }
                         }
@@ -161,9 +234,20 @@
             },
             "delete": {
                 "summary": "Delete Blog (Admin Only)",
-                "security": [{"bearerAuth": []}],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
-                    {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -175,16 +259,25 @@
         "/api/blogs/upload-image": {
             "post": {
                 "summary": "Upload Image from Tiptap (Admin Only)",
-                "security": [{"bearerAuth": []}],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
                                 "type": "object",
-                                "required": ["image"],
+                                "required": [
+                                    "image"
+                                ],
                                 "properties": {
-                                    "image": {"type": "string", "format": "binary"}
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
                                 }
                             }
                         }

@@ -22,7 +22,7 @@
     "paths": {
         "/api/experiences": {
             "get": {
-                "summary": "List Experiences (🌍 Global/Public)",
+                "summary": "List Experiences (\ud83c\udf0d Global/Public)",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -64,7 +64,7 @@
                 }
             },
             "post": {
-                "summary": "Create Experience (🔒 Admin Only)",
+                "summary": "Create Experience (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -178,7 +178,7 @@
         },
         "/api/experiences/{id}": {
             "get": {
-                "summary": "Get Single Experience (🌍 Global/Public)",
+                "summary": "Get Single Experience (\ud83c\udf0d Global/Public)",
                 "parameters": [
                     {
                         "name": "id",
@@ -220,7 +220,7 @@
                 }
             },
             "put": {
-                "summary": "Update Experience (🔒 Admin Only)",
+                "summary": "Update Experience (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -339,7 +339,7 @@
                 }
             },
             "delete": {
-                "summary": "Delete Experience (🔒 Admin Only)",
+                "summary": "Delete Experience (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []

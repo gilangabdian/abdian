@@ -22,7 +22,7 @@
     "paths": {
         "/api/artworks": {
             "get": {
-                "summary": "List All Artworks (🌍 Global/Public)",
+                "summary": "List All Artworks (\ud83c\udf0d Global/Public)",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -48,7 +48,7 @@
                 }
             },
             "post": {
-                "summary": "Create Artwork (🔒 Admin Only)",
+                "summary": "Create Artwork (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -101,7 +101,7 @@
                 }
             },
             "put": {
-                "summary": "Update Artwork (🔒 Admin Only)",
+                "summary": "Update Artwork (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -140,7 +140,7 @@
                 }
             },
             "delete": {
-                "summary": "Delete Artwork (🔒 Admin Only)",
+                "summary": "Delete Artwork (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []

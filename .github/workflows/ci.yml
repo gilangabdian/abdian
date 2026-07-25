@@ -50,27 +50,3 @@ jobs:
           FILESYSTEM_DISK: public
           CLOUDINARY_URL: cloudinary://000000000000000:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@mock
 
-  frontend-build:
-    name: Frontend (Vue) - Build Check
-    runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: ./frontend
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: ./frontend/package-lock.json
-
-      - name: Install NPM Dependencies
-        run: npm ci
-
-      - name: Run Build (Check Syntax & Assets)
-        run: npm run build

@@ -21,7 +21,14 @@
         "schemas": {
             "CertificateTypeEnum": {
                 "type": "string",
-                "enum": ["course", "seminar", "webinar", "workshop", "bootcamp", "competition"],
+                "enum": [
+                    "course",
+                    "seminar",
+                    "webinar",
+                    "workshop",
+                    "bootcamp",
+                    "competition"
+                ],
                 "description": "Certificate type/category (nullable)"
             }
         }
@@ -29,7 +36,7 @@
     "paths": {
         "/api/certificates": {
             "get": {
-                "summary": "List Certificates (🌍 Global/Public)",
+                "summary": "List Certificates (\ud83c\udf0d Global/Public)",
                 "parameters": [
                     {
                         "name": "featured",
@@ -37,7 +44,9 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "enum": ["1"]
+                            "enum": [
+                                "1"
+                            ]
                         },
                         "description": "Filter featured certificates only"
                     }
@@ -50,10 +59,14 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "success": { "type": "boolean" },
+                                        "success": {
+                                            "type": "boolean"
+                                        },
                                         "data": {
                                             "type": "array",
-                                            "items": { "type": "object" }
+                                            "items": {
+                                                "type": "object"
+                                            }
                                         }
                                     }
                                 },
@@ -96,7 +109,7 @@
                 }
             },
             "post": {
-                "summary": "Create Certificate (🔒 Admin Only)",
+                "summary": "Create Certificate (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -196,8 +209,12 @@
                                 "example": {
                                     "message": "The image field is required.",
                                     "errors": {
-                                        "image": ["The image field is required."],
-                                        "start_date": ["The start date field is required."]
+                                        "image": [
+                                            "The image field is required."
+                                        ],
+                                        "start_date": [
+                                            "The start date field is required."
+                                        ]
                                     }
                                 }
                             }
@@ -224,7 +241,9 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
-                        "schema": { "type": "integer" }
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
@@ -262,7 +281,7 @@
                 }
             },
             "put": {
-                "summary": "Update Certificate (🔒 Admin Only)",
+                "summary": "Update Certificate (\ud83d\udd12 Admin Only)",
                 "description": "Update data sertifikat. \n\n**Note:** Karena keterbatasan PHP dengan method `PUT` pada `multipart/form-data`, Frontend disarankan menggunakan method `POST` dengan tambahan field `_method` = `PUT`.",
                 "security": [
                     {
@@ -274,7 +293,9 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
-                        "schema": { "type": "integer" }
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "requestBody": {
@@ -365,7 +386,9 @@
                                 "example": {
                                     "message": "The title field is required.",
                                     "errors": {
-                                        "title": ["The title field is required."]
+                                        "title": [
+                                            "The title field is required."
+                                        ]
                                     }
                                 }
                             }
@@ -384,7 +407,7 @@
                 }
             },
             "delete": {
-                "summary": "Delete Certificate (🔒 Admin Only)",
+                "summary": "Delete Certificate (\ud83d\udd12 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -395,7 +418,9 @@
                         "name": "id",
                         "in": "path",
                         "required": true,
-                        "schema": { "type": "integer" }
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
