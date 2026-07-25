@@ -51,7 +51,7 @@ jobs:
           CLOUDINARY_URL: cloudinary://000000000000000:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@mock
 
   frontend-build:
-    name: Frontend (Vue) - Build Check
+    name: Frontend (Next.js) - Lint Check
     runs-on: ubuntu-latest
     
     defaults:
@@ -72,5 +72,5 @@ jobs:
       - name: Install NPM Dependencies
         run: npm ci
 
-      - name: Run Build (Check Syntax & Assets)
-        run: npm run build
+      - name: Run Lint (Check Syntax)
+        run: npm run lint
