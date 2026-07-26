@@ -38,7 +38,7 @@ export default function Navbar() {
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blogs" },
     { name: "Projects", href: "/projects" },
-    { name: "Certificates", href: "/certificates" },
+    // { name: "Certificates", href: "/certificates" },
   ];
 
   // Mobile nav items — icon only
@@ -46,7 +46,7 @@ export default function Navbar() {
     { name: "About", href: "/about", icon: "mdi:card-account-details-outline" },
     { name: "Blog", href: "/blogs", icon: "material-symbols-light:post-outline" },
     { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
-    { name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" },
+    // { name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" },
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
     { name: "Contacts", href: "/contacts", icon: "mdi:email-outline" },

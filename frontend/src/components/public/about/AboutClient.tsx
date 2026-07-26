@@ -19,7 +19,7 @@ export default function AboutClient({ initialProfile }: AboutClientProps) {
 
   return (
     <div className="min-h-screen mb-40">
-      <section className="-mt-30 md:-mt-12 min-h-screen flex justify-center py-24 px-4 sm:px-6 font-sans text-black dark:text-white">
+      <section className="-mt-20 md:-mt-12 min-h-screen flex justify-center py-24 px-4 sm:px-6 font-sans text-black dark:text-white">
         <div className="container max-w-[650px] w-full flex flex-col space-y-12 mt-10 mx-auto">
           {/* About Section */}
           <div className="flex flex-col space-y-4">
