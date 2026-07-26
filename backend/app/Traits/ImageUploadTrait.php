@@ -38,8 +38,9 @@ trait ImageUploadTrait
                 'overwrite' => true,
             ]);
 
-            // Inject f_auto,q_auto into the Cloudinary URL to serve WebP/AVIF automatically
-            // EXCEPT for PDFs and SVGs because it would convert them into a raster image, breaking animations/vectors.
+            // Inject f_auto,q_auto into the Cloudinary URL to serve WebP/AVIF (for images) 
+            // and WebM/MP4 (for videos) automatically for optimal compression.
+            // EXCEPT for PDFs and SVGs because it would convert them into a raster image.
             $ext = strtolower($file->getClientOriginalExtension());
             if ($ext !== 'pdf' && $ext !== 'svg') {
                 return str_replace('/upload/', '/upload/f_auto,q_auto/', $result['secure_url']);

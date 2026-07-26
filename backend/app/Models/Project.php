@@ -10,7 +10,7 @@ class Project extends Model
     const STATUSES = ['completed', 'in_development', 'on_hold', 'cancelled'];
     const TYPES = ['web_development', 'mobile_development', 'desktop_application', 'game_development'];
 
-    protected $fillable = ['title', 'description', 'is_featured', 'start_date', 'end_date', 'status', 'type', 'thumbnail_path', 'live_demo_link', 'repository_link', 'team_size', 'role', 'custom_tech_stacks'];
+    protected $fillable = ['title', 'description', 'is_featured', 'start_date', 'end_date', 'status', 'type', 'thumbnail_path', 'media_type', 'youtube_url', 'twitter_url', 'live_demo_link', 'repository_link', 'team_size', 'role', 'custom_tech_stacks'];
 
     protected $casts = [
         'is_featured' => 'boolean',
@@ -21,6 +21,9 @@ class Project extends Model
 
     // Otomatis tambahkan thumbnail_url ke JSON
     protected $appends = ['thumbnail_url'];
+
+    // Tambahkan youtube_url dan twitter_url ke JSON (sudah ada di DB, tapi pastikan di appends jika accessor custom)
+    // Tidak perlu di appends karena youtube_url dan twitter_url adalah kolom DB biasa
 
     // Relasi Many-to-Many ke Skills
     public function skills()

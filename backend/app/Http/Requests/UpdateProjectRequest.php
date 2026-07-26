@@ -31,7 +31,10 @@ class UpdateProjectRequest extends FormRequest
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'status' => ['required', 'string', Rule::in(Project::STATUSES)],
             'type' => ['nullable', 'string', Rule::in(Project::TYPES)],
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            // Accept both images and video files
+            'thumbnail' => 'nullable|file|mimes:jpeg,png,jpg,webp,mp4,webm,mov,mkv|max:102400',
+            'youtube_url' => 'nullable|url|max:500',
+            'twitter_url' => 'nullable|url|max:500',
             'live_demo_link' => 'nullable|url',
             'repository_link' => 'nullable|url',
             'tech_stack_ids' => 'nullable|array',

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { getAllProjects, adminDeleteProject, adminUpdateProject } from "@/lib/api/project";
 import { alertSuccess, alertError, alertConfirmProject } from "@/lib/alert";
-import { marked } from "marked";
+
 import { Project } from "@/types";
 import { getToken } from "@/utils/auth";
 
@@ -14,10 +14,7 @@ export default function ProjectsClient() {
   const [isLoading, setIsLoading] = useState(true);
   const token = getToken();
 
-  const renderMarkdown = (text?: string) => {
-    if (!text) return "";
-    return marked.parse(text, { breaks: true }) as string;
-  };
+
 
   const formatLabel = (value?: string) => {
     if (!value) return "";
@@ -181,19 +178,30 @@ export default function ProjectsClient() {
                 {projects.map((project) => (
                   <tr key={project.id} className="border-b-2 border-black hover:bg-gray-50 transition-colors">
                     <td className="p-4 align-top">
-                      <img
-                        loading="lazy"
-                        src={project.thumbnail_url || project.thumbnail_path || ""}
-                        className="w-24 h-16 object-cover border-2 border-black shadow-sm"
-                        alt={project.title}
-                      />
+                      {project.media_type === "video" && project.thumbnail_url ? (
+                        <video
+                          src={project.thumbnail_url}
+                          className="w-24 h-16 object-cover border-2 border-black shadow-sm"
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                        />
+                      ) : (
+                        <img
+                          loading="lazy"
+                          src={project.thumbnail_url || project.thumbnail_path || ""}
+                          className="w-24 h-16 object-cover border-2 border-black shadow-sm"
+                          alt={project.title}
+                        />
+                      )}
                     </td>
 
                     <td className="p-4 align-top">
                       <div className="max-w-[250px] lg:max-w-[400px]">
                         <div className="font-bold uppercase text-lg leading-tight mb-1">{project.title}</div>
                         <div
-                          dangerouslySetInnerHTML={{ __html: renderMarkdown(project.description) }}
+                          dangerouslySetInnerHTML={{ __html: project.description || "" }}
                           className="markdown-preview text-sm text-gray-500 font-mono mb-2 line-clamp-2"
                         ></div>
                         <div className="flex gap-3 mt-2">
@@ -330,16 +338,27 @@ export default function ProjectsClient() {
                 </button>
 
                 <div className="flex gap-4 items-start">
-                  <img
-                    loading="lazy"
-                    src={project.thumbnail_url || project.thumbnail_path || ""}
-                    className="w-20 h-20 object-cover border-2 border-black flex-shrink-0 bg-gray-100"
-                    alt={project.title}
-                  />
+                  {project.media_type === "video" && project.thumbnail_url ? (
+                    <video
+                      src={project.thumbnail_url}
+                      className="w-20 h-20 object-cover border-2 border-black flex-shrink-0 bg-gray-100"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      loading="lazy"
+                      src={project.thumbnail_url || project.thumbnail_path || ""}
+                      className="w-20 h-20 object-cover border-2 border-black flex-shrink-0 bg-gray-100"
+                      alt={project.title}
+                    />
+                  )}
                   <div className="flex-1 min-w-0 pr-8">
                     <h3 className="font-black text-lg uppercase leading-tight break-words">{project.title}</h3>
                     <div
-                      dangerouslySetInnerHTML={{ __html: renderMarkdown(project.description) }}
+                      dangerouslySetInnerHTML={{ __html: project.description || "" }}
                       className="markdown-preview text-sm text-gray-500 font-mono mb-2 line-clamp-2"
                     ></div>
                     <div className="flex gap-3 mt-3">

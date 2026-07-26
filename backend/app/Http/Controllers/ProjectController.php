@@ -40,7 +40,12 @@ class ProjectController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('thumbnail')) {
-            $data['thumbnail_path'] = $this->handleFileUpload($request->file('thumbnail'), 'projects');
+            $file = $request->file('thumbnail');
+            $mimeType = $file->getMimeType();
+            $resourceType = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
+            
+            $data['thumbnail_path'] = $this->handleFileUpload($file, 'projects', null, $resourceType);
+            $data['media_type'] = $resourceType;
         }
 
         $project = Project::create($data);
@@ -58,7 +63,12 @@ class ProjectController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('thumbnail')) {
-            $data['thumbnail_path'] = $this->handleFileUpload($request->file('thumbnail'), 'projects', $project->thumbnail_path);
+            $file = $request->file('thumbnail');
+            $mimeType = $file->getMimeType();
+            $resourceType = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
+            
+            $data['thumbnail_path'] = $this->handleFileUpload($file, 'projects', $project->thumbnail_path, $resourceType);
+            $data['media_type'] = $resourceType;
         }
 
         $project->update([
@@ -74,7 +84,13 @@ class ProjectController extends Controller
             'live_demo_link' => $data['live_demo_link'] ?? null,
             'repository_link' => $data['repository_link'] ?? null,
             'custom_tech_stacks' => $data['custom_tech_stacks'] ?? null,
+            'youtube_url' => $data['youtube_url'] ?? null,
+            'twitter_url' => $data['twitter_url'] ?? null,
         ]);
+
+        if (isset($data['media_type'])) {
+            $project->update(['media_type' => $data['media_type']]);
+        }
 
         if (isset($data['thumbnail_path'])) {
             $project->update(['thumbnail_path' => $data['thumbnail_path']]);
