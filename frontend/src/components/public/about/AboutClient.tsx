@@ -27,42 +27,135 @@ export default function AboutClient({ initialProfile }: AboutClientProps) {
 
             <div className="space-y-6 text-sm md:text-base text-neutral-700 dark:text-neutral-400 font-normal leading-relaxed">
               <p>
-                Hi, I'm Gilang Abdian Anggara. While my background covers the full stack of web development, my true
-                passion and current focus are deeply rooted in Frontend Development. I love the challenge of turning
-                complex logic into something beautiful, intuitive, and easy for people to use.
+                Hello, I'm Gilang Abdian, based in Indonesia. I began learning programming in 2024. Previously, I had
+                attended university but decided to switch majors to pursue a field that I found interesting. Since then
+                (2024), I have been immersing myself in programming—learning everything from algorithms and
+                computational thinking to various programming languages, and more.
               </p>
               <p>
-                I am dedicated to crafting digital experiences that are not just visually stunning, but also fast,
-                accessible, and seamless. For me, great frontend work is about more than just aesthetics; it's about
-                writing clean, maintainable code and building interfaces that feel natural on any device. My goal is to
-                transform complex ideas into smooth, high-performance web applications that stay relevant as technology
-                evolves.
+                At first, I felt overwhelmed by all the new concepts. To make matters more challenging, most
+                documentation was in English; this meant that alongside programming, I had to learn English as well
+                (though I can currently understand the meaning, I’m not yet fluent enough to speak it). It took quite a
+                while for me to adapt and find enjoyment in the process. I discovered that something which seemed
+                exciting—under the assumption that "if it's exciting, it must be easy"—was actually far more challenging
+                than I had imagined. Eventually, I had to rethink my approach to avoid feeling burdened and to start
+                enjoying the journey.{" "}
               </p>
-
               <p>
-                Outside of programming, I write{" "}
-                <Link
-                  href="/blog"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  blogs
-                </Link>{" "}
-                about coding, technology, etc. Also trying to make{" "}
+                I realized that mastering every aspect of programming was impossible, so I decided to focus on the
+                specific areas that truly aligned with my passion. I had previously experimented with a wide range of
+                topics—coding basics, web design, languages ​​like Java, PHP, JavaScript, Go, and C#, as well as backend
+                and frontend development. After weighing my options, I decided to specialize in frontend development
+                (focusing on the application's visual interface).
+              </p>
+              <p>
+                I chose this path because I experience genuine joy when bringing ideas to life and seeing the results
+                firsthand. This sense of satisfaction motivates me to continue exploring the vast world of frontend
+                development—a field teeming with various libraries and frameworks. Among the most prominent are{" "}
                 <a
-                  href="https://www.youtube.com/@jeezfay"
+                  href="https://react.dev/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  YouTube videos
+                  React
                 </a>{" "}
-                and fill it with some of challenge coding, sometimes share I play guitar and singing, sometimes I also
-                share my drawings. I post my{" "}
+                and{" "}
+                <a
+                  href="https://vuejs.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                  Vue.js
+                </a>
+                , both of which I have studied. There are also other technologies—such as{" "}
+                <a
+                  href="https://angular.dev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                  Angular
+                </a>{" "}
+                and{" "}
+                <a
+                  href="https://svelte.dev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                  Svelte
+                </a>
+                —that I am currently only familiar with by name, and this list will likely keep growing in the future.
+              </p>
+              <p>
+                To avoid confusion and feeling overwhelmed by the vast scope of frontend development—as I mentioned
+                earlier—I decided to narrow my focus to just three things:{" "}
+                <a
+                  href="https://react.dev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                  React
+                </a>{" "}
+                (a collection of JavaScript code),{" "}
+                <a
+                  href="https://nextjs.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                  Next.js
+                </a>{" "}
+                (built on top of React), and{" "}
+                <a
+                  href="https://www.typescriptlang.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                  TypeScript
+                </a>{" "}
+                (statically typed JavaScript that helps catch errors before the program runs). That said, I will still
+                keep up with other areas of technology, though not with the same level of intensity as my focus on
+                frontend development.
+              </p>
+              <p>
+                In case you are interested, here are some{" "}
+                <Link
+                  href="/projects/simple"
+                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                  simple projects I worked on when I first started learning programming
+                </Link>{" "}
+                (mostly using HTML, CSS, and JavaScript, although some also used the React and Vue.js frameworks).
+              </p>
+              <p>
+                Beyond the world of programming, I also dabble in art—not as a singer, but rather as a painter (though
+                not a particularly skilled one). I find it relaxing to doodle and draw, whether on paper or digitally.
+                This has led to the creation of several unique characters of my own (alongside some redraws of anime
+                characters you might have watched growing up—or perhaps still watch today). I’ve posted some of{" "}
                 <Link
                   href="/artworks"
                   className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  drawings on this page.
+                  my artwork on this page
                 </Link>{" "}
-                Also, I am constantly finding new ways to blend technology with creativity to stay inspired.
+                . Since I always take a photo of my drawings once they’re finished, I’ve indirectly picked up a new
+                skill: photography. That inspired me to start photographing other subjects as well, and I am sharing
+                those{" "}
+                <Link
+                  href="/photos"
+                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                  photos here
+                </Link>
+                .
               </p>
+
+              <p>Besides that, I can play the guitar a little.</p>
+              <p>
+                If you want to reach me up, you can go to{" "}
+                <Link
+                  href="/contacts"
+                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
+                  this page
+                </Link>
+                .
+              </p>
+              <p className="mt-32">Thank you for reading this boring introduction of mine!</p>
             </div>
           </div>
         </div>
