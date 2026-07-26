@@ -53,7 +53,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
                 Description
               </h4>
               <div
-                className="markdown-preview font-sans text-sm md:text-base text-neutral-700 dark:text-neutral-300 leading-relaxed mt-3"
+                className="markdown-preview font-sans text-sm md:text-base text-neutral-700 dark:text-neutral-300 leading-relaxed mt-3 break-words [&_a]:break-all prose prose-sm md:prose-base dark:prose-invert max-w-none"
                 dangerouslySetInnerHTML={{ __html: renderMarkdown(project.description) }}
               />
             </div>
