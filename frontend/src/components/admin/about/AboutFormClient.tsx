@@ -107,11 +107,7 @@ export default function AboutFormClient() {
 
   useEffect(() => {
     if (editor && !isLoading && content) {
-      // Only set content once after initialization
-      const timer = setTimeout(() => {
-        editor.commands.setContent(content || "");
-      }, 100);
-      return () => clearTimeout(timer);
+      editor.commands.setContent(content || "");
     }
   }, [editor, isLoading]);
 
