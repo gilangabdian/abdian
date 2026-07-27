@@ -22,7 +22,7 @@ class ProjectController extends Controller
         }
 
         // PERBAIKAN DI SINI: Tambahkan with('skills') agar relasi skill ikut terambil
-        $projects = $query->with('skills')->latest()->get();
+        $projects = $query->with('skills')->orderBy('sort_order', 'asc')->latest('id')->get();
 
         return response()->json([
             'success' => true,
@@ -113,5 +113,19 @@ class ProjectController extends Controller
         $this->deleteFile($project->thumbnail_path);
         $project->delete();
         return response()->json(['message' => 'Project deleted']);
+    }
+
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'ordered_ids' => 'required|array',
+            'ordered_ids.*' => 'integer|exists:projects,id'
+        ]);
+
+        foreach ($request->ordered_ids as $index => $id) {
+            Project::where('id', $id)->update(['sort_order' => $index]);
+        }
+
+        return response()->json(['message' => 'Projects reordered successfully']);
     }
 }

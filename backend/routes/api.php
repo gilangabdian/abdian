@@ -70,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Projects CRUD
     Route::post('/projects', [ProjectController::class, 'store']);
+    Route::put('/projects/reorder', [ProjectController::class, 'reorder']);
     Route::put('/projects/{id}', [ProjectController::class, 'update']); // Note: Laravel kadang butuh _method: PUT di FormData untuk file
     Route::delete('/projects/{id}', [ProjectController::class, 'destroy']);
 

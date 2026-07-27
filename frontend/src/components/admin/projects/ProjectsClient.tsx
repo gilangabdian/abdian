@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { getAllProjects, adminDeleteProject, adminUpdateProject } from "@/lib/api/project";
+import { getAllProjects, adminDeleteProject, adminUpdateProject, adminReorderProjects } from "@/lib/api/project";
 import { alertSuccess, alertError, alertConfirmProject } from "@/lib/alert";
 
 import { Project } from "@/types";
@@ -12,6 +12,7 @@ import { getToken } from "@/utils/auth";
 export default function ProjectsClient() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isReordering, setIsReordering] = useState(false);
   const token = getToken();
 
 
@@ -114,6 +115,60 @@ export default function ProjectsClient() {
     }
   };
 
+  const handleMoveUp = async (index: number) => {
+    if (index === 0 || isReordering) return;
+    setIsReordering(true);
+    try {
+      if (!token) throw new Error("No token");
+
+      // Swap in local state (optimistic)
+      const reordered = [...projects];
+      [reordered[index], reordered[index - 1]] = [reordered[index - 1], reordered[index]];
+      setProjects(reordered);
+
+      // Send to backend
+      const response = await adminReorderProjects(token, reordered.map((p) => p.id));
+      if (!response.ok) {
+        // Rollback on failure
+        fetchData();
+        alertError("Gagal mengatur ulang urutan.");
+      }
+    } catch (error) {
+      console.error(error);
+      fetchData();
+      alertError("Terjadi kesalahan sistem.");
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
+  const handleMoveDown = async (index: number) => {
+    if (index === projects.length - 1 || isReordering) return;
+    setIsReordering(true);
+    try {
+      if (!token) throw new Error("No token");
+
+      // Swap in local state (optimistic)
+      const reordered = [...projects];
+      [reordered[index], reordered[index + 1]] = [reordered[index + 1], reordered[index]];
+      setProjects(reordered);
+
+      // Send to backend
+      const response = await adminReorderProjects(token, reordered.map((p) => p.id));
+      if (!response.ok) {
+        // Rollback on failure
+        fetchData();
+        alertError("Gagal mengatur ulang urutan.");
+      }
+    } catch (error) {
+      console.error(error);
+      fetchData();
+      alertError("Terjadi kesalahan sistem.");
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -165,6 +220,7 @@ export default function ProjectsClient() {
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead className="bg-black text-white font-mono uppercase text-sm">
                 <tr>
+                  <th className="p-4 border-r-2 border-white w-16 text-center">Order</th>
                   <th className="p-4 border-r-2 border-white">Project Info</th>
                   <th className="p-4 border-r-2 border-white text-center w-28">Status</th>
                   <th className="p-4 border-r-2 border-white text-center w-32">Role/Team</th>
@@ -174,8 +230,39 @@ export default function ProjectsClient() {
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project) => (
+                {projects.map((project, index) => (
                   <tr key={project.id} className="border-b-2 border-black hover:bg-gray-50 transition-colors">
+                    {/* Order Column */}
+                    <td className="p-2 text-center align-middle">
+                      <div className="flex flex-col items-center gap-0.5">
+                        <button
+                          onClick={() => handleMoveUp(index)}
+                          disabled={index === 0 || isReordering}
+                          className={`p-1 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                            index > 0 && !isReordering
+                              ? "hover:bg-gray-200 text-gray-700"
+                              : "text-gray-300"
+                          }`}
+                          title="Move up"
+                        >
+                          <Icon icon="lucide:chevron-up" className="w-4 h-4" />
+                        </button>
+                        <span className="text-[10px] font-mono text-gray-400">{index + 1}</span>
+                        <button
+                          onClick={() => handleMoveDown(index)}
+                          disabled={index === projects.length - 1 || isReordering}
+                          className={`p-1 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                            index < projects.length - 1 && !isReordering
+                              ? "hover:bg-gray-200 text-gray-700"
+                              : "text-gray-300"
+                          }`}
+                          title="Move down"
+                        >
+                          <Icon icon="lucide:chevron-down" className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                    {/* Project Info Column */}
                     <td className="p-4 align-top">
                       <div className="flex flex-col gap-3">
                         {/* Title — full width */}
@@ -331,11 +418,35 @@ export default function ProjectsClient() {
 
           {/* Mobile List */}
           <div className="md:hidden space-y-6">
-            {projects.map((project) => (
+            {projects.map((project, index) => (
               <div
                 key={`${project.id}-mobile`}
                 className="border-4 border-black bg-white p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-4 relative"
               >
+                {/* Order Controls */}
+                <div className="absolute top-2 left-2 flex items-center gap-1 bg-white border-2 border-black px-1.5 py-0.5 z-10">
+                  <button
+                    onClick={() => handleMoveUp(index)}
+                    disabled={index === 0 || isReordering}
+                    className={`p-0.5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                      index > 0 && !isReordering ? "hover:text-black text-gray-700" : "text-gray-300"
+                    }`}
+                    title="Move up"
+                  >
+                    <Icon icon="lucide:chevron-up" className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-[10px] font-mono text-gray-400 min-w-[12px] text-center">{index + 1}</span>
+                  <button
+                    onClick={() => handleMoveDown(index)}
+                    disabled={index === projects.length - 1 || isReordering}
+                    className={`p-0.5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                      index < projects.length - 1 && !isReordering ? "hover:text-black text-gray-700" : "text-gray-300"
+                    }`}
+                    title="Move down"
+                  >
+                    <Icon icon="lucide:chevron-down" className="w-3.5 h-3.5" />
+                  </button>
+                </div>
                 <button
                   onClick={() => handleToggleFeatured(project)}
                   className="absolute top-2 right-2 p-2 bg-white border-2 border-black rounded-full z-10 shadow-sm"

@@ -221,4 +221,98 @@ class ProjectApiTest extends TestCase
         $this->assertCount(2, $project->custom_tech_stacks);
         $this->assertEquals('Custom HTML', $project->custom_tech_stacks[1]['name']);
     }
+
+    public function test_projects_are_listed_by_sort_order()
+    {
+        User::factory()->create();
+
+        // Buat 3 project dengan sort_order acak
+        $projectA = Project::create([
+            'title' => 'Project A',
+            'description' => 'Desc A',
+            'sort_order' => 2,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+        $projectB = Project::create([
+            'title' => 'Project B',
+            'description' => 'Desc B',
+            'sort_order' => 0,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+        $projectC = Project::create([
+            'title' => 'Project C',
+            'description' => 'Desc C',
+            'sort_order' => 1,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        $response = $this->getJson('/api/projects');
+
+        $response->assertStatus(200);
+        $titles = collect($response->json('data'))->pluck('title')->toArray();
+
+        // Urutan harus: B (0), C (1), A (2)
+        $this->assertEquals(['Project B', 'Project C', 'Project A'], $titles);
+    }
+
+    public function test_admin_can_reorder_projects()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $projectA = Project::create([
+            'title' => 'Project A',
+            'description' => 'Desc A',
+            'sort_order' => 0,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+        $projectB = Project::create([
+            'title' => 'Project B',
+            'description' => 'Desc B',
+            'sort_order' => 1,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+        $projectC = Project::create([
+            'title' => 'Project C',
+            'description' => 'Desc C',
+            'sort_order' => 2,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        // Reorder: C → pertama, A → kedua, B → ketiga
+        $response = $this->putJson('/api/projects/reorder', [
+            'ordered_ids' => [$projectC->id, $projectA->id, $projectB->id],
+        ]);
+
+        $response->assertStatus(200);
+
+        $projectA->refresh();
+        $projectB->refresh();
+        $projectC->refresh();
+
+        $this->assertEquals(0, $projectC->sort_order);
+        $this->assertEquals(1, $projectA->sort_order);
+        $this->assertEquals(2, $projectB->sort_order);
+    }
+
+    public function test_guest_cannot_reorder_projects()
+    {
+        $response = $this->putJson('/api/projects/reorder', [
+            'ordered_ids' => [1, 2, 3],
+        ]);
+
+        $response->assertStatus(401);
+    }
 }

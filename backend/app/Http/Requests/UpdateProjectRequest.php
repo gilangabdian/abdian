@@ -45,6 +45,7 @@ class UpdateProjectRequest extends FormRequest
             'custom_tech_stacks.*.icon_url' => 'required_with:custom_tech_stacks|string',
             'team_size' => 'nullable|integer|min:1',
             'role' => 'nullable|string|max:255',
+            'sort_order' => 'nullable|integer|min:0',
         ];
     }
 

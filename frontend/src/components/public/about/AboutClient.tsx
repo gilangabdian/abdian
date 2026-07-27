@@ -131,10 +131,12 @@ export default function AboutClient({ initialProfile }: AboutClientProps) {
                   className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
                   TypeScript
                 </a>{" "}
-                (statically typed JavaScript that helps catch errors before the program runs). That said, I will still
-                keep up with other areas of technology, though not with the same level of intensity as my focus on
-                frontend development.
+                (statically typed JavaScript that helps catch errors before the program runs). Don't misunderstand me by
+                assuming that if I focus on front-end development, I won't learn anything else. That's not true. I'll
+                also keep up with developments in other technology fields, though not as deeply as front-end
+                development.
               </p>
+              <p></p>
               <p>
                 In case you are interested, here are some{" "}
                 <Link
@@ -145,24 +147,23 @@ export default function AboutClient({ initialProfile }: AboutClientProps) {
                 (mostly using HTML, CSS, and JavaScript, although some also used the React and Vue.js frameworks).
               </p>
               <p>
-                Beyond the world of programming, I also dabble in art—not as a singer, but rather as a painter (though
-                not a particularly skilled one). I find it relaxing to doodle and draw, whether on paper or digitally.
-                This has led to the creation of several unique characters of my own (alongside some redraws of anime
-                characters you might have watched growing up—or perhaps still watch today). I’ve posted some of{" "}
+                Outside of programming, I also often draw, but lately my hobby has started to fade. I used to feel
+                relaxed doodling and drawing, both on paper and digitally, but that feeling has faded. However, I used
+                to create some unique characters of my own and some are just redraws of anime characters that you may
+                have watched as a child or are still watching them now.I post some of{" "}
                 <Link
                   href="/artworks"
                   className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
                   my artwork on this page
                 </Link>{" "}
-                . Since I always take a photo of my drawings once they’re finished, I’ve indirectly picked up a new
-                skill: photography. That inspired me to start photographing other subjects as well, and I am sharing
-                those{" "}
+                . Since I often took pictures of my drawings after finishing my drawings, I think I indirectly learned a
+                new skill, namely photography. That motivated me to start photographing other subjects as well, and I{" "}
                 <Link
                   href="/photos"
                   className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  photos here
-                </Link>
-                .
+                  post those photos
+                </Link>{" "}
+                here.
               </p>
 
               <p>Besides that, I can play the guitar a little.</p>

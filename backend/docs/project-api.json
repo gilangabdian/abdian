@@ -80,6 +80,36 @@
         }
       }
     },
+    "/api/projects/reorder": {
+      "put": {
+        "summary": "Reorder projects (drag-and-drop order)",
+        "tags": ["Projects"],
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["ordered_ids"],
+                "properties": {
+                  "ordered_ids": {
+                    "type": "array",
+                    "items": { "type": "integer" },
+                    "description": "Array of project IDs in their new desired order"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Projects reordered successfully"
+          }
+        }
+      }
+    },
     "/api/projects/{id}": {
       "get": {
         "summary": "Get a single project",
@@ -187,6 +217,7 @@
           "team_size": { "type": ["integer", "null"] },
           "role": { "type": ["string", "null"] },
           "custom_tech_stacks": { "type": ["array", "null"] },
+          "sort_order": { "type": "integer" },
           "created_at": { "type": "string", "format": "date-time" },
           "updated_at": { "type": "string", "format": "date-time" },
           "skills": { "type": "array", "items": { "$ref": "#/components/schemas/Skill" } }

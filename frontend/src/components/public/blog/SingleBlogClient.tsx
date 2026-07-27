@@ -137,7 +137,7 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
     <div className="pt-20 pb-20 min-h-screen bg-white dark:bg-black text-neutral-800 dark:text-neutral-300 font-[Inter]">
       <style>{`
         .prose p:empty::before { content: "\\00a0"; display: inline-block; }
-        .prose p { color: #52525b !important; }
+        .prose p { color: #52525b !important; font-size: 16px; line-height: 28px }
         .dark .prose p { color: #a1a1aa !important; }
         .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
         .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
@@ -167,7 +167,7 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}>
         <div className="toc-sidebar absolute left-0 top-34 pl-7 xl:pl-10 mt-32 max-h-[70vh] overflow-y-auto">
-          <ul className="flex flex-col gap-3 text-sm border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
+          <ul className="flex flex-col gap-2 text-xs border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
             {toc.map((item, index) => (
               <li key={`${index}-${item.id}`} className={`w-fit ${item.level === "h3" ? "ml-4 text-xs" : ""}`}>
                 <span
