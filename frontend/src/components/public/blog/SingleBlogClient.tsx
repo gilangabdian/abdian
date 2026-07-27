@@ -137,30 +137,37 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
     <div className="pt-20 pb-20 min-h-screen bg-white dark:bg-black text-neutral-800 dark:text-neutral-300 font-[Inter]">
       <style>{`
         .prose p:empty::before { content: "\\00a0"; display: inline-block; }
-        .prose p { color: #52525b !important; }
+        .prose p { color: #52525b !important; font-size: 16px; line-height: 28px }
         .dark .prose p { color: #a1a1aa !important; }
         .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
         .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
         .prose a:hover { text-decoration-color: #171717 !important; }
         .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
         .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; cursor: pointer; }
-        .prose h2, .prose h3 { position: relative; }
+        .prose h2, .prose h3 { position: relative;  font-weight:normal; }
         .prose h2::before, .prose h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
         .prose h2:hover::before, .prose h3:hover::before { opacity: 1; }
         .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
         .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
         .prose li { margin-bottom: 0.5em; }
+        /* ToC subtle scrollbar */
+        .toc-sidebar::-webkit-scrollbar { width: 4px; }
+        .toc-sidebar::-webkit-scrollbar-track { background: transparent; }
+        .toc-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.02); border-radius: 4px; }
+        .dark .toc-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.02); }
+        .toc-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.15); }
+        .dark .toc-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
       `}</style>
 
       {/* Desktop ToC Sidebar */}
       <div
-        className={`hidden lg:block fixed left-0 top-0 w-[calc(50%-24rem)] h-full z-40 pointer-events-auto transition-all duration-300 ease-in-out ${
+        className={`hidden lg:block fixed left-0 bottom-40 w-[calc(50%-24rem)] h-full z-40 pointer-events-auto transition-all duration-300 ease-in-out ${
           showToc ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
         }`}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}>
-        <div className="absolute left-0 top-34 pl-7 xl:pl-10 mt-32">
-          <ul className="flex flex-col gap-3 text-sm border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
+        <div className="toc-sidebar absolute left-0 top-34 pl-7 xl:pl-10 mt-32 max-h-[70vh] overflow-y-auto">
+          <ul className="flex flex-col gap-2 text-xs border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
             {toc.map((item, index) => (
               <li key={`${index}-${item.id}`} className={`w-fit ${item.level === "h3" ? "ml-4 text-xs" : ""}`}>
                 <span

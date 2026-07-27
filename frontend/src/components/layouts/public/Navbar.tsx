@@ -38,7 +38,7 @@ export default function Navbar() {
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blogs" },
     { name: "Projects", href: "/projects" },
-    { name: "Certificates", href: "/certificates" },
+    // { name: "Certificates", href: "/certificates" },
   ];
 
   // Mobile nav items — icon only
@@ -46,17 +46,17 @@ export default function Navbar() {
     { name: "About", href: "/about", icon: "mdi:card-account-details-outline" },
     { name: "Blog", href: "/blogs", icon: "material-symbols-light:post-outline" },
     { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
-    { name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" },
+    // { name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" },
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
-    { name: "Contacts", href: "/contacts", icon: "mdi:email-outline" },
+    { name: "Github", href: "https://github.com/gilangabdian", icon: "mingcute:github-line" },
   ];
 
   // Desktop nav items — icon only
   const iconLinks = [
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
-    { name: "Contacts", href: "/contacts", icon: "mdi:email-outline" },
+    { name: "Github", href: "https://github.com/gilangabdian", icon: "mingcute:github-line" },
   ];
 
   // ─── SVG mask helper ───────────────────────────────
@@ -104,19 +104,23 @@ export default function Navbar() {
 
       {/* Kanan: Semua icon */}
       <div className="flex items-center gap-x-4">
-        {mobileIconLinks.map((link) => (
-          <Link
-            key={`mobile-${link.name}`}
-            href={link.href}
-            title={link.name}
-            className={`transition-colors duration-200 ${
-              isActive(link.href)
-                ? "text-black dark:text-white"
-                : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
-            }`}>
-            <Icon icon={link.icon} className="w-5 h-5" />
-          </Link>
-        ))}
+          {mobileIconLinks.map((link) => {
+            const isGithub = link.name === "Github";
+            return (
+              <Link
+                key={`mobile-${link.name}`}
+                href={link.href}
+                title={link.name}
+                {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className={`transition-colors duration-200 ${
+                  isActive(link.href)
+                    ? "text-black dark:text-white"
+                    : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
+                }`}>
+                <Icon icon={link.icon} className="w-5 h-5" />
+              </Link>
+            );
+          })}
 
         {/* Theme Toggle */}
         <button
@@ -158,19 +162,23 @@ export default function Navbar() {
             {link.name}
           </Link>
         ))}
-        {iconLinks.map((link) => (
-          <Link
-            key={link.name}
-            href={link.href}
-            title={link.name}
-            className={`transition-colors duration-200 ${
-              isActive(link.href)
-                ? "text-black dark:text-white"
-                : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
-            }`}>
-            <Icon icon={link.icon} className="w-5 h-5" />
-          </Link>
-        ))}
+        {iconLinks.map((link) => {
+          const isGithub = link.name === "Github";
+          return (
+            <Link
+              key={link.name}
+              href={link.href}
+              title={link.name}
+              {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className={`transition-colors duration-200 ${
+                isActive(link.href)
+                  ? "text-black dark:text-white"
+                  : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
+              }`}>
+              <Icon icon={link.icon} className="w-5 h-5" />
+            </Link>
+          );
+        })}
 
         {/* Theme Toggle */}
         <button

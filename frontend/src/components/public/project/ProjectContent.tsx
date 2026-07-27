@@ -1,5 +1,4 @@
 import React from 'react';
-import { marked } from 'marked';
 import { Icon } from '@iconify/react';
 import { Project } from '@/types';
 
@@ -19,28 +18,83 @@ export default function ProjectContent({ project }: ProjectContentProps) {
     return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   };
 
-  const renderMarkdown = (text?: string) => {
-    if (!text) return '';
-    return marked.parse(text, { breaks: true }) as string;
+  const renderMedia = () => {
+    // 1. Video priority
+    if (project.media_type === 'video' && project.thumbnail_url) {
+      return (
+        <video
+          src={project.thumbnail_url}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-auto max-h-[70vh] object-contain bg-black"
+        />
+      );
+    }
+
+    // 2. Twitter Embed priority
+    if (project.twitter_url) {
+      return (
+        <div className="w-full flex justify-center bg-neutral-50 dark:bg-neutral-900 overflow-hidden relative min-h-[300px]">
+          <blockquote className="twitter-tweet" data-theme="dark">
+            <a href={project.twitter_url}></a>
+          </blockquote>
+          <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
+        </div>
+      );
+    }
+
+    // 3. YouTube Embed priority
+    if (project.youtube_url) {
+      const getYoutubeId = (url: string) => {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+      };
+      const ytId = getYoutubeId(project.youtube_url);
+      if (ytId) {
+        return (
+          <div className="w-full aspect-video">
+            <iframe
+              className="w-full h-full"
+              src={`https://www.youtube.com/embed/${ytId}`}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        );
+      }
+    }
+
+    // 4. Image Fallback
+    if (project.thumbnail_url) {
+      return (
+        <img
+          loading="lazy"
+          src={project.thumbnail_url}
+          alt={project.title}
+          className="w-full h-auto max-h-[70vh] object-cover"
+        />
+      );
+    }
+
+    // 5. No Media
+    return (
+      <div className="w-full aspect-video bg-neutral-50 dark:bg-neutral-900/50 flex items-center justify-center text-neutral-400">
+        <Icon icon="mdi:image-off-outline" className="text-4xl" />
+      </div>
+    );
   };
 
   return (
     <div className="flex flex-col gap-6 pb-20 animate-in fade-in duration-500">
-      {/* Thumbnail - full width, no max constraint */}
-      {project.thumbnail_url ? (
-        <div className="w-full bg-neutral-50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden">
-          <img
-            loading="lazy"
-            src={project.thumbnail_url}
-            alt={project.title}
-            className="w-full h-auto object-cover"
-          />
-        </div>
-      ) : (
-        <div className="w-full aspect-video bg-neutral-50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden flex items-center justify-center text-neutral-400">
-          <Icon icon="mdi:image-off-outline" className="text-4xl" />
-        </div>
-      )}
+      {/* Media Renderer - full width */}
+      <div className="w-full bg-neutral-50 dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden">
+        {renderMedia()}
+      </div>
 
       {/* Case Study: 2-column layout after image */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12">
@@ -53,8 +107,8 @@ export default function ProjectContent({ project }: ProjectContentProps) {
                 Description
               </h4>
               <div
-                className="markdown-preview font-sans text-sm md:text-base text-neutral-700 dark:text-neutral-300 leading-relaxed mt-3"
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(project.description) }}
+                className="markdown-preview font-sans text-sm md:text-base text-neutral-700 dark:text-neutral-300 leading-relaxed mt-3 break-words [&_a]:break-all prose prose-sm md:prose-base dark:prose-invert max-w-none"
+                dangerouslySetInnerHTML={{ __html: project.description }}
               />
             </div>
           )}

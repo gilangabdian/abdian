@@ -22,7 +22,7 @@ class ProjectController extends Controller
         }
 
         // PERBAIKAN DI SINI: Tambahkan with('skills') agar relasi skill ikut terambil
-        $projects = $query->with('skills')->latest()->get();
+        $projects = $query->with('skills')->orderBy('sort_order', 'asc')->latest('id')->get();
 
         return response()->json([
             'success' => true,
@@ -40,7 +40,12 @@ class ProjectController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('thumbnail')) {
-            $data['thumbnail_path'] = $this->handleFileUpload($request->file('thumbnail'), 'projects');
+            $file = $request->file('thumbnail');
+            $mimeType = $file->getMimeType();
+            $resourceType = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
+            
+            $data['thumbnail_path'] = $this->handleFileUpload($file, 'projects', null, $resourceType);
+            $data['media_type'] = $resourceType;
         }
 
         $project = Project::create($data);
@@ -58,8 +63,23 @@ class ProjectController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('thumbnail')) {
-            $data['thumbnail_path'] = $this->handleFileUpload($request->file('thumbnail'), 'projects', $project->thumbnail_path);
+            $file = $request->file('thumbnail');
+            $mimeType = $file->getMimeType();
+            $resourceType = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
+            
+            $data['thumbnail_path'] = $this->handleFileUpload($file, 'projects', $project->thumbnail_path, $resourceType);
+            $data['media_type'] = $resourceType;
         }
+
+        // Handle thumbnail removal when no new file is uploaded
+        if (!$request->hasFile('thumbnail') && $request->boolean('remove_thumbnail')) {
+            $this->deleteFile($project->thumbnail_path);
+            $data['thumbnail_path'] = null;
+            $data['media_type'] = null;
+        }
+
+        // Hapus remove_thumbnail dari data agar tidak ikut mass-assignment
+        unset($data['remove_thumbnail']);
 
         $project->update([
             'title' => $data['title'],
@@ -74,11 +94,11 @@ class ProjectController extends Controller
             'live_demo_link' => $data['live_demo_link'] ?? null,
             'repository_link' => $data['repository_link'] ?? null,
             'custom_tech_stacks' => $data['custom_tech_stacks'] ?? null,
+            'youtube_url' => $data['youtube_url'] ?? null,
+            'twitter_url' => $data['twitter_url'] ?? null,
+            'thumbnail_path' => array_key_exists('thumbnail_path', $data) ? $data['thumbnail_path'] : $project->thumbnail_path,
+            'media_type' => array_key_exists('media_type', $data) ? $data['media_type'] : $project->media_type,
         ]);
-
-        if (isset($data['thumbnail_path'])) {
-            $project->update(['thumbnail_path' => $data['thumbnail_path']]);
-        }
 
         if (array_key_exists('tech_stack_ids', $data)) {
             $project->skills()->sync($data['tech_stack_ids'] ?? []);
@@ -93,5 +113,19 @@ class ProjectController extends Controller
         $this->deleteFile($project->thumbnail_path);
         $project->delete();
         return response()->json(['message' => 'Project deleted']);
+    }
+
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'ordered_ids' => 'required|array',
+            'ordered_ids.*' => 'integer|exists:projects,id'
+        ]);
+
+        foreach ($request->ordered_ids as $index => $id) {
+            Project::where('id', $id)->update(['sort_order' => $index]);
+        }
+
+        return response()->json(['message' => 'Projects reordered successfully']);
     }
 }

@@ -56,58 +56,63 @@ export default function Hero({ profile }: HeroProps) {
     };
   }, [profile?.about?.job_title]);
 
-  useGSAP(() => {
-    if (!profile || !profile.about) return;
-    const tl = gsap.timeline();
+  useGSAP(
+    () => {
+      if (!profile || !profile.about) return;
+      const tl = gsap.timeline();
 
-    tl.from(".hero-badge", {
-      scale: 0,
-      rotation: -20,
-      opacity: 0,
-      duration: 0.6,
-      ease: "back.out(1.7)",
-    })
-      .from(
-        ".hero-text",
-        {
-          y: 20,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: "power2.out",
-        },
-        "-=0.4"
-      )
-      .from(
-        ".hero-content",
-        {
-          y: 20,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power2.out",
-        },
-        "-=0.6"
-      )
-      .from(
-        ".hero-image",
-        {
-          y: 100,
-          opacity: 0,
-          scale: 0.9,
-          duration: 1.2,
-          ease: "elastic.out(1, 0.75)",
-        },
-        "-=1.0"
-      );
-  }, { scope: heroRef, dependencies: [profile] });
+      tl.from(".hero-badge", {
+        scale: 0,
+        rotation: -20,
+        opacity: 0,
+        duration: 0.6,
+        ease: "back.out(1.7)",
+      })
+        .from(
+          ".hero-text",
+          {
+            y: 20,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "power2.out",
+          },
+          "-=0.4",
+        )
+        .from(
+          ".hero-content",
+          {
+            y: 20,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power2.out",
+          },
+          "-=0.6",
+        )
+        .from(
+          ".hero-image",
+          {
+            y: 100,
+            opacity: 0,
+            scale: 0.9,
+            duration: 1.2,
+            ease: "elastic.out(1, 0.75)",
+          },
+          "-=1.0",
+        );
+    },
+    { scope: heroRef, dependencies: [profile] },
+  );
 
   if (!profile || !profile.about) {
     return null;
   }
 
   return (
-    <div ref={heroRef} className="container mx-auto px-6 pt-26 pb-6 md:pt-8 md:pb-0 min-h-screen flex items-center justify-center overflow-hidden">
+    <div
+      ref={heroRef}
+      className="container mx-auto px-6 pt-26 pb-6 md:pt-8 md:pb-0 min-h-screen flex items-center justify-center overflow-hidden">
       <div className="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-8 md:gap-2 mt-8">
         {/* Left Content */}
         <div className="flex-1 flex flex-col items-start space-y-3 md:space-y-3 mt-4">
@@ -119,8 +124,7 @@ export default function Hero({ profile }: HeroProps) {
 
           <div className="space-y-0.5">
             <h1 className="hero-text text-4xl md:text-5xl font-bold leading-tight font-[Inter] tracking-tight">
-              Hi, I&apos;m
-              <br className="hidden md:block" />
+              Hi, I&apos;m <br className="hidden md:block" />
               <span className="underline decoration-4 underline-offset-4 decoration-black dark:decoration-white">
                 {profile.about.name}
               </span>
@@ -153,14 +157,14 @@ export default function Hero({ profile }: HeroProps) {
           </div>
 
           <div className="hero-content flex gap-3 pt-1 w-full md:w-auto">
-            {profile.about.is_available_for_work && (
+            {/* {profile.about.is_available_for_work && (
               <a
                 href="mailto:qbdian@gmail.com?subject=Hi Gilang Abdian Anggara, I want to hire you!"
                 className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black px-0 md:px-5 py-2 rounded-xl border border-transparent font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.23)] hover:bg-black/90 dark:hover:bg-gray-200 active:scale-95 transition-all">
                 <Icon icon="mdi:handshake-outline" className="w-4 h-4 md:w-5 md:h-5" />
                 <span>Hire Me</span>
               </a>
-            )}
+            )} */}
 
             <a
               href={profile.about.cv_url}
@@ -170,7 +174,7 @@ export default function Hero({ profile }: HeroProps) {
                 profile.about.is_available_for_work ? "flex-1 md:flex-none px-0 md:px-5" : "flex-none px-6"
               } flex items-center justify-center gap-2 bg-white text-black dark:bg-dark-bg dark:text-white py-2 rounded-xl border border-black/20 dark:border-white/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] dark:shadow-[0_4px_14px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all`}>
               <Icon icon="mdi:file-download-outline" className="w-4 h-4 md:w-5 md:h-5" />
-              <span>Download CV</span>
+              <span>View Resume</span>
             </a>
           </div>
 
@@ -192,7 +196,7 @@ export default function Hero({ profile }: HeroProps) {
               ))}
             </div>
           </div>
-          
+
           <div className="hero-content mt-4 w-full flex justify-start">
             <LeaveMark />
           </div>

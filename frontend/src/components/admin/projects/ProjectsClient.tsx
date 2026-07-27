@@ -3,21 +3,19 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { getAllProjects, adminDeleteProject, adminUpdateProject } from "@/lib/api/project";
+import { getAllProjects, adminDeleteProject, adminUpdateProject, adminReorderProjects } from "@/lib/api/project";
 import { alertSuccess, alertError, alertConfirmProject } from "@/lib/alert";
-import { marked } from "marked";
+
 import { Project } from "@/types";
 import { getToken } from "@/utils/auth";
 
 export default function ProjectsClient() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isReordering, setIsReordering] = useState(false);
   const token = getToken();
 
-  const renderMarkdown = (text?: string) => {
-    if (!text) return "";
-    return marked.parse(text, { breaks: true }) as string;
-  };
+
 
   const formatLabel = (value?: string) => {
     if (!value) return "";
@@ -117,6 +115,60 @@ export default function ProjectsClient() {
     }
   };
 
+  const handleMoveUp = async (index: number) => {
+    if (index === 0 || isReordering) return;
+    setIsReordering(true);
+    try {
+      if (!token) throw new Error("No token");
+
+      // Swap in local state (optimistic)
+      const reordered = [...projects];
+      [reordered[index], reordered[index - 1]] = [reordered[index - 1], reordered[index]];
+      setProjects(reordered);
+
+      // Send to backend
+      const response = await adminReorderProjects(token, reordered.map((p) => p.id));
+      if (!response.ok) {
+        // Rollback on failure
+        fetchData();
+        alertError("Gagal mengatur ulang urutan.");
+      }
+    } catch (error) {
+      console.error(error);
+      fetchData();
+      alertError("Terjadi kesalahan sistem.");
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
+  const handleMoveDown = async (index: number) => {
+    if (index === projects.length - 1 || isReordering) return;
+    setIsReordering(true);
+    try {
+      if (!token) throw new Error("No token");
+
+      // Swap in local state (optimistic)
+      const reordered = [...projects];
+      [reordered[index], reordered[index + 1]] = [reordered[index + 1], reordered[index]];
+      setProjects(reordered);
+
+      // Send to backend
+      const response = await adminReorderProjects(token, reordered.map((p) => p.id));
+      if (!response.ok) {
+        // Rollback on failure
+        fetchData();
+        alertError("Gagal mengatur ulang urutan.");
+      }
+    } catch (error) {
+      console.error(error);
+      fetchData();
+      alertError("Terjadi kesalahan sistem.");
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -168,7 +220,7 @@ export default function ProjectsClient() {
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead className="bg-black text-white font-mono uppercase text-sm">
                 <tr>
-                  <th className="p-4 border-r-2 border-white w-24">Thumbnail</th>
+                  <th className="p-4 border-r-2 border-white w-16 text-center">Order</th>
                   <th className="p-4 border-r-2 border-white">Project Info</th>
                   <th className="p-4 border-r-2 border-white text-center w-28">Status</th>
                   <th className="p-4 border-r-2 border-white text-center w-32">Role/Team</th>
@@ -178,44 +230,96 @@ export default function ProjectsClient() {
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project) => (
+                {projects.map((project, index) => (
                   <tr key={project.id} className="border-b-2 border-black hover:bg-gray-50 transition-colors">
-                    <td className="p-4 align-top">
-                      <img
-                        loading="lazy"
-                        src={project.thumbnail_url || project.thumbnail_path || ""}
-                        className="w-24 h-16 object-cover border-2 border-black shadow-sm"
-                        alt={project.title}
-                      />
+                    {/* Order Column */}
+                    <td className="p-2 text-center align-middle">
+                      <div className="flex flex-col items-center gap-0.5">
+                        <button
+                          onClick={() => handleMoveUp(index)}
+                          disabled={index === 0 || isReordering}
+                          className={`p-1 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                            index > 0 && !isReordering
+                              ? "hover:bg-gray-200 text-gray-700"
+                              : "text-gray-300"
+                          }`}
+                          title="Move up"
+                        >
+                          <Icon icon="lucide:chevron-up" className="w-4 h-4" />
+                        </button>
+                        <span className="text-[10px] font-mono text-gray-400">{index + 1}</span>
+                        <button
+                          onClick={() => handleMoveDown(index)}
+                          disabled={index === projects.length - 1 || isReordering}
+                          className={`p-1 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                            index < projects.length - 1 && !isReordering
+                              ? "hover:bg-gray-200 text-gray-700"
+                              : "text-gray-300"
+                          }`}
+                          title="Move down"
+                        >
+                          <Icon icon="lucide:chevron-down" className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
-
+                    {/* Project Info Column */}
                     <td className="p-4 align-top">
-                      <div className="max-w-[250px] lg:max-w-[400px]">
-                        <div className="font-bold uppercase text-lg leading-tight mb-1">{project.title}</div>
+                      <div className="flex flex-col gap-3">
+                        {/* Title — full width */}
+                        <div className="font-bold uppercase text-lg leading-tight">{project.title}</div>
+
+                        {/* Thumbnail — di bawah title, ukuran sedang */}
+                        {(project.thumbnail_url || project.thumbnail_path) && (
+                          <div className="w-full max-w-[240px]">
+                            {project.media_type === "video" ? (
+                              <video
+                                src={project.thumbnail_url}
+                                className="w-full h-auto max-h-28 object-cover border-2 border-black shadow-sm"
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                              />
+                            ) : (
+                              <img
+                                loading="lazy"
+                                src={project.thumbnail_url || project.thumbnail_path || ""}
+                                className="w-full h-auto max-h-28 object-cover border-2 border-black shadow-sm"
+                                alt={project.title}
+                              />
+                            )}
+                          </div>
+                        )}
+
+                        {/* Description — full width */}
                         <div
-                          dangerouslySetInnerHTML={{ __html: renderMarkdown(project.description) }}
-                          className="markdown-preview text-sm text-gray-500 font-mono mb-2 line-clamp-2"
+                          dangerouslySetInnerHTML={{ __html: project.description || "" }}
+                          className="markdown-preview text-sm text-gray-500 font-mono line-clamp-2"
                         ></div>
-                        <div className="flex gap-3 mt-2">
-                          {project.repository_link && (
-                            <a
-                              href={project.repository_link}
-                              target="_blank"
-                              className="text-gray-600 hover:text-black hover:scale-110 transition-transform"
-                            >
-                              <Icon icon="mdi:github" className="w-6 h-6" />
-                            </a>
-                          )}
-                          {project.live_demo_link && (
-                            <a
-                              href={project.live_demo_link}
-                              target="_blank"
-                              className="text-gray-600 hover:text-black underline hover:scale-110 transition-transform"
-                            >
-                              <Icon icon="mdi:web" className="w-6 h-6" />
-                            </a>
-                          )}
-                        </div>
+
+                        {/* Links */}
+                        {project.repository_link || project.live_demo_link ? (
+                          <div className="flex gap-3 mt-1">
+                            {project.repository_link && (
+                              <a
+                                href={project.repository_link}
+                                target="_blank"
+                                className="text-gray-600 hover:text-black hover:scale-110 transition-transform"
+                              >
+                                <Icon icon="mdi:github" className="w-6 h-6" />
+                              </a>
+                            )}
+                            {project.live_demo_link && (
+                              <a
+                                href={project.live_demo_link}
+                                target="_blank"
+                                className="text-gray-600 hover:text-black underline hover:scale-110 transition-transform"
+                              >
+                                <Icon icon="mdi:web" className="w-6 h-6" />
+                              </a>
+                            )}
+                          </div>
+                        ) : null}
                       </div>
                     </td>
 
@@ -314,11 +418,35 @@ export default function ProjectsClient() {
 
           {/* Mobile List */}
           <div className="md:hidden space-y-6">
-            {projects.map((project) => (
+            {projects.map((project, index) => (
               <div
                 key={`${project.id}-mobile`}
                 className="border-4 border-black bg-white p-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-4 relative"
               >
+                {/* Order Controls */}
+                <div className="absolute top-2 left-2 flex items-center gap-1 bg-white border-2 border-black px-1.5 py-0.5 z-10">
+                  <button
+                    onClick={() => handleMoveUp(index)}
+                    disabled={index === 0 || isReordering}
+                    className={`p-0.5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                      index > 0 && !isReordering ? "hover:text-black text-gray-700" : "text-gray-300"
+                    }`}
+                    title="Move up"
+                  >
+                    <Icon icon="lucide:chevron-up" className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-[10px] font-mono text-gray-400 min-w-[12px] text-center">{index + 1}</span>
+                  <button
+                    onClick={() => handleMoveDown(index)}
+                    disabled={index === projects.length - 1 || isReordering}
+                    className={`p-0.5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                      index < projects.length - 1 && !isReordering ? "hover:text-black text-gray-700" : "text-gray-300"
+                    }`}
+                    title="Move down"
+                  >
+                    <Icon icon="lucide:chevron-down" className="w-3.5 h-3.5" />
+                  </button>
+                </div>
                 <button
                   onClick={() => handleToggleFeatured(project)}
                   className="absolute top-2 right-2 p-2 bg-white border-2 border-black rounded-full z-10 shadow-sm"
@@ -330,16 +458,27 @@ export default function ProjectsClient() {
                 </button>
 
                 <div className="flex gap-4 items-start">
-                  <img
-                    loading="lazy"
-                    src={project.thumbnail_url || project.thumbnail_path || ""}
-                    className="w-20 h-20 object-cover border-2 border-black flex-shrink-0 bg-gray-100"
-                    alt={project.title}
-                  />
+                  {project.media_type === "video" && project.thumbnail_url ? (
+                    <video
+                      src={project.thumbnail_url}
+                      className="w-20 h-20 object-cover border-2 border-black flex-shrink-0 bg-gray-100"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      loading="lazy"
+                      src={project.thumbnail_url || project.thumbnail_path || ""}
+                      className="w-20 h-20 object-cover border-2 border-black flex-shrink-0 bg-gray-100"
+                      alt={project.title}
+                    />
+                  )}
                   <div className="flex-1 min-w-0 pr-8">
                     <h3 className="font-black text-lg uppercase leading-tight break-words">{project.title}</h3>
                     <div
-                      dangerouslySetInnerHTML={{ __html: renderMarkdown(project.description) }}
+                      dangerouslySetInnerHTML={{ __html: project.description || "" }}
                       className="markdown-preview text-sm text-gray-500 font-mono mb-2 line-clamp-2"
                     ></div>
                     <div className="flex gap-3 mt-3">

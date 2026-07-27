@@ -45,7 +45,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
         autoAlpha: 1,
         duration: 0.8,
         ease: "power2.out",
-      }
+      },
     );
 
     // 2. Animasi Content Desktop
@@ -57,7 +57,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
         duration: 0.8,
         ease: "power2.out",
       },
-      "-=0.4"
+      "-=0.4",
     );
 
     // 3. Animasi Content Mobile
@@ -70,21 +70,21 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
         duration: 0.8,
         ease: "power2.out",
       },
-      "-=0.6"
+      "-=0.6",
     );
   }, []);
 
   return (
-    <div className="min-h-screen mb-40">
+    <div className="min-h-screen">
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #a3a3a3; }
-        
+
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #404040; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #525252; }
-        
+
         .markdown-preview ul { list-style-type: disc !important; margin-left: 1.5rem !important; margin-bottom: 0.5rem !important; }
         .markdown-preview ol { list-style-type: decimal !important; margin-left: 1.5rem !important; margin-bottom: 0.5rem !important; }
         .markdown-preview li { display: list-item !important; margin-bottom: 0.25rem; }
@@ -93,11 +93,9 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
         .markdown-preview em, .markdown-preview i { font-style: italic !important; }
       `}</style>
 
-      <div className="px-4 py-16 md:px-8 max-w-7xl mx-auto">
+      <div className="px-4 mt-16 md:mt-0 py-16 md:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-16 md:mb-20 -mt-12 md:mt-7 page-title invisible opacity-0">
-          <h1 className="text-2xl md:text-4xl font-bold tracking-wide text-black dark:text-white">
-            All Projects
-          </h1>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-wide text-black dark:text-white">All Projects</h1>
           <p className="mt-4 font-sans text-neutral-600 dark:text-neutral-400 text-sm md:text-base max-w-xl mx-auto italic">
             "Projects that i created."
           </p>
@@ -110,14 +108,14 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
               {/* Sidebar List */}
               <div className="col-span-4 lg:col-span-4">
                 <div className="sticky top-28 max-h-[75vh] overflow-y-auto custom-scrollbar pr-4">
-                  <ProjectSidebar 
+                  <ProjectSidebar
                     projects={projects}
                     activeProject={activeProject}
                     onSelectProject={setActiveProject}
                   />
                 </div>
               </div>
-              
+
               {/* Content Detail */}
               <div className="col-span-8 lg:col-span-8">
                 {activeProject && <ProjectContent project={activeProject} />}
@@ -127,7 +125,9 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
             {/* Mobile Stacked View */}
             <div className="flex flex-col gap-16 md:hidden mobile-view invisible opacity-0">
               {projects.map((project) => (
-                <div key={project.id} className="flex flex-col gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-12 last:border-0">
+                <div
+                  key={project.id}
+                  className="flex flex-col gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-12 last:border-0">
                   <h2 className="text-2xl font-black tracking-tight text-black dark:text-white leading-tight">
                     {project.title}
                   </h2>
@@ -137,9 +137,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
             </div>
           </>
         ) : (
-          <div className="text-center text-neutral-500 py-20">
-            No projects found.
-          </div>
+          <div className="text-center text-neutral-500 py-20">No projects found.</div>
         )}
       </div>
     </div>

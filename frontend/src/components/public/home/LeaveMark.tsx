@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import gsap from "gsap";
+import { gsap } from "gsap";
 import { getVisitorMarkCount, leaveVisitorMark } from "@/lib/api/visitor";
+import { Heart } from "lucide-react";
 
 const Tooltip = ({ id, onRemove }: { id: number; onRemove: (id: number) => void }) => {
   const [isLeaving, setIsLeaving] = useState(false);
@@ -30,7 +31,7 @@ const Tooltip = ({ id, onRemove }: { id: number; onRemove: (id: number) => void 
         isLeaving ? "opacity-0 translate-y-4" : "animate-in fade-in slide-in-from-bottom-4"
       }`}>
       <span>Thank you!</span>
-      <span className="text-sm">✨</span>
+      {/* <span className="text-sm">✨</span> */}
     </div>
   );
 };
@@ -42,17 +43,14 @@ export default function LeaveMark() {
   const [deviceId, setDeviceId] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [showNumberTemporary, setShowNumberTemporary] = useState(false);
-  
+  const [heartColor, setHeartColor] = useState("#f87171"); // Default soft red
+
   const countRef = useRef<HTMLSpanElement>(null);
   const prevCountRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (countRef.current && markCount !== prevCountRef.current && prevCountRef.current !== null) {
-      gsap.fromTo(
-        countRef.current,
-        { y: 15, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: "back.out(2)" }
-      );
+      gsap.fromTo(countRef.current, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "back.out(2)" });
     }
     prevCountRef.current = markCount;
   }, [markCount]);
@@ -105,20 +103,27 @@ export default function LeaveMark() {
     const newId = Date.now() + Math.random();
     setTooltips((prev) => [...prev, { id: newId }]);
 
+    if (alreadyMarked) {
+      // Generate a random vibrant HSL color
+      const h = Math.floor(Math.random() * 360);
+      const s = Math.floor(Math.random() * 30) + 70; // 70-100% saturation
+      const l = Math.floor(Math.random() * 10) + 50; // 50-60% lightness
+      setHeartColor(`hsl(${h}, ${s}%, ${l}%)`);
+      return; // Don't send request if already marked
+    }
+
     // Show temporary number on click
     setShowNumberTemporary(true);
-    
+
     // Hide temporary number after 4 seconds
     setTimeout(() => {
       setShowNumberTemporary(false);
     }, 4000);
 
-    if (alreadyMarked) return; // Don't send request if already marked
-
     try {
       const res = await leaveVisitorMark(deviceId);
       const data = await res.json();
-      
+
       if (res.ok && data.data) {
         setMarkCount(data.data.total_marks);
         setAlreadyMarked(true);
@@ -132,21 +137,24 @@ export default function LeaveMark() {
 
   return (
     <div className="relative w-full flex justify-start py-2 font-[Inter] z-20">
-      <button 
+      <button
         onClick={handleLeaveMark}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="group flex flex-col items-center gap-0.5 text-neutral-400 hover:text-black dark:text-neutral-500 dark:hover:text-white transition-colors duration-300 relative cursor-pointer"
-      >
+        className="group flex flex-col items-center gap-0.5 text-neutral-400 hover:text-black dark:text-neutral-500 dark:hover:text-white transition-colors duration-300 relative cursor-pointer">
         <span className="text-xs tracking-wider font-medium opacity-70 group-hover:opacity-100 transition-opacity">
           Leave a mark
         </span>
-        <div 
+        <div
           className={`absolute top-full left-1/2 -translate-x-1/2 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
             isNumberVisible ? "max-h-5 opacity-100 pt-0.5" : "max-h-0 opacity-0 pt-0"
-          }`}
-        >
-          <div className="h-5 flex items-center justify-center">
+          }`}>
+          <div className="h-5 flex items-center justify-center gap-1.5">
+            <Heart
+              className="w-3.5 h-3.5 transition-colors duration-300"
+              style={{ color: heartColor }}
+              fill="currentColor"
+            />
             <span ref={countRef} className="text-sm font-bold block">
               {markCount !== null ? markCount : "..."}
             </span>

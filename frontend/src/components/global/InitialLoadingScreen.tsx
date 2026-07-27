@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { createPortal } from "react-dom";
 
 // easeOutCubic implementation
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -54,7 +55,14 @@ export default function InitialLoadingScreen({ percent = 0, isFadingOut = false 
   const displayPercent = Math.round(smoothPercent);
   const statusText = "Curating the best experience for you...";
 
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  const content = (
     <div className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-all duration-500 ${isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
       <div className="flex flex-col items-center gap-8 max-w-xs w-full px-6">
         {/* Minimalist Progress Tracker */}
@@ -87,4 +95,8 @@ export default function InitialLoadingScreen({ percent = 0, isFadingOut = false 
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#ffffff]/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
     </div>
   );
+
+  if (!mounted || typeof document === 'undefined') return null;
+
+  return createPortal(content, document.body);
 }

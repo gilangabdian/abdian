@@ -1,5 +1,5 @@
-import React from 'react';
-import { Project } from '@/types';
+import React from "react";
+import { Project } from "@/types";
 
 interface ProjectSidebarProps {
   projects: Project[];
@@ -18,10 +18,9 @@ export default function ProjectSidebar({ projects, activeProject, onSelectProjec
             onClick={() => onSelectProject(project)}
             className={`text-left transition-colors duration-200 block w-full py-2 ${
               isActive
-                ? 'text-black dark:text-white font-black text-2xl md:text-3xl tracking-tight'
-                : 'text-neutral-400 dark:text-neutral-500 font-semibold text-xl hover:text-neutral-600 dark:hover:text-neutral-400'
-            }`}
-          >
+                ? "text-black dark:text-white font-black text-2xl md:text-3xl tracking-tight"
+                : "text-neutral-400 dark:text-neutral-500 font-semibold text-xl hover:text-neutral-600 dark:hover:text-neutral-400"
+            }`}>
             {project.title}
           </button>
         );

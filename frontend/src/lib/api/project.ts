@@ -67,3 +67,15 @@ export const adminDeleteProject = async (token: string, id: string | number) => 
     },
   });
 };
+
+export const adminReorderProjects = async (token: string, orderedIds: number[]) => {
+  return await fetch(`${API_URL}/projects/reorder`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ ordered_ids: orderedIds }),
+  });
+};

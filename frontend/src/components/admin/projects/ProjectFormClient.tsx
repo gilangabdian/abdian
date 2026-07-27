@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import { marked } from "marked";
+
 import { adminUploadProject, adminUpdateProject, getSingleProject } from "@/lib/api/project";
 import { getSkills } from "@/lib/api/skill";
 import { alertSuccess, alertError } from "@/lib/alert";
 import { getToken } from "@/utils/auth";
-import { Skill } from "@/types";
+import { Skill, Project } from "@/types";
+import ProjectDescriptionEditor from "./ProjectDescriptionEditor";
+import ProjectContent from "@/components/public/project/ProjectContent";
 
 interface ProjectFormClientProps {
   isEditMode: boolean;
@@ -50,11 +52,19 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
     type: "",
     team_size: "",
     role: "",
+    youtube_url: "",
+    twitter_url: "",
   });
 
   const [file, setFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [activeMediaTab, setActiveMediaTab] = useState<"upload" | "youtube" | "twitter">("upload");
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  // Track apakah admin menghapus thumbnail saat edit mode
+  const [removeThumbnailFlag, setRemoveThumbnailFlag] = useState(false);
 
   // Custom Dropdown State
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
@@ -67,10 +77,6 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
   const [newCustomTechName, setNewCustomTechName] = useState("");
   const [newCustomTechIcon, setNewCustomTechIcon] = useState("");
 
-  const renderMarkdown = (text?: string) => {
-    if (!text) return "";
-    return marked.parse(text, { breaks: true }) as string;
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -124,7 +130,17 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
               type: data.type || "",
               team_size: data.team_size ? String(data.team_size) : "",
               role: data.role || "",
+              youtube_url: data.youtube_url || "",
+              twitter_url: data.twitter_url || "",
             });
+
+            if (data.youtube_url) {
+              setActiveMediaTab("youtube");
+            } else if (data.twitter_url) {
+              setActiveMediaTab("twitter");
+            } else {
+              setActiveMediaTab("upload");
+            }
 
             if (data.skills && Array.isArray(data.skills)) {
               setSelectedSkillIds(data.skills.map((item: any) => item.id));
@@ -137,6 +153,9 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
             if (data.thumbnail_path || data.thumbnail_url) {
               setPreviewImage(data.thumbnail_url || data.thumbnail_path || "");
             }
+
+            // Reset hapus flag ketika data fresh
+            setRemoveThumbnailFlag(false);
           }
         } catch (error) {
           console.error(error);
@@ -167,6 +186,10 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
     setFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+    // Jika edit mode, tandai bahwa thumbnail akan dihapus
+    if (isEditMode) {
+      setRemoveThumbnailFlag(true);
     }
   };
 
@@ -217,8 +240,24 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
       formData.append("team_size", form.team_size || "");
       formData.append("role", form.role || "");
 
-      if (file) {
-        formData.append("thumbnail", file);
+      // Handle active tab
+      if (activeMediaTab === "upload") {
+        formData.append("youtube_url", "");
+        formData.append("twitter_url", "");
+        if (file) {
+          formData.append("thumbnail", file);
+        }
+      } else if (activeMediaTab === "youtube") {
+        formData.append("youtube_url", form.youtube_url || "");
+        formData.append("twitter_url", "");
+      } else if (activeMediaTab === "twitter") {
+        formData.append("youtube_url", "");
+        formData.append("twitter_url", form.twitter_url || "");
+      }
+
+      // Kirim flag hapus jika di edit mode dan admin menghapus thumbnail
+      if (isEditMode && removeThumbnailFlag) {
+        formData.append("remove_thumbnail", "1");
       }
 
       selectedSkillIds.forEach((id) => {
@@ -252,6 +291,33 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
     }
   };
 
+  const getPreviewProjectData = (): Project => {
+    return {
+      id: 99999,
+      title: form.title || "Project Title",
+      slug: "preview-project",
+      short_description: "",
+      description: form.description || "Project description will appear here.",
+      client_name: "",
+      role: form.role,
+      start_date: form.start_date,
+      end_date: form.end_date,
+      repository_link: form.repository_link,
+      live_demo_link: form.live_demo_link,
+      is_featured: form.is_featured,
+      order_number: 0,
+      type: form.type,
+      status: form.status,
+      team_size: Number(form.team_size) || 1,
+      youtube_url: activeMediaTab === "youtube" ? form.youtube_url : "",
+      twitter_url: activeMediaTab === "twitter" ? form.twitter_url : "",
+      thumbnail_url: activeMediaTab === "upload" ? previewImage || undefined : undefined,
+      media_type: previewImage?.match(/\.(mp4|webm|mov|mkv)$/i) || file?.type.startsWith("video/") ? "video" : "image",
+      skills: skills.filter(s => selectedSkillIds.includes(s.id)),
+      custom_tech_stacks: customTechStacks,
+    };
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto pb-20">
       <div className="mb-8">
@@ -279,8 +345,139 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
       </div>
 
       <div className="border-4 border-black p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white mb-12">
-        <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1 space-y-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+          <div className="space-y-6">
+            {/* Project Media — bertumpuk di atas Title */}
+            <div className="border-4 border-black p-4 md:p-6 bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <label className="block font-black mb-4 border-b-2 border-black inline-block text-sm uppercase">
+                Project Media
+                {!isEditMode && <span className="text-red-500">*</span>}
+              </label>
+
+              <div className="flex gap-2 mb-4 border-b-2 border-black pb-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveMediaTab("upload")}
+                  className={`text-xs font-bold uppercase px-2 py-1 border-2 border-black ${
+                    activeMediaTab === "upload" ? "bg-black text-white" : "bg-white text-black"
+                  }`}
+                >
+                  <Icon icon="lucide:upload" className="inline mr-1" /> File
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMediaTab("youtube")}
+                  className={`text-xs font-bold uppercase px-2 py-1 border-2 border-black ${
+                    activeMediaTab === "youtube" ? "bg-black text-white" : "bg-white text-black"
+                  }`}
+                >
+                  <Icon icon="logos:youtube-icon" className="inline mr-1" /> YT
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMediaTab("twitter")}
+                  className={`text-xs font-bold uppercase px-2 py-1 border-2 border-black ${
+                    activeMediaTab === "twitter" ? "bg-black text-white" : "bg-white text-black"
+                  }`}
+                >
+                  <Icon icon="ri:twitter-x-line" className="inline mr-1" /> X
+                </button>
+              </div>
+
+              {activeMediaTab === "upload" && (
+                <div
+                  className="relative w-full max-w-md aspect-video border-4 border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors group mx-auto"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <input
+                    id="file-upload"
+                    ref={fileInputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*,video/*,.mkv,video/x-matroska"
+                    onChange={handleFileChange}
+                  />
+
+                  {previewImage ? (
+                    <div className="relative w-full h-full p-2 bg-white">
+                      {previewImage.match(/\.(mp4|webm|mov|mkv)$/i) || file?.type.startsWith("video/") ? (
+                        <video src={previewImage} className="w-full h-full object-cover border-2 border-black" autoPlay muted loop playsInline />
+                      ) : (
+                        <img loading="lazy" src={previewImage} className="w-full h-full object-cover border-2 border-black" alt="Preview" />
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeImage();
+                        }}
+                        type="button"
+                        className="absolute top-0 right-0 bg-white text-black hover:bg-black hover:text-white p-2 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:scale-110 transition-transform z-10"
+                        title="Remove Image"
+                      >
+                        <Icon icon="lucide:trash-2" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-center p-4 space-y-2">
+                      <div className="bg-white p-3 inline-block border-2 border-black group-hover:scale-110 transition-transform duration-300">
+                        <Icon icon="lucide:image-plus" className="text-3xl text-black" />
+                      </div>
+                      <div>
+                        <h4 className="font-black text-sm uppercase">{isEditMode ? "Change Media" : "Upload Media"}</h4>
+                        <p className="text-[10px] font-mono text-gray-500">Max 100MB (JPG/PNG/MP4/MKV)</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeMediaTab === "youtube" && (
+                <div className="space-y-2 max-w-md mx-auto">
+                  <label className="block font-black text-xs uppercase flex items-center gap-2">
+                    <Icon icon="logos:youtube-icon" className="text-lg" />
+                    YouTube URL
+                  </label>
+                  <input
+                    value={form.youtube_url}
+                    onChange={(e) => setForm({ ...form, youtube_url: e.target.value })}
+                    type="url"
+                    placeholder="https://youtube.com/watch?v=..."
+                    className="w-full p-3 border-2 border-black font-mono text-sm focus:outline-none"
+                  />
+                  <p className="text-[10px] text-gray-500 font-mono">
+                    Pastikan URL valid dari YouTube.
+                  </p>
+                </div>
+              )}
+
+              {activeMediaTab === "twitter" && (
+                <div className="space-y-2 max-w-md mx-auto">
+                  <label className="block font-black text-xs uppercase flex items-center gap-2">
+                    <Icon icon="ri:twitter-x-line" className="text-lg" />
+                    Twitter / X URL
+                  </label>
+                  <input
+                    value={form.twitter_url}
+                    onChange={(e) => setForm({ ...form, twitter_url: e.target.value })}
+                    type="url"
+                    placeholder="https://x.com/username/status/..."
+                    className="w-full p-3 border-2 border-black font-mono text-sm focus:outline-none"
+                  />
+                  <p className="text-[10px] text-gray-500 font-mono">
+                    Masukkan link tweet yang mengandung video.
+                  </p>
+                </div>
+              )}
+
+              {/* Warning saat edit mode dan admin menghapus thumbnail */}
+              {isEditMode && previewImage && removeThumbnailFlag && (
+                <div className="mt-3 p-2 border-2 border-yellow-400 bg-yellow-50 text-yellow-800 text-xs font-mono flex items-center gap-2">
+                  <Icon icon="lucide:alert-triangle" className="text-yellow-500 shrink-0" />
+                  Thumbnail akan dihapus saat update.
+                </div>
+              )}
+            </div>
+
             <div>
               <label className="block font-black mb-2 border-b-2 border-black inline-block text-sm uppercase">
                 Project Title
@@ -297,26 +494,14 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
 
             <div>
               <label className="block font-black mb-2 flex justify-between items-end text-sm uppercase">
-                <span className="border-b-2 border-black inline-block">Description</span>
-                <span className="text-[10px] text-gray-400 capitalize font-mono">Markdown: **bold**, *italic*, - list</span>
+                <span className="border-b-2 border-black inline-block">
+                  Description <span className="text-red-500">*</span>
+                </span>
               </label>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <textarea
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  rows={6}
-                  placeholder="Explain details about the project..."
-                  className="w-full p-4 border-2 border-black font-medium focus:bg-gray-50 focus:outline-none transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,0)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] placeholder:font-normal placeholder:text-gray-400 resize-y"
-                ></textarea>
-
-                <div className="border-2 border-black border-dashed p-3 bg-gray-50 overflow-y-auto max-h-[170px]">
-                  <div className="text-[10px] font-black uppercase text-gray-400 mb-2">Live Preview:</div>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(form.description) }}
-                    className="markdown-preview font-mono text-sm"
-                  ></div>
-                </div>
-              </div>
+              <ProjectDescriptionEditor
+                value={form.description}
+                onChange={(val) => setForm({ ...form, description: val })}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -663,58 +848,18 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
                 {selectedSkillIds.length} Main Tech + {customTechStacks.length} Custom Tech Selected
               </p>
             </div>
-          </div>
 
-          <div className="w-full lg:w-[350px] flex flex-col gap-6 flex-shrink-0">
-            <div>
-              <label className="block font-black mb-2 border-b-2 border-black inline-block text-sm uppercase">
-                Thumbnail
-                {!isEditMode && <span className="text-red-500">*</span>}
-                {isEditMode && <span className="text-gray-400 text-xs normal-case ml-2">(Biarkan kosong jika tidak diganti)</span>}
-              </label>
-              <div
-                className="relative w-full aspect-[4/3] border-4 border-black bg-gray-100 flex flex-col items-center justify-center cursor-pointer hover:bg-white transition-colors group shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                onClick={() => fileInputRef.current?.click()}
+            {/* Buttons di bagian bawah */}
+            <div className="mt-8 pt-6 border-t-4 border-black border-dashed flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => setIsPreviewOpen(true)}
+                className="w-full py-3 bg-white text-black hover:bg-gray-100 border-2 border-black font-black text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-2 uppercase"
               >
-                <input
-                  id="file-upload"
-                  ref={fileInputRef}
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
+                <Icon icon="lucide:eye" />
+                Preview Project
+              </button>
 
-                {previewImage ? (
-                  <div className="relative w-full h-full p-2 bg-white">
-                    <img loading="lazy" src={previewImage} className="w-full h-full object-cover border-2 border-black" alt="Preview" />
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeImage();
-                      }}
-                      type="button"
-                      className="absolute top-0 right-0 bg-white text-black hover:bg-black hover:text-white p-2 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:scale-110 transition-transform z-10"
-                      title="Remove Image"
-                    >
-                      <Icon icon="lucide:trash-2" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-center p-6 space-y-3">
-                    <div className="bg-white p-4 inline-block border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group-hover:scale-110 transition-transform duration-300">
-                      <Icon icon="lucide:image-plus" className="text-4xl text-black" />
-                    </div>
-                    <div>
-                      <h4 className="font-black text-lg uppercase">{isEditMode ? "Change Cover" : "Upload Cover"}</h4>
-                      <p className="text-xs font-mono text-gray-500">Max 2MB (JPG/PNG)</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-auto pt-6 border-t-4 border-black border-dashed flex flex-col gap-3">
               <button
                 type="submit"
                 disabled={isLoading}
@@ -743,32 +888,27 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
           </div>
         </form>
       </div>
-      <style jsx global>{`
-        .markdown-preview ul {
-          list-style-type: disc !important;
-          margin-left: 1.5rem !important;
-          margin-bottom: 0.5rem !important;
-        }
-        .markdown-preview ol {
-          list-style-type: decimal !important;
-          margin-left: 1.5rem !important;
-          margin-bottom: 0.5rem !important;
-        }
-        .markdown-preview li {
-          display: list-item !important;
-        }
-        .markdown-preview p {
-          margin-bottom: 0.5rem;
-        }
-        .markdown-preview strong,
-        .markdown-preview b {
-          font-weight: 900 !important;
-        }
-        .markdown-preview em,
-        .markdown-preview i {
-          font-style: italic !important;
-        }
-      `}</style>
+
+      {/* Preview Modal */}
+      {isPreviewOpen && (
+        <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
+          <div className="sticky top-0 z-10 bg-white border-b-4 border-black p-4 flex justify-between items-center shadow-md">
+            <h2 className="font-black italic uppercase text-xl md:text-2xl">
+              Project Preview
+            </h2>
+            <button
+              onClick={() => setIsPreviewOpen(false)}
+              className="px-4 py-2 bg-black text-white font-bold uppercase border-2 border-black hover:bg-white hover:text-black transition-colors"
+            >
+              Close Preview
+            </button>
+          </div>
+          <div className="p-4 md:p-8 max-w-7xl mx-auto">
+            <ProjectContent project={getPreviewProjectData()} />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -113,4 +113,136 @@ class ProjectFileUploadTest extends TestCase
 
         Storage::disk('public')->assertMissing($path);
     }
+    public function test_project_upload_stores_video_and_media_fields()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // Simulate video file upload
+        // Note: UploadedFile::fake() doesn't have a direct 'video' method, so we create it manually
+        $file = UploadedFile::fake()->create('project-video.mp4', 1000, 'video/mp4');
+
+        $response = $this->postJson('/api/projects', [
+            'title' => 'Test Video Project',
+            'description' => 'Desc',
+            'thumbnail' => $file,
+            'youtube_url' => 'https://youtube.com/watch?v=abc',
+            'twitter_url' => 'https://x.com/abc/status/123',
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        $response->assertStatus(201);
+
+        $project = Project::where('title', 'Test Video Project')->first();
+
+        // Assert file ada di disk public
+        $this->assertNotNull($project->thumbnail_path);
+        Storage::disk('public')->assertExists($project->thumbnail_path);
+        
+        // Assert media_type and urls
+        $this->assertEquals('video', $project->media_type);
+        $this->assertEquals('https://youtube.com/watch?v=abc', $project->youtube_url);
+        $this->assertEquals('https://x.com/abc/status/123', $project->twitter_url);
+    }
+
+    public function test_project_upload_accepts_mkv_video()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $file = UploadedFile::fake()->create('project-video.mkv', 2000, 'video/x-matroska');
+
+        $response = $this->postJson('/api/projects', [
+            'title' => 'MKV Video Project',
+            'description' => 'Testing MKV support',
+            'thumbnail' => $file,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        $response->assertStatus(201);
+
+        $project = Project::where('title', 'MKV Video Project')->first();
+
+        $this->assertNotNull($project->thumbnail_path);
+        Storage::disk('public')->assertExists($project->thumbnail_path);
+        $this->assertEquals('video', $project->media_type);
+    }
+
+    public function test_remove_thumbnail_clears_media_fields()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // 1. Upload project with image
+        $file = UploadedFile::fake()->image('will-be-removed.jpg');
+        $this->postJson('/api/projects', [
+            'title' => 'Remove Thumbnail Test',
+            'description' => 'Desc',
+            'thumbnail' => $file,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        $project = Project::where('title', 'Remove Thumbnail Test')->first();
+        $oldPath = $project->thumbnail_path;
+        Storage::disk('public')->assertExists($oldPath);
+
+        // 2. Update with remove_thumbnail=true
+        $this->putJson("/api/projects/{$project->id}", [
+            'title' => 'Remove Thumbnail Test',
+            'description' => 'Updated desc',
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+            'remove_thumbnail' => true,
+        ]);
+
+        $project->refresh();
+
+        // Assert thumbnail_path and media_type are null
+        $this->assertNull($project->thumbnail_path);
+        $this->assertNull($project->media_type);
+        // Assert old file removed from storage
+        Storage::disk('public')->assertMissing($oldPath);
+    }
+
+    public function test_remove_thumbnail_with_upload_replaces_not_removes()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // 1. Upload with old file
+        $oldFile = UploadedFile::fake()->image('old.jpg');
+        $this->postJson('/api/projects', [
+            'title' => 'Replace Test',
+            'description' => 'Desc',
+            'thumbnail' => $oldFile,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        $project = Project::where('title', 'Replace Test')->first();
+
+        // 2. Send BOTH new file AND remove_thumbnail=true — new file should win
+        $newFile = UploadedFile::fake()->image('new.jpg');
+        $this->putJson("/api/projects/{$project->id}", [
+            'title' => 'Replace Test',
+            'description' => 'Desc',
+            'thumbnail' => $newFile,
+            'remove_thumbnail' => true,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        $project->refresh();
+        $this->assertNotNull($project->thumbnail_path);
+        $this->assertEquals('image', $project->media_type);
+    }
 }

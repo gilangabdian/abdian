@@ -181,6 +181,9 @@ export interface Project {
   type?: string;
   status?: string;
   team_size?: number;
+  media_type?: string;
+  youtube_url?: string;
+  twitter_url?: string;
   custom_tech_stacks?: CustomTechStack[];
   skills?: any[];
   created_at?: string;

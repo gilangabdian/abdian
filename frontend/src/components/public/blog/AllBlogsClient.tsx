@@ -54,7 +54,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
   };
 
   return (
-    <div className="pt-16 md:pt-40 pb-16 min-h-screen flex flex-col items-center font-[Inter]">
+    <div className="pt-24 md:pt-40 pb-16 min-h-screen flex flex-col items-center font-[Inter]">
       <style>{`
         .year-watermark {
           color: transparent;
@@ -68,11 +68,9 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
           background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.06) 0px, rgba(255, 255, 255, 0.06) 2px, transparent 2px, transparent 8px);
         }
       `}</style>
-      
+
       <div className="w-full max-w-3xl px-4 md:px-8">
-        {blogs.length === 0 && (
-          <div className="text-center text-neutral-500 py-12">no article yet!</div>
-        )}
+        {blogs.length === 0 && <div className="text-center text-neutral-500 py-12">no article yet!</div>}
 
         {blogs.length > 0 && (
           <div className="w-full flex flex-col gap-24 relative">
@@ -103,7 +101,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
                     const href = isExternal ? blog.external_url || "#" : `/blogs/${blog.slug}`;
                     const target = isExternal ? "_blank" : undefined;
                     const rel = isExternal ? "noopener noreferrer" : undefined;
-                    
+
                     const LinkComponent = isExternal ? "a" : Link;
 
                     return (
@@ -112,12 +110,14 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
                         href={href}
                         target={target}
                         rel={rel}
-                        className="blog-row cursor-pointer group flex flex-col sm:flex-row justify-start items-start sm:items-center w-full py-2 transition-colors gap-3 md:gap-4"
-                      >
+                        className="blog-row cursor-pointer group flex flex-col sm:flex-row justify-start items-start sm:items-center w-full py-2 transition-colors gap-3 md:gap-4">
                         <h2 className="text-lg md:text-xl font-small text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors leading-tight flex items-center gap-[2px]">
                           {currentLang === "en" ? blog.title_en || blog.title : blog.title}
                           {isExternal && (
-                            <Icon icon="carbon:arrow-up-right" className="w-3 h-4 -mt-1 opacity-50 transition-opacity" />
+                            <Icon
+                              icon="carbon:arrow-up-right"
+                              className="w-3 h-4 -mt-1 opacity-50 transition-opacity"
+                            />
                           )}
                         </h2>
 
