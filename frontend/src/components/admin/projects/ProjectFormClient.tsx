@@ -63,6 +63,9 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
   const [activeMediaTab, setActiveMediaTab] = useState<"upload" | "youtube" | "twitter">("upload");
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+  // Track apakah admin menghapus thumbnail saat edit mode
+  const [removeThumbnailFlag, setRemoveThumbnailFlag] = useState(false);
+
   // Custom Dropdown State
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
@@ -150,6 +153,9 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
             if (data.thumbnail_path || data.thumbnail_url) {
               setPreviewImage(data.thumbnail_url || data.thumbnail_path || "");
             }
+
+            // Reset hapus flag ketika data fresh
+            setRemoveThumbnailFlag(false);
           }
         } catch (error) {
           console.error(error);
@@ -180,6 +186,10 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
     setFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+    // Jika edit mode, tandai bahwa thumbnail akan dihapus
+    if (isEditMode) {
+      setRemoveThumbnailFlag(true);
     }
   };
 
@@ -243,6 +253,11 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
       } else if (activeMediaTab === "twitter") {
         formData.append("youtube_url", "");
         formData.append("twitter_url", form.twitter_url || "");
+      }
+
+      // Kirim flag hapus jika di edit mode dan admin menghapus thumbnail
+      if (isEditMode && removeThumbnailFlag) {
+        formData.append("remove_thumbnail", "1");
       }
 
       selectedSkillIds.forEach((id) => {
@@ -330,8 +345,139 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
       </div>
 
       <div className="border-4 border-black p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white mb-12">
-        <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1 space-y-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+          <div className="space-y-6">
+            {/* Project Media — bertumpuk di atas Title */}
+            <div className="border-4 border-black p-4 md:p-6 bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <label className="block font-black mb-4 border-b-2 border-black inline-block text-sm uppercase">
+                Project Media
+                {!isEditMode && <span className="text-red-500">*</span>}
+              </label>
+
+              <div className="flex gap-2 mb-4 border-b-2 border-black pb-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveMediaTab("upload")}
+                  className={`text-xs font-bold uppercase px-2 py-1 border-2 border-black ${
+                    activeMediaTab === "upload" ? "bg-black text-white" : "bg-white text-black"
+                  }`}
+                >
+                  <Icon icon="lucide:upload" className="inline mr-1" /> File
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMediaTab("youtube")}
+                  className={`text-xs font-bold uppercase px-2 py-1 border-2 border-black ${
+                    activeMediaTab === "youtube" ? "bg-black text-white" : "bg-white text-black"
+                  }`}
+                >
+                  <Icon icon="logos:youtube-icon" className="inline mr-1" /> YT
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveMediaTab("twitter")}
+                  className={`text-xs font-bold uppercase px-2 py-1 border-2 border-black ${
+                    activeMediaTab === "twitter" ? "bg-black text-white" : "bg-white text-black"
+                  }`}
+                >
+                  <Icon icon="ri:twitter-x-line" className="inline mr-1" /> X
+                </button>
+              </div>
+
+              {activeMediaTab === "upload" && (
+                <div
+                  className="relative w-full max-w-md aspect-video border-4 border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors group mx-auto"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <input
+                    id="file-upload"
+                    ref={fileInputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*,video/*,.mkv,video/x-matroska"
+                    onChange={handleFileChange}
+                  />
+
+                  {previewImage ? (
+                    <div className="relative w-full h-full p-2 bg-white">
+                      {previewImage.match(/\.(mp4|webm|mov|mkv)$/i) || file?.type.startsWith("video/") ? (
+                        <video src={previewImage} className="w-full h-full object-cover border-2 border-black" autoPlay muted loop playsInline />
+                      ) : (
+                        <img loading="lazy" src={previewImage} className="w-full h-full object-cover border-2 border-black" alt="Preview" />
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeImage();
+                        }}
+                        type="button"
+                        className="absolute top-0 right-0 bg-white text-black hover:bg-black hover:text-white p-2 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:scale-110 transition-transform z-10"
+                        title="Remove Image"
+                      >
+                        <Icon icon="lucide:trash-2" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-center p-4 space-y-2">
+                      <div className="bg-white p-3 inline-block border-2 border-black group-hover:scale-110 transition-transform duration-300">
+                        <Icon icon="lucide:image-plus" className="text-3xl text-black" />
+                      </div>
+                      <div>
+                        <h4 className="font-black text-sm uppercase">{isEditMode ? "Change Media" : "Upload Media"}</h4>
+                        <p className="text-[10px] font-mono text-gray-500">Max 100MB (JPG/PNG/MP4/MKV)</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeMediaTab === "youtube" && (
+                <div className="space-y-2 max-w-md mx-auto">
+                  <label className="block font-black text-xs uppercase flex items-center gap-2">
+                    <Icon icon="logos:youtube-icon" className="text-lg" />
+                    YouTube URL
+                  </label>
+                  <input
+                    value={form.youtube_url}
+                    onChange={(e) => setForm({ ...form, youtube_url: e.target.value })}
+                    type="url"
+                    placeholder="https://youtube.com/watch?v=..."
+                    className="w-full p-3 border-2 border-black font-mono text-sm focus:outline-none"
+                  />
+                  <p className="text-[10px] text-gray-500 font-mono">
+                    Pastikan URL valid dari YouTube.
+                  </p>
+                </div>
+              )}
+
+              {activeMediaTab === "twitter" && (
+                <div className="space-y-2 max-w-md mx-auto">
+                  <label className="block font-black text-xs uppercase flex items-center gap-2">
+                    <Icon icon="ri:twitter-x-line" className="text-lg" />
+                    Twitter / X URL
+                  </label>
+                  <input
+                    value={form.twitter_url}
+                    onChange={(e) => setForm({ ...form, twitter_url: e.target.value })}
+                    type="url"
+                    placeholder="https://x.com/username/status/..."
+                    className="w-full p-3 border-2 border-black font-mono text-sm focus:outline-none"
+                  />
+                  <p className="text-[10px] text-gray-500 font-mono">
+                    Masukkan link tweet yang mengandung video.
+                  </p>
+                </div>
+              )}
+
+              {/* Warning saat edit mode dan admin menghapus thumbnail */}
+              {isEditMode && previewImage && removeThumbnailFlag && (
+                <div className="mt-3 p-2 border-2 border-yellow-400 bg-yellow-50 text-yellow-800 text-xs font-mono flex items-center gap-2">
+                  <Icon icon="lucide:alert-triangle" className="text-yellow-500 shrink-0" />
+                  Thumbnail akan dihapus saat update.
+                </div>
+              )}
+            </div>
+
             <div>
               <label className="block font-black mb-2 border-b-2 border-black inline-block text-sm uppercase">
                 Project Title
@@ -702,132 +848,9 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
                 {selectedSkillIds.length} Main Tech + {customTechStacks.length} Custom Tech Selected
               </p>
             </div>
-          </div>
 
-          <div className="w-full lg:w-[350px] flex flex-col gap-6 flex-shrink-0">
-            <div className="bg-gray-50 border-4 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              <label className="block font-black mb-4 border-b-2 border-black inline-block text-sm uppercase">
-                Project Media
-                {!isEditMode && <span className="text-red-500">*</span>}
-              </label>
-
-              <div className="flex gap-2 mb-4 border-b-2 border-black pb-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveMediaTab("upload")}
-                  className={`text-xs font-bold uppercase px-2 py-1 border-2 border-black ${
-                    activeMediaTab === "upload" ? "bg-black text-white" : "bg-white text-black"
-                  }`}
-                >
-                  <Icon icon="lucide:upload" className="inline mr-1" /> File
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveMediaTab("youtube")}
-                  className={`text-xs font-bold uppercase px-2 py-1 border-2 border-black ${
-                    activeMediaTab === "youtube" ? "bg-black text-white" : "bg-white text-black"
-                  }`}
-                >
-                  <Icon icon="logos:youtube-icon" className="inline mr-1" /> YT
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveMediaTab("twitter")}
-                  className={`text-xs font-bold uppercase px-2 py-1 border-2 border-black ${
-                    activeMediaTab === "twitter" ? "bg-black text-white" : "bg-white text-black"
-                  }`}
-                >
-                  <Icon icon="ri:twitter-x-line" className="inline mr-1" /> X
-                </button>
-              </div>
-
-              {activeMediaTab === "upload" && (
-                <div
-                  className="relative w-full aspect-[4/3] border-4 border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors group"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <input
-                    id="file-upload"
-                    ref={fileInputRef}
-                    type="file"
-                    className="hidden"
-                    accept="image/*,video/*,.mkv,video/x-matroska"
-                    onChange={handleFileChange}
-                  />
-
-                  {previewImage ? (
-                    <div className="relative w-full h-full p-2 bg-white">
-                      {previewImage.match(/\.(mp4|webm|mov|mkv)$/i) || file?.type.startsWith("video/") ? (
-                        <video src={previewImage} className="w-full h-full object-cover border-2 border-black" autoPlay muted loop playsInline />
-                      ) : (
-                        <img loading="lazy" src={previewImage} className="w-full h-full object-cover border-2 border-black" alt="Preview" />
-                      )}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeImage();
-                        }}
-                        type="button"
-                        className="absolute top-0 right-0 bg-white text-black hover:bg-black hover:text-white p-2 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:scale-110 transition-transform z-10"
-                        title="Remove Image"
-                      >
-                        <Icon icon="lucide:trash-2" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="text-center p-4 space-y-2">
-                      <div className="bg-white p-3 inline-block border-2 border-black group-hover:scale-110 transition-transform duration-300">
-                        <Icon icon="lucide:image-plus" className="text-3xl text-black" />
-                      </div>
-                      <div>
-                        <h4 className="font-black text-sm uppercase">{isEditMode ? "Change Media" : "Upload Media"}</h4>
-                        <p className="text-[10px] font-mono text-gray-500">Max 100MB (JPG/PNG/MP4/MKV)</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeMediaTab === "youtube" && (
-                <div className="space-y-2">
-                  <label className="block font-black text-xs uppercase flex items-center gap-2">
-                    <Icon icon="logos:youtube-icon" className="text-lg" />
-                    YouTube URL
-                  </label>
-                  <input
-                    value={form.youtube_url}
-                    onChange={(e) => setForm({ ...form, youtube_url: e.target.value })}
-                    type="url"
-                    placeholder="https://youtube.com/watch?v=..."
-                    className="w-full p-3 border-2 border-black font-mono text-sm focus:outline-none"
-                  />
-                  <p className="text-[10px] text-gray-500 font-mono">
-                    Pastikan URL valid dari YouTube.
-                  </p>
-                </div>
-              )}
-
-              {activeMediaTab === "twitter" && (
-                <div className="space-y-2">
-                  <label className="block font-black text-xs uppercase flex items-center gap-2">
-                    <Icon icon="ri:twitter-x-line" className="text-lg" />
-                    Twitter / X URL
-                  </label>
-                  <input
-                    value={form.twitter_url}
-                    onChange={(e) => setForm({ ...form, twitter_url: e.target.value })}
-                    type="url"
-                    placeholder="https://x.com/username/status/..."
-                    className="w-full p-3 border-2 border-black font-mono text-sm focus:outline-none"
-                  />
-                  <p className="text-[10px] text-gray-500 font-mono">
-                    Masukkan link tweet yang mengandung video.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-auto pt-6 border-t-4 border-black border-dashed flex flex-col gap-3">
+            {/* Buttons di bagian bawah */}
+            <div className="mt-8 pt-6 border-t-4 border-black border-dashed flex flex-col gap-3">
               <button
                 type="button"
                 onClick={() => setIsPreviewOpen(true)}

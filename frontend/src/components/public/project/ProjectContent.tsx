@@ -28,7 +28,6 @@ export default function ProjectContent({ project }: ProjectContentProps) {
           muted
           loop
           playsInline
-          controls
           className="w-full h-auto max-h-[70vh] object-contain bg-black"
         />
       );

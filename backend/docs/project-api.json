@@ -1,642 +1,210 @@
 {
-    "openapi": "3.0.3",
-    "info": {
-        "title": "Project API",
-        "description": "Manajemen Project Portfolio.",
-        "version": "1.2.0"
-    },
-    "servers": [
-        {
-            "url": "http://localhost:8000"
-        }
-    ],
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Project API - Projects",
+    "description": "API untuk mengelola projects (CRUD). Projects adalah portofolio karya yang menampilkan riwayat pekerjaan dan pencapaian.",
+    "version": "1.1.0"
+  },
+  "paths": {
+    "/api/projects": {
+      "get": {
+        "summary": "Get all projects",
+        "tags": ["Projects"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Project" }
+                    }
+                  }
+                }
+              }
             }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new project",
+        "tags": ["Projects"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "description", "start_date", "status", "thumbnail"],
+                "properties": {
+                  "title": { "type": "string", "description": "Project title" },
+                  "description": { "type": "string", "description": "Project description" },
+                  "is_featured": { "type": "boolean", "description": "Whether the project is featured" },
+                  "start_date": { "type": "string", "format": "date", "description": "Start date" },
+                  "end_date": { "type": "string", "format": "date", "description": "End date (nullable)" },
+                  "status": { "type": "string", "enum": ["completed", "in_development", "on_hold", "cancelled"] },
+                  "type": { "type": "string", "enum": ["web_development", "mobile_development", "desktop_application", "game_development"] },
+                  "thumbnail": { "type": "string", "format": "binary", "description": "Project thumbnail (image or video file)" },
+                  "youtube_url": { "type": "string", "format": "uri", "description": "YouTube video URL" },
+                  "twitter_url": { "type": "string", "format": "uri", "description": "Twitter/X post URL" },
+                  "live_demo_link": { "type": "string", "format": "uri" },
+                  "repository_link": { "type": "string", "format": "uri" },
+                  "tech_stack_ids": { "type": "array", "items": { "type": "integer" }, "description": "Array of skill IDs" },
+                  "custom_tech_stacks": { "type": "array", "items": { "type": "object", "properties": { "name": { "type": "string" }, "icon_url": { "type": "string" } } } },
+                  "team_size": { "type": "integer", "minimum": 1 },
+                  "role": { "type": "string" }
+                }
+              }
+            }
+          }
         },
-        "schemas": {
-            "ProjectStatusEnum": {
-                "type": "string",
-                "enum": [
-                    "completed",
-                    "in_development",
-                    "on_hold",
-                    "cancelled"
-                ],
-                "description": "Project development status"
-            },
-            "ProjectTypeEnum": {
-                "type": "string",
-                "enum": [
-                    "web_development",
-                    "mobile_development",
-                    "desktop_application",
-                    "game_development"
-                ],
-                "description": "Project type/category (nullable)"
+        "responses": {
+          "201": {
+            "description": "Project created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/Project" }
+                  }
+                }
+              }
             }
+          }
         }
+      }
     },
-    "paths": {
-        "/api/projects": {
-            "get": {
-                "summary": "List All Projects (🌍 Global/Public)",
-                "parameters": [
-                    {
-                        "name": "featured",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "1"
-                            ]
-                        },
-                        "description": "Filter featured projects only"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object"
-                                            }
-                                        }
-                                    }
-                                },
-                                "example": {
-                                    "success": true,
-                                    "data": [
-                                        {
-                                            "id": 1,
-                                            "title": "E-Commerce Luma",
-                                            "description": "A full-stack e-commerce application built with Laravel and Vue.js.",
-                                            "is_featured": true,
-                                            "start_date": "2025-01-10",
-                                            "end_date": "2025-06-15",
-                                            "status": "completed",
-                                            "type": "web_development",
-                                            "thumbnail_path": "projects/luma-thumbnail.jpg",
-                                            "thumbnail_url": "http://localhost:8000/storage/projects/luma-thumbnail.jpg",
-                                            "live_demo_link": "https://luma.abdian.dev",
-                                            "repository_link": "https://github.com/abdian/luma",
-                                            "team_size": 5,
-                                            "role": "Fullstack Developer",
-                                            "created_at": "2025-01-10T08:00:00.000000Z",
-                                            "skills": [
-                                                {
-                                                    "id": 1,
-                                                    "name": "Laravel",
-                                                    "identifier": "simple-icons:laravel"
-                                                },
-                                                {
-                                                    "id": 2,
-                                                    "name": "Vue.js",
-                                                    "identifier": "simple-icons:vuedotjs"
-                                                }
-                                            ],
-                                            "custom_tech_stacks": [
-                                                {
-                                                    "name": "Custom Icon",
-                                                    "icon": "logos:custom-icon"
-                                                }
-                                            ],
-                                            "media_type": "image",
-                                            "youtube_url": null,
-                                            "twitter_url": null
-                                        },
-                                        {
-                                            "id": 2,
-                                            "title": "Personal Portfolio",
-                                            "description": "My personal portfolio website to showcase my projects.",
-                                            "is_featured": false,
-                                            "start_date": "2025-02-01",
-                                            "end_date": "2025-03-15",
-                                            "status": "in_development",
-                                            "type": null,
-                                            "thumbnail_path": "projects/portfolio.jpg",
-                                            "thumbnail_url": "http://localhost:8000/storage/projects/portfolio.jpg",
-                                            "live_demo_link": "https://abdian.dev",
-                                            "repository_link": "https://github.com/abdian/portfolio",
-                                            "team_size": 1,
-                                            "role": "Solo Developer",
-                                            "created_at": "2025-02-01T10:00:00.000000Z",
-                                            "skills": [
-                                                {
-                                                    "id": 2,
-                                                    "name": "Vue.js",
-                                                    "identifier": "simple-icons:vuedotjs"
-                                                }
-                                            ],
-                                            "custom_tech_stacks": null,
-                                            "media_type": "image",
-                                            "youtube_url": "https://youtube.com/watch?v=123",
-                                            "twitter_url": "https://x.com/user/status/123"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "summary": "Create Project (🔒 Admin Only)",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "required": [
-                                    "title",
-                                    "description",
-                                    "start_date",
-                                    "status"
-                                ],
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "New Zenith App"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Security logging system for university project."
-                                    },
-                                    "start_date": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2025-01-15",
-                                        "description": "Project start date (YYYY-MM-DD)"
-                                    },
-                                    "end_date": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2025-06-30",
-                                        "nullable": true,
-                                        "description": "Project end date (YYYY-MM-DD). Must be >= start_date"
-                                    },
-                                    "status": {
-                                        "$ref": "#/components/schemas/ProjectStatusEnum"
-                                    },
-                                    "type": {
-                                        "$ref": "#/components/schemas/ProjectTypeEnum"
-                                    },
-                                    "thumbnail": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "description": "Media file (jpg/png/mp4/webm/mkv). Max 100MB"
-                                    },
-                                    "is_featured": {
-                                        "type": "boolean",
-                                        "example": false,
-                                        "description": "Pin project ke homepage"
-                                    },
-                                    "live_demo_link": {
-                                        "type": "string",
-                                        "example": "https://zenith.app"
-                                    },
-                                    "repository_link": {
-                                        "type": "string",
-                                        "example": "https://github.com/abdian/zenith"
-                                    },
-                                    "team_size": {
-                                        "type": "integer",
-                                        "example": 5,
-                                        "description": "Jumlah orang yang mengerjakan proyek"
-                                    },
-                                    "role": {
-                                        "type": "string",
-                                        "example": "Lead Backend",
-                                        "description": "Peran kamu dalam proyek ini"
-                                    },
-                                    "tech_stack_ids[]": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        },
-                                        "description": "Array ID dari skill yang digunakan",
-                                        "example": [
-                                            1,
-                                            3,
-                                            5
-                                        ]
-                                    },
-                                    "custom_tech_stacks": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "name": {
-                                                    "type": "string"
-                                                },
-                                                "icon": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        },
-                                        "description": "Array of custom skill objects",
-                                        "example": [
-                                            {
-                                                "name": "WebSockets",
-                                                "icon": "logos:websocket"
-                                            }
-                                        ]
-                                    },
-                                    "youtube_url": {
-                                        "type": "string",
-                                        "description": "Optional YouTube embed URL"
-                                    },
-                                    "twitter_url": {
-                                        "type": "string",
-                                        "description": "Optional Twitter/X tweet URL containing a video"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "Project created",
-                                    "data": {
-                                        "id": 3,
-                                        "title": "New Zenith App",
-                                        "start_date": "2025-01-15T00:00:00.000000Z",
-                                        "end_date": "2025-06-30T00:00:00.000000Z",
-                                        "status": "in_development",
-                                        "type": "web_development",
-                                        "thumbnail_path": "projects/hashname.jpg",
-                                        "skills": [
-                                            {
-                                                "id": 1,
-                                                "name": "Laravel"
-                                            },
-                                            {
-                                                "id": 3,
-                                                "name": "MySQL"
-                                            }
-                                        ],
-                                        "custom_tech_stacks": [
-                                            {
-                                                "name": "WebSockets",
-                                                "icon": "logos:websocket"
-                                            }
-                                        ],
-                                        "media_type": "image",
-                                        "youtube_url": null,
-                                        "twitter_url": null
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "Unauthenticated."
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "The title field is required.",
-                                    "errors": {
-                                        "title": [
-                                            "The title field is required."
-                                        ],
-                                        "status": [
-                                            "The selected status is invalid."
-                                        ],
-                                        "start_date": [
-                                            "The start date field is required."
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+    "/api/projects/{id}": {
+      "get": {
+        "summary": "Get a single project",
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Project" }
+              }
             }
-        },
-        "/api/projects/{id}": {
-            "get": {
-                "summary": "Get Single Project (🌍 Global/Public)",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "id": 1,
-                                    "title": "E-Commerce Luma",
-                                    "description": "Detailed description...",
-                                    "is_featured": true,
-                                    "start_date": "2025-01-10T00:00:00.000000Z",
-                                    "end_date": "2025-06-15T00:00:00.000000Z",
-                                    "status": "completed",
-                                    "type": "web_development",
-                                    "thumbnail_path": "projects/luma.jpg",
-                                    "thumbnail_url": "http://localhost:8000/storage/projects/luma.jpg",
-                                    "skills": [
-                                        {
-                                            "id": 1,
-                                            "name": "Laravel",
-                                            "identifier": "simple-icons:laravel"
-                                        }
-                                    ],
-                                    "custom_tech_stacks": [
-                                        {
-                                            "name": "WebSockets",
-                                            "icon": "logos:websocket"
-                                        }
-                                    ],
-                                    "media_type": "image",
-                                    "youtube_url": null,
-                                    "twitter_url": null
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "No query results for model [App\\Models\\Project] 99"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "put": {
-                "summary": "Update Project (🔒 Admin Only)",
-                "description": "Update data project. \n\n**Note:** Karena keterbatasan PHP dengan method `PUT` pada `multipart/form-data`, Frontend disarankan menggunakan method `POST` dengan tambahan field `_method` = `PUT`.",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "required": [
-                                    "title",
-                                    "description",
-                                    "start_date",
-                                    "status"
-                                ],
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "E-Commerce Luma V2"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "Updated description..."
-                                    },
-                                    "start_date": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2025-01-15"
-                                    },
-                                    "end_date": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2025-07-30",
-                                        "nullable": true
-                                    },
-                                    "status": {
-                                        "$ref": "#/components/schemas/ProjectStatusEnum"
-                                    },
-                                    "type": {
-                                        "$ref": "#/components/schemas/ProjectTypeEnum"
-                                    },
-                                    "thumbnail": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "description": "Optional: Upload file baru (gambar/video) jika ingin mengganti media. Max 100MB (jpg/png/mp4/webm/mkv)"
-                                    },
-                                    "is_featured": {
-                                        "type": "boolean"
-                                    },
-                                    "live_demo_link": {
-                                        "type": "string"
-                                    },
-                                    "repository_link": {
-                                        "type": "string"
-                                    },
-                                    "team_size": {
-                                        "type": "integer",
-                                        "example": 5
-                                    },
-                                    "role": {
-                                        "type": "string",
-                                        "example": "Lead Backend"
-                                    },
-                                    "tech_stack_ids[]": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        },
-                                        "example": [
-                                            1,
-                                            2,
-                                            4
-                                        ]
-                                    },
-                                    "custom_tech_stacks": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "name": {
-                                                    "type": "string"
-                                                },
-                                                "icon": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        },
-                                        "example": [
-                                            {
-                                                "name": "WebSockets",
-                                                "icon": "logos:websocket"
-                                            }
-                                        ]
-                                    },
-                                    "youtube_url": {
-                                        "type": "string",
-                                        "description": "Optional YouTube embed URL"
-                                    },
-                                    "twitter_url": {
-                                        "type": "string",
-                                        "description": "Optional Twitter/X tweet URL containing a video"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "Project updated",
-                                    "data": {
-                                        "id": 1,
-                                        "title": "E-Commerce Luma V2",
-                                        "start_date": "2025-01-15T00:00:00.000000Z",
-                                        "end_date": "2025-07-30T00:00:00.000000Z",
-                                        "status": "completed",
-                                        "type": "web_development",
-                                        "skills": [
-                                            {
-                                                "id": 1,
-                                                "name": "Laravel"
-                                            },
-                                            {
-                                                "id": 2,
-                                                "name": "Vue.js"
-                                            },
-                                            {
-                                                "id": 4,
-                                                "name": "Docker"
-                                            }
-                                        ],
-                                        "custom_tech_stacks": [
-                                            {
-                                                "name": "WebSockets",
-                                                "icon": "logos:websocket"
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "No query results for model [App\\Models\\Project] 99"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation Error",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "The selected status is invalid.",
-                                    "errors": {
-                                        "status": [
-                                            "The selected status is invalid."
-                                        ]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete Project (🔒 Admin Only)",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Deleted",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "Project deleted"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "No query results for model [App\\Models\\Project] 99"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+          }
         }
+      },
+      "put": {
+        "summary": "Update a project",
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "is_featured": { "type": "boolean" },
+                  "start_date": { "type": "string", "format": "date" },
+                  "end_date": { "type": ["string", "null"], "format": "date" },
+                  "status": { "type": "string", "enum": ["completed", "in_development", "on_hold", "cancelled"] },
+                  "type": { "type": ["string", "null"], "enum": ["web_development", "mobile_development", "desktop_application", "game_development"] },
+                  "thumbnail": { "type": "string", "format": "binary", "description": "New thumbnail file to upload (replaces existing)" },
+                  "remove_thumbnail": { "type": "boolean", "description": "Set to true to remove the existing thumbnail without uploading a new one" },
+                  "youtube_url": { "type": "string", "format": "uri" },
+                  "twitter_url": { "type": "string", "format": "uri" },
+                  "live_demo_link": { "type": "string", "format": "uri" },
+                  "repository_link": { "type": "string", "format": "uri" },
+                  "tech_stack_ids": { "type": "array", "items": { "type": "integer" } },
+                  "custom_tech_stacks": { "type": "array", "items": { "type": "object", "properties": { "name": { "type": "string" }, "icon_url": { "type": "string" } } } },
+                  "team_size": { "type": "integer", "minimum": 1 },
+                  "role": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/Project" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a project",
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project deleted successfully"
+          }
+        }
+      }
     }
+  },
+  "components": {
+    "schemas": {
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "is_featured": { "type": "boolean" },
+          "start_date": { "type": "string", "format": "date" },
+          "end_date": { "type": ["string", "null"], "format": "date" },
+          "status": { "type": "string" },
+          "type": { "type": ["string", "null"] },
+          "thumbnail_path": { "type": ["string", "null"] },
+          "thumbnail_url": { "type": ["string", "null"], "format": "uri" },
+          "media_type": { "type": ["string", "null"], "enum": ["image", "video"] },
+          "youtube_url": { "type": ["string", "null"] },
+          "twitter_url": { "type": ["string", "null"] },
+          "live_demo_link": { "type": ["string", "null"] },
+          "repository_link": { "type": ["string", "null"] },
+          "team_size": { "type": ["integer", "null"] },
+          "role": { "type": ["string", "null"] },
+          "custom_tech_stacks": { "type": ["array", "null"] },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" },
+          "skills": { "type": "array", "items": { "$ref": "#/components/schemas/Skill" } }
+        }
+      },
+      "Skill": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "category": { "type": "string" },
+          "icon_url": { "type": "string" },
+          "proficiency": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" },
+          "pivot": { "type": "object", "properties": { "project_id": { "type": "integer" }, "skill_id": { "type": "integer" } } }
+        }
+      }
+    }
+  }
 }

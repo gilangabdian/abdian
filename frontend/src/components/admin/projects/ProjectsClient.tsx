@@ -165,7 +165,6 @@ export default function ProjectsClient() {
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead className="bg-black text-white font-mono uppercase text-sm">
                 <tr>
-                  <th className="p-4 border-r-2 border-white w-24">Thumbnail</th>
                   <th className="p-4 border-r-2 border-white">Project Info</th>
                   <th className="p-4 border-r-2 border-white text-center w-28">Status</th>
                   <th className="p-4 border-r-2 border-white text-center w-32">Role/Team</th>
@@ -178,52 +177,62 @@ export default function ProjectsClient() {
                 {projects.map((project) => (
                   <tr key={project.id} className="border-b-2 border-black hover:bg-gray-50 transition-colors">
                     <td className="p-4 align-top">
-                      {project.media_type === "video" && project.thumbnail_url ? (
-                        <video
-                          src={project.thumbnail_url}
-                          className="w-24 h-16 object-cover border-2 border-black shadow-sm"
-                          autoPlay
-                          muted
-                          loop
-                          playsInline
-                        />
-                      ) : (
-                        <img
-                          loading="lazy"
-                          src={project.thumbnail_url || project.thumbnail_path || ""}
-                          className="w-24 h-16 object-cover border-2 border-black shadow-sm"
-                          alt={project.title}
-                        />
-                      )}
-                    </td>
+                      <div className="flex flex-col gap-3">
+                        {/* Title — full width */}
+                        <div className="font-bold uppercase text-lg leading-tight">{project.title}</div>
 
-                    <td className="p-4 align-top">
-                      <div className="max-w-[250px] lg:max-w-[400px]">
-                        <div className="font-bold uppercase text-lg leading-tight mb-1">{project.title}</div>
+                        {/* Thumbnail — di bawah title, ukuran sedang */}
+                        {(project.thumbnail_url || project.thumbnail_path) && (
+                          <div className="w-full max-w-[240px]">
+                            {project.media_type === "video" ? (
+                              <video
+                                src={project.thumbnail_url}
+                                className="w-full h-auto max-h-28 object-cover border-2 border-black shadow-sm"
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                              />
+                            ) : (
+                              <img
+                                loading="lazy"
+                                src={project.thumbnail_url || project.thumbnail_path || ""}
+                                className="w-full h-auto max-h-28 object-cover border-2 border-black shadow-sm"
+                                alt={project.title}
+                              />
+                            )}
+                          </div>
+                        )}
+
+                        {/* Description — full width */}
                         <div
                           dangerouslySetInnerHTML={{ __html: project.description || "" }}
-                          className="markdown-preview text-sm text-gray-500 font-mono mb-2 line-clamp-2"
+                          className="markdown-preview text-sm text-gray-500 font-mono line-clamp-2"
                         ></div>
-                        <div className="flex gap-3 mt-2">
-                          {project.repository_link && (
-                            <a
-                              href={project.repository_link}
-                              target="_blank"
-                              className="text-gray-600 hover:text-black hover:scale-110 transition-transform"
-                            >
-                              <Icon icon="mdi:github" className="w-6 h-6" />
-                            </a>
-                          )}
-                          {project.live_demo_link && (
-                            <a
-                              href={project.live_demo_link}
-                              target="_blank"
-                              className="text-gray-600 hover:text-black underline hover:scale-110 transition-transform"
-                            >
-                              <Icon icon="mdi:web" className="w-6 h-6" />
-                            </a>
-                          )}
-                        </div>
+
+                        {/* Links */}
+                        {project.repository_link || project.live_demo_link ? (
+                          <div className="flex gap-3 mt-1">
+                            {project.repository_link && (
+                              <a
+                                href={project.repository_link}
+                                target="_blank"
+                                className="text-gray-600 hover:text-black hover:scale-110 transition-transform"
+                              >
+                                <Icon icon="mdi:github" className="w-6 h-6" />
+                              </a>
+                            )}
+                            {project.live_demo_link && (
+                              <a
+                                href={project.live_demo_link}
+                                target="_blank"
+                                className="text-gray-600 hover:text-black underline hover:scale-110 transition-transform"
+                              >
+                                <Icon icon="mdi:web" className="w-6 h-6" />
+                              </a>
+                            )}
+                          </div>
+                        ) : null}
                       </div>
                     </td>
 

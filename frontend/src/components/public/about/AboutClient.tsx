@@ -13,13 +13,8 @@ interface AboutClientProps {
 export default function AboutClient({ initialProfile }: AboutClientProps) {
   const [profile] = useState<Profile | null>(initialProfile);
 
-  const currentDate: Date = new Date();
-
-  const formattedDate: string = currentDate.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  // Static date — this content is hardcoded, so the date should not auto-update
+  const formattedDate: string = "July 27, 2026";
 
   useEffect(() => {
     NProgress.done();

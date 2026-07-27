@@ -33,6 +33,7 @@ class UpdateProjectRequest extends FormRequest
             'type' => ['nullable', 'string', Rule::in(Project::TYPES)],
             // Accept both images and video files
             'thumbnail' => 'nullable|file|mimes:jpeg,png,jpg,webp,mp4,webm,mov,mkv|max:102400',
+            'remove_thumbnail' => 'boolean',
             'youtube_url' => 'nullable|url|max:500',
             'twitter_url' => 'nullable|url|max:500',
             'live_demo_link' => 'nullable|url',

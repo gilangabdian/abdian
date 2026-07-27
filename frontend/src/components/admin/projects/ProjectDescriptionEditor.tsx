@@ -27,7 +27,7 @@ export default function ProjectDescriptionEditor({ value, onChange }: ProjectDes
     },
     editorProps: {
       attributes: {
-        class: "prose prose-sm md:prose-base dark:prose-invert max-w-none focus:outline-none min-h-[150px]",
+        class: "prose prose-sm md:prose-base dark:prose-invert max-w-none focus:outline-none min-h-[150px] text-gray-900 [&_p]:text-gray-900 [&_h1]:text-gray-900 [&_h2]:text-gray-900 [&_li]:text-gray-900",
       },
     },
   });

@@ -171,4 +171,78 @@ class ProjectFileUploadTest extends TestCase
         Storage::disk('public')->assertExists($project->thumbnail_path);
         $this->assertEquals('video', $project->media_type);
     }
+
+    public function test_remove_thumbnail_clears_media_fields()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // 1. Upload project with image
+        $file = UploadedFile::fake()->image('will-be-removed.jpg');
+        $this->postJson('/api/projects', [
+            'title' => 'Remove Thumbnail Test',
+            'description' => 'Desc',
+            'thumbnail' => $file,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        $project = Project::where('title', 'Remove Thumbnail Test')->first();
+        $oldPath = $project->thumbnail_path;
+        Storage::disk('public')->assertExists($oldPath);
+
+        // 2. Update with remove_thumbnail=true
+        $this->putJson("/api/projects/{$project->id}", [
+            'title' => 'Remove Thumbnail Test',
+            'description' => 'Updated desc',
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+            'remove_thumbnail' => true,
+        ]);
+
+        $project->refresh();
+
+        // Assert thumbnail_path and media_type are null
+        $this->assertNull($project->thumbnail_path);
+        $this->assertNull($project->media_type);
+        // Assert old file removed from storage
+        Storage::disk('public')->assertMissing($oldPath);
+    }
+
+    public function test_remove_thumbnail_with_upload_replaces_not_removes()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // 1. Upload with old file
+        $oldFile = UploadedFile::fake()->image('old.jpg');
+        $this->postJson('/api/projects', [
+            'title' => 'Replace Test',
+            'description' => 'Desc',
+            'thumbnail' => $oldFile,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        $project = Project::where('title', 'Replace Test')->first();
+
+        // 2. Send BOTH new file AND remove_thumbnail=true — new file should win
+        $newFile = UploadedFile::fake()->image('new.jpg');
+        $this->putJson("/api/projects/{$project->id}", [
+            'title' => 'Replace Test',
+            'description' => 'Desc',
+            'thumbnail' => $newFile,
+            'remove_thumbnail' => true,
+            'start_date' => '2025-01-01',
+            'end_date' => '2025-06-01',
+            'status' => 'completed',
+        ]);
+
+        $project->refresh();
+        $this->assertNotNull($project->thumbnail_path);
+        $this->assertEquals('image', $project->media_type);
+    }
 }

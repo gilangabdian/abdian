@@ -71,6 +71,16 @@ class ProjectController extends Controller
             $data['media_type'] = $resourceType;
         }
 
+        // Handle thumbnail removal when no new file is uploaded
+        if (!$request->hasFile('thumbnail') && $request->boolean('remove_thumbnail')) {
+            $this->deleteFile($project->thumbnail_path);
+            $data['thumbnail_path'] = null;
+            $data['media_type'] = null;
+        }
+
+        // Hapus remove_thumbnail dari data agar tidak ikut mass-assignment
+        unset($data['remove_thumbnail']);
+
         $project->update([
             'title' => $data['title'],
             'description' => $data['description'],
@@ -86,15 +96,9 @@ class ProjectController extends Controller
             'custom_tech_stacks' => $data['custom_tech_stacks'] ?? null,
             'youtube_url' => $data['youtube_url'] ?? null,
             'twitter_url' => $data['twitter_url'] ?? null,
+            'thumbnail_path' => array_key_exists('thumbnail_path', $data) ? $data['thumbnail_path'] : $project->thumbnail_path,
+            'media_type' => array_key_exists('media_type', $data) ? $data['media_type'] : $project->media_type,
         ]);
-
-        if (isset($data['media_type'])) {
-            $project->update(['media_type' => $data['media_type']]);
-        }
-
-        if (isset($data['thumbnail_path'])) {
-            $project->update(['thumbnail_path' => $data['thumbnail_path']]);
-        }
 
         if (array_key_exists('tech_stack_ids', $data)) {
             $project->skills()->sync($data['tech_stack_ids'] ?? []);

@@ -150,6 +150,13 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
         .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
         .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
         .prose li { margin-bottom: 0.5em; }
+        /* ToC subtle scrollbar */
+        .toc-sidebar::-webkit-scrollbar { width: 4px; }
+        .toc-sidebar::-webkit-scrollbar-track { background: transparent; }
+        .toc-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.02); border-radius: 4px; }
+        .dark .toc-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.02); }
+        .toc-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.15); }
+        .dark .toc-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
       `}</style>
 
       {/* Desktop ToC Sidebar */}
@@ -159,7 +166,7 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
         }`}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}>
-        <div className="absolute left-0 top-34 pl-7 xl:pl-10 mt-32">
+        <div className="toc-sidebar absolute left-0 top-34 pl-7 xl:pl-10 mt-32 max-h-[70vh] overflow-y-auto">
           <ul className="flex flex-col gap-3 text-sm border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
             {toc.map((item, index) => (
               <li key={`${index}-${item.id}`} className={`w-fit ${item.level === "h3" ? "ml-4 text-xs" : ""}`}>
