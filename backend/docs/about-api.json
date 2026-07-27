@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "About Page API",
-        "description": "API untuk mengelola konten halaman About (/about). Konten disimpan di database sebagai HTML (dari Tiptap editor), memungkinkan admin mengedit halaman About tanpa mengubah kode.\n\nStruktur: Singleton — hanya ada 1 row dalam tabel `about_pages`.\n\nCatatan: Saat content bernilai null, frontend akan menampilkan konten hardcoded lama (fallback).",
+        "description": "API untuk mengelola konten halaman About (/about). Konten disimpan di database sebagai HTML (dari Tiptap editor), memungkinkan admin mengedit halaman About tanpa mengubah kode.\n\nStruktur: Singleton — hanya ada 1 row dalam tabel `about_pages`.\n\nCatatan: Saat content bernilai null, halaman About tidak akan menampilkan konten apapun (halaman kosong menunggu admin mengisi).",
         "version": "1.0.0"
     },
     "servers": [

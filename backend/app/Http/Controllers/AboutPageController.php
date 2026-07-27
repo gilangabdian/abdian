@@ -40,7 +40,9 @@ class AboutPageController extends Controller
             $about = new AboutPage();
         }
 
-        $about->content = $request->input('content');
+        $validated = $request->validated();
+
+        $about->content = $validated['content'] ?? null;
         $about->save();
         $about->refresh();
 
