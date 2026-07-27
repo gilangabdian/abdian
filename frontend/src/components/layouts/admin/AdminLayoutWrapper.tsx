@@ -21,11 +21,23 @@ export default function AdminLayoutWrapper({
 
   useEffect(() => {
     const token = getToken();
-    if (!token && pathname !== "/admin/login") {
-      router.push("/admin/login");
+
+    if (!token) {
+      // No token — redirect to login (unless already there)
+      if (pathname !== "/admin/login") {
+        router.replace("/admin/login");
+        return;
+      }
     } else {
-      setIsAuthChecking(false);
+      // Has token — redirect /admin root to /admin/dashboard
+      if (pathname === "/admin") {
+        router.replace("/admin/dashboard");
+        return;
+      }
     }
+
+    // Auth check passed or already on login page
+    setIsAuthChecking(false);
   }, [router, pathname]);
 
   useEffect(() => {

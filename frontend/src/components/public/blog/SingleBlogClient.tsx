@@ -7,6 +7,8 @@ import "nprogress/nprogress.css";
 import hljs from "highlight.js";
 import "highlight.js/styles/night-owl.css";
 import { Blog } from "@/types";
+import TableOfContents from "@/components/global/TableOfContents";
+import { injectHeadingIds } from "@/lib/heading-utils";
 
 interface SingleBlogClientProps {
   initialBlog: Blog;
@@ -24,35 +26,21 @@ const BlogContent = React.memo(
   }) => {
     const contentRef = useRef<HTMLDivElement>(null);
 
+    // Pre-process HTML: inject heading IDs and extract ToC synchronously
+    // IDs are embedded in the HTML string BEFORE render, avoiding race conditions
+    // with React.memo caching and Turbopack's useEffect timing.
+    const { processedHtml, toc } = injectHeadingIds(content);
+
+    // Effect 1: Report ToC from pre-computed data (no DOM dependency)
+    useEffect(() => {
+      onTocExtracted(toc);
+    }, [toc, onTocExtracted]);
+
+    // Effect 2: Highlight code blocks and image click handlers
     useEffect(() => {
       if (!contentRef.current) return;
 
-      // 1. Extract ToC and apply IDs
-      const headings = contentRef.current.querySelectorAll("h2, h3");
-      const extractedToc: { id: string; text: string; level: string }[] = [];
-
-      headings.forEach((el, index) => {
-        let id = el.id;
-        if (!id) {
-          id = el.textContent
-            ? el.textContent
-                .toLowerCase()
-                .replace(/\s+/g, "-")
-                .replace(/[^\w-]/g, "")
-            : `heading-${index}`;
-          if (!id) id = `heading-${index}`;
-          el.id = id;
-        }
-        extractedToc.push({
-          id,
-          text: el.textContent || "",
-          level: el.tagName.toLowerCase(),
-        });
-      });
-      onTocExtracted(extractedToc);
-
-      // 2. Highlight code blocks
-      // Using a tiny timeout to ensure DOM is painted before highlighting
+      // Highlight code blocks
       const t = setTimeout(() => {
         if (contentRef.current) {
           const codeBlocks = contentRef.current.querySelectorAll("pre code");
@@ -63,7 +51,7 @@ const BlogContent = React.memo(
         }
       }, 10);
 
-      // 3. Image click handler
+      // Image click handler
       const images = contentRef.current.querySelectorAll("img");
       const handleImageClick = (e: Event) => {
         onImageClick((e.target as HTMLImageElement).src);
@@ -78,14 +66,14 @@ const BlogContent = React.memo(
           img.removeEventListener("click", handleImageClick);
         });
       };
-    }, [content, onTocExtracted, onImageClick]);
+    }, [content, onImageClick]);
 
     return (
       <div
         ref={contentRef}
         suppressHydrationWarning={true}
         className="prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg"
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: processedHtml }}
       />
     );
   },
@@ -101,6 +89,7 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const articleRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("blogLang");
@@ -108,6 +97,14 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
       setCurrentLang(savedLang);
     }
     NProgress.done();
+  }, []);
+
+  // On mount, check if cursor is already over the content area
+  // (happens when navigating directly to a blog post — cursor is already inside the article)
+  useEffect(() => {
+    if (articleRef.current && articleRef.current.matches(":hover")) {
+      setShowToc(true);
+    }
   }, []);
 
   const openModal = (url: string) => setSelectedImage(url);
@@ -150,39 +147,19 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
         .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
         .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
         .prose li { margin-bottom: 0.5em; }
-        /* ToC subtle scrollbar */
-        .toc-sidebar::-webkit-scrollbar { width: 4px; }
-        .toc-sidebar::-webkit-scrollbar-track { background: transparent; }
-        .toc-sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.02); border-radius: 4px; }
-        .dark .toc-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.02); }
-        .toc-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.15); }
-        .dark .toc-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
       `}</style>
 
       {/* Desktop ToC Sidebar */}
-      <div
-        className={`hidden lg:block fixed left-0 bottom-40 w-[calc(50%-24rem)] h-full z-40 pointer-events-auto transition-all duration-300 ease-in-out ${
-          showToc ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
-        }`}
+      <TableOfContents
+        toc={toc}
+        show={showToc}
         onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}>
-        <div className="toc-sidebar absolute left-0 top-34 pl-7 xl:pl-10 mt-32 max-h-[70vh] overflow-y-auto">
-          <ul className="flex flex-col gap-2 text-xs border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
-            {toc.map((item, index) => (
-              <li key={`${index}-${item.id}`} className={`w-fit ${item.level === "h3" ? "ml-4 text-xs" : ""}`}>
-                <span
-                  onClick={(e) => scrollToHeading(e, item.id)}
-                  className="cursor-pointer border-b border-neutral-300 dark:border-neutral-700 hover:border-black dark:hover:border-white text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-all leading-snug">
-                  {item.text}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+        onMouseLeave={onMouseLeave}
+        onScrollToHeading={scrollToHeading}
+      />
 
       <div className="max-w-3xl mx-auto px-4 md:px-8">
-        <article onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="relative mt-8">
+        <article ref={articleRef} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="relative mt-8">
           {/* Header */}
           <header className="mb-12">
             <h1 className="text-3xl md:text-5xl font-medium leading-none mb-3 text-black dark:text-white">

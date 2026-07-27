@@ -149,6 +149,16 @@ export default function BlogEditorToolbar({
       </button>
       <button
         type="button"
+        onClick={() => editor.chain().focus().toggleCallout().run()}
+        className={`p-2 border-2 border-transparent hover:border-black transition-colors rounded ${
+          editor.isActive("callout") ? "bg-black text-white" : ""
+        }`}
+        title="Callout (Note)"
+      >
+        <Icon icon="lucide:file-text" />
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
         className="p-2 border-2 border-transparent hover:border-black transition-colors rounded"
         title="Horizontal Rule"

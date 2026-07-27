@@ -1,181 +1,218 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import Link from "next/link";
 import { Profile } from "@/types";
+import Image from "next/image";
+import TableOfContents from "@/components/global/TableOfContents";
+import { injectHeadingIds } from "@/lib/heading-utils";
 
 interface AboutClientProps {
   initialProfile: Profile | null;
+  aboutContent: string | null;
+  aboutUpdatedAt: string | null;
 }
 
-export default function AboutClient({ initialProfile }: AboutClientProps) {
-  const [profile] = useState<Profile | null>(initialProfile);
+/**
+ * Given an HTML string, inject a "Last updated on..." <span>
+ * immediately after the very first <h2> (or any heading) element.
+ * If no heading is found, prepend the date at the start.
+ */
+function injectDateAfterFirstH2(html: string, formattedDate: string): string {
+  if (!html) return html;
 
-  // Static date — this content is hardcoded, so the date should not auto-update
-  const formattedDate: string = "July 27, 2026";
+  const dateHtml = `<span class="block text-sm md:text-base text-neutral-500 dark:text-neutral-500 mt-3 mb-4">Last updated on ${formattedDate}</span>`;
+
+  // Find the first closing heading tag (h1-h3) and inject date after it
+  const headingMatch = html.match(/<\/(h[1-3])>/i);
+  if (headingMatch && headingMatch.index !== undefined) {
+    const closeTagEnd = headingMatch.index + headingMatch[0].length;
+    return html.slice(0, closeTagEnd) + dateHtml + html.slice(closeTagEnd);
+  }
+
+  // Fallback: prepend date
+  return dateHtml + html;
+}
+
+// Separate React.memo component for dynamic content (same pattern as BlogContent in SingleBlogClient.tsx)
+// Uses injectHeadingIds to pre-compute heading IDs + ToC at HTML string level (not DOM-dependent).
+const AboutContent = React.memo(
+  ({
+    aboutContent,
+    aboutUpdatedAt,
+    onTocExtracted,
+    onImageClick,
+  }: {
+    aboutContent: string;
+    aboutUpdatedAt: string | null;
+    onTocExtracted: (toc: { id: string; text: string; level: string }[]) => void;
+    onImageClick: (url: string) => void;
+  }) => {
+    const contentRef = useRef<HTMLDivElement>(null);
+
+    const formattedDate = aboutUpdatedAt
+      ? new Date(aboutUpdatedAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "July 27, 2026";
+
+    // 1. Inject "Last updated on..." after first heading
+    const htmlWithDate = injectDateAfterFirstH2(aboutContent || "", formattedDate);
+
+    // 2. Pre-process HTML: inject heading IDs and extract ToC synchronously
+    //    IDs are embedded in the HTML string BEFORE render, avoiding race conditions
+    //    with React.memo caching and Turbopack's useEffect timing.
+    const { processedHtml, toc } = injectHeadingIds(htmlWithDate);
+
+    // Effect 1: Report ToC from pre-computed data (no DOM dependency)
+    useEffect(() => {
+      onTocExtracted(toc);
+    }, [toc, onTocExtracted]);
+
+    // Effect 2: Image click handlers (requires DOM)
+    useEffect(() => {
+      if (!contentRef.current) return;
+
+      const images = contentRef.current.querySelectorAll("img");
+      const handleImageClick = (e: Event) => {
+        onImageClick((e.target as HTMLImageElement).src);
+      };
+      images.forEach((img) => {
+        img.addEventListener("click", handleImageClick);
+      });
+
+      return () => {
+        images.forEach((img) => {
+          img.removeEventListener("click", handleImageClick);
+        });
+      };
+    }, [aboutContent, onImageClick]);
+
+    return (
+      <div
+        ref={contentRef}
+        suppressHydrationWarning={true}
+        className="prose prose-neutral dark:text-neutral-300 max-w-none mt-4 text-sm md:text-base leading-relaxed prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-black dark:prose-headings:text-white prose-a:no-underline prose-a:text-black dark:prose-a:text-white hover:prose-a:underline prose-a:decoration-black/20 dark:prose-a:decoration-white/20 hover:prose-a:decoration-black dark:hover:prose-a:decoration-white prose-a:underline-offset-4 prose-a:transition-all prose-a:duration-300 prose-img:rounded-lg prose-img:my-4 prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-neutral-800 dark:prose-code:text-neutral-200 prose-blockquote:border-l-4 prose-blockquote:border-neutral-300 dark:prose-blockquote:border-neutral-700 prose-blockquote:pl-4 prose-blockquote:py-1 prose-blockquote:text-neutral-400 dark:prose-blockquote:text-neutral-500 prose-blockquote:not-italic prose-blockquote:my-6 [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
+        dangerouslySetInnerHTML={{
+          __html: processedHtml,
+        }}
+      />
+    );
+  },
+);
+
+AboutContent.displayName = "AboutContent";
+
+export default function AboutClient({ initialProfile, aboutContent, aboutUpdatedAt }: AboutClientProps) {
+  const [profile] = useState<Profile | null>(initialProfile);
+  const [imageZoom, setImageZoom] = useState<string | null>(null);
+  const [showToc, setShowToc] = useState(false);
+  const [toc, setToc] = useState<{ id: string; text: string; level: string }[]>([]);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const onMouseEnter = useCallback(() => {
+    if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+    setShowToc(true);
+  }, []);
+
+  const onMouseLeave = useCallback(() => {
+    hideTimeoutRef.current = setTimeout(() => {
+      setShowToc(false);
+    }, 150);
+  }, []);
+
+  const scrollToHeading = useCallback((e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 100;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  }, []);
 
   useEffect(() => {
     NProgress.done();
   }, []);
 
+  const handleTocExtracted = useCallback(
+    (items: { id: string; text: string; level: string }[]) => {
+      setToc(items);
+    },
+    [],
+  );
+
+  const handleImageClick = useCallback((url: string) => {
+    setImageZoom(url);
+  }, []);
+
   return (
     <div className="min-h-screen">
+      <style>{`
+        div.callout {
+          position: relative !important;
+        }
+        div.callout::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0.65em;
+          bottom: 0.65em;
+          width: 2px;
+          background: #d4d4d8;
+          border-radius: 2px;
+        }
+        .dark div.callout::before {
+          background: #404040;
+        }
+        /* Links: underline only on hover */
+        .prose a {
+          text-decoration: none !important;
+        }
+        .prose a:hover {
+          text-decoration: underline !important;
+          text-decoration-color: inherit !important;
+        }
+      `}</style>
+
+      {/* Image Zoom Modal */}
+      {imageZoom && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 cursor-zoom-out"
+          onClick={() => setImageZoom(null)}>
+          <Image
+            src={imageZoom}
+            alt="Zoomed content"
+            width={1200}
+            height={800}
+            className="max-w-full max-h-[90vh] object-contain rounded-lg"
+          />
+        </div>
+      )}
+
+      {/* ToC Sidebar — Hover reveal, same as blog */}
+      <TableOfContents
+        toc={toc}
+        show={showToc}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onScrollToHeading={scrollToHeading}
+      />
+
       <section className="-mt-12 md:-mt-2 min-h-screen flex justify-center py-24 px-4 sm:px-6 font-sans text-black dark:text-white">
         <div className="container max-w-[650px] w-full flex flex-col space-y-12 mt-10 mx-auto">
           {/* About Section */}
-          <div className="flex flex-col space-y-4">
-            <h1 className="text-3xl md:text-4xl font-bold tracking-wide text-black dark:text-white">
-              Please introduce yourself
-            </h1>
-            <span className="text-sm md:text-base text-neutral-500 dark:text-neutral-500">
-              Last updated on {formattedDate}
-            </span>
-            <span className="flex my-6 items-center border-l-4 border-neutral-300 dark:border-neutral-700 pl-4 py-1 text-sm md:text-base text-neutral-400 dark:text-neutral-500">
-              Please note, this is going to be very long, so I wouldn't be surprised if you get bored. Feel free to move
-              on to another page if you wish.
-            </span>
-
-            <div className="space-y-6 mt-4 text-sm md:text-base text-neutral-700 dark:text-neutral-400 font-normal leading-relaxed">
-              <p>
-                Hello, I am Gilang Abdian, based in Indonesia. I began learning programming by enrolling in the
-                Informatics Engineering Diploma program at Universitas Sebelas Maret in 2024, and I am currently in my
-                final year (time flies so fast). I've been to college before, but I decided to change majors because I
-                felt like I'd chosen the wrong major in the past and decided to pursue a field I found interesting. (I
-                hope I'll be more careful in making decisions in the future). Since then, I’ve met many new friends who
-                are younger than me—something that doesn't bother me, even though people say I started late (I ignore
-                such comments because I’m the one living my life, not them). What does bother me, however, is feeling a
-                bit envious of friends who began learning programming back in vocational or high school, whereas I’m
-                just getting started. Therefore, I felt I needed to study programming harder and not just rely on the
-                lecturer's material. I had to step out of my comfort zone and start learning independently, learning
-                various things, from algorithms and computational thinking to various programming languages, and so on.
-                While still studying the material provided by the lecturer.
-              </p>
-              <p>
-                At first, I felt overwhelmed by all the new concepts. To make matters more challenging, most
-                documentation was in English; this meant that alongside programming, I had to learn English as well
-                (though I can currently understand the meaning, I’m not yet fluent enough to speak it). It took quite a
-                while for me to adapt and find enjoyment in the process. I discovered that something which seemed
-                exciting—under the assumption that "if it's exciting, it must be easy"—was actually far more challenging
-                than I had imagined. Eventually, I had to rethink my approach to avoid feeling burdened and to start
-                enjoying the journey.{" "}
-              </p>
-              <p>
-                I realized that mastering every aspect of programming was impossible, so I decided to focus on the
-                specific areas that truly aligned with my passion. I had previously experimented with a wide range of
-                topics—coding basics, web design, languages ​​like Java, PHP, JavaScript, Go, and C#, as well as backend
-                and frontend development. After weighing my options, I decided to specialize in frontend development
-                (focusing on the application's visual interface).
-              </p>
-              <p>
-                I chose this path because I experience genuine joy when bringing ideas to life and seeing the results
-                firsthand. This sense of satisfaction motivates me to continue exploring the vast world of frontend
-                development—a field teeming with various libraries and frameworks. Among the most prominent are{" "}
-                <a
-                  href="https://react.dev/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  React
-                </a>{" "}
-                and{" "}
-                <a
-                  href="https://vuejs.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  Vue.js
-                </a>
-                , both of which I have studied. There are also other technologies—such as{" "}
-                <a
-                  href="https://angular.dev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  Angular
-                </a>{" "}
-                and{" "}
-                <a
-                  href="https://svelte.dev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  Svelte
-                </a>
-                —that I am currently only familiar with by name, and this list will likely keep growing in the future.
-              </p>
-              <p>
-                To avoid confusion and feeling overwhelmed by the vast scope of frontend development—as I mentioned
-                earlier—I decided to narrow my focus to just three things:{" "}
-                <a
-                  href="https://react.dev/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  React
-                </a>{" "}
-                (a collection of JavaScript code),{" "}
-                <a
-                  href="https://nextjs.org/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  Next.js
-                </a>{" "}
-                (built on top of React), and{" "}
-                <a
-                  href="https://www.typescriptlang.org/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  TypeScript
-                </a>{" "}
-                (statically typed JavaScript that helps catch errors before the program runs). Don't misunderstand me by
-                assuming that if I focus on front-end development, I won't learn anything else. That's not true. I'll
-                also keep up with developments in other technology fields, though not as deeply as front-end
-                development.
-              </p>
-              <p>
-                Besides deepening my knowledge in the field that I am interested in, I am currently also trying to
-                contribute to open source projects because I think it would be very exciting to be able to collaborate
-                with other people that we have never met before and it is also an opportunity to learn from great people
-                around the world.I also realize that exciting doesn't mean easy, but at least I'll try so I can provide
-                a little help to others around the world through open source projects.
-              </p>
-              <p>
-                In case you are interested, here are some{" "}
-                <Link
-                  href="/projects/simple"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  simple projects or experiment I worked on when I first started learning programming
-                </Link>{" "}
-                (mostly using HTML, CSS, and JavaScript, although some also used the React and Vue.js frameworks).
-              </p>
-              <p>
-                Outside of programming, I also often draw, but lately my hobby has started to fade. I used to feel
-                relaxed doodling and drawing, both on paper and digitally, but that feeling has faded. However, I used
-                to create some unique characters of my own and some are just redraws of anime characters that you may
-                have watched as a child or are still watching them now.I post some of{" "}
-                <Link
-                  href="/artworks"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  my artwork on this page
-                </Link>{" "}
-                . Since I often took pictures of my drawings after finishing my drawings, I think I indirectly learned a
-                new skill, namely photography. That motivated me to start photographing other subjects as well, and I{" "}
-                <Link
-                  href="/photos"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  post those photos
-                </Link>{" "}
-                here.
-              </p>
-
-              <p>Besides that, I can play the guitar a little.</p>
-
-              <p className="mt-24">Thank you for reading this boring introduction of mine!</p>
-            </div>
+          <div className="flex flex-col space-y-4" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+            {aboutContent ? (
+              <AboutContent
+                aboutContent={aboutContent}
+                aboutUpdatedAt={aboutUpdatedAt}
+                onTocExtracted={handleTocExtracted}
+                onImageClick={handleImageClick}
+              />
+            ) : null}
           </div>
         </div>
       </section>

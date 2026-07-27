@@ -11,6 +11,7 @@ use App\Http\Controllers\SkillController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\AboutPageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,9 @@ Route::get('/artworks', [ArtworkController::class, 'index']);
 Route::get('/photos', [PhotoController::class, 'index']);
 Route::get('/blogs', [BlogController::class, 'indexPublic']);
 Route::get('/blogs/{slug}', [BlogController::class, 'showPublic']);
+
+// About Page (Public)
+Route::get('/about-page', [AboutPageController::class, 'index']);
 
 Route::get('/sitemap', [\App\Http\Controllers\SitemapController::class, 'index']);
 Route::get('/prerender-routes', [\App\Http\Controllers\SitemapController::class, 'prerenderRoutes']);
@@ -73,6 +77,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/projects/reorder', [ProjectController::class, 'reorder']);
     Route::put('/projects/{id}', [ProjectController::class, 'update']); // Note: Laravel kadang butuh _method: PUT di FormData untuk file
     Route::delete('/projects/{id}', [ProjectController::class, 'destroy']);
+
+    // About Page (Admin)
+    Route::put('/admin/about-page', [AboutPageController::class, 'update']);
 
     // Skills CRUD
     Route::post('/skills/bulk-delete', [SkillController::class, 'bulkDelete']);

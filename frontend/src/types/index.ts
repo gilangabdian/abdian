@@ -136,6 +136,14 @@ export interface Profile {
 }
 
 
+export interface AboutPage {
+  id: number;
+  content: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+
 export interface ProjectImage {
   id: number;
   project_id: number;

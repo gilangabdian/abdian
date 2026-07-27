@@ -13,6 +13,7 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { createLowlight, common } from "lowlight";
 import CodeBlockComponent from "./editor/CodeBlockComponent";
 import { RawHtml } from "./editor/RawHtml";
+import { Callout } from "./editor/Callout";
 import "highlight.js/styles/night-owl.css";
 import { alertSuccess, alertError } from "@/lib/alert";
 import { getBlogByIdAdmin, createBlog, updateBlog, uploadBlogImage } from "@/lib/api/blog";
@@ -97,6 +98,7 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
     Underline,
     Highlight.configure({ multicolor: true }),
     RawHtml,
+    Callout,
   ], []);
 
   const extensionsEn = React.useMemo(() => [
@@ -119,6 +121,7 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
     Underline,
     Highlight.configure({ multicolor: true }),
     RawHtml,
+    Callout,
   ], []);
 
   const editorId = useEditor({

@@ -1,25 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { setToken, getToken } from "@/utils/auth";
+import { useState } from "react";
+import { setToken } from "@/utils/auth";
 import { adminLogin } from "@/lib/api/admin";
 import { Icon } from "@iconify/react";
 import { alertError } from "@/lib/alert";
 
 export default function LoginClient() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  useEffect(() => {
-    // If already logged in, redirect to dashboard
-    if (getToken()) {
-      router.push("/admin/dashboard");
-    }
-  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,9 +22,11 @@ export default function LoginClient() {
       const responseBody = await adminLogin({ email, password });
 
       if (responseBody.token) {
-        setToken(responseBody.token);
-        router.push("/admin/dashboard");
-      }
+          setToken(responseBody.token);
+          // Use window.location.href for full page navigation after auth
+          // This avoids race conditions with Next.js client-side router during login transition
+          window.location.href = "/admin/dashboard";
+        }
     } catch (error: any) {
       console.error("Login error:", error);
       await alertError(error.message || "Invalid email or password");

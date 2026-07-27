@@ -150,6 +150,21 @@ export default function BlogEditor({
               className="hidden"
             />
             <div className="border-4 border-black bg-white min-h-[300px]">
+              <style>{`
+                .ProseMirror div.callout {
+                  position: relative !important;
+                }
+                .ProseMirror div.callout::before {
+                  content: '';
+                  position: absolute;
+                  left: 0;
+                  top: 0.65em;
+                  bottom: 0.65em;
+                  width: 2px;
+                  background: #d4d4d8;
+                  border-radius: 2px;
+                }
+              `}</style>
               <EditorContent editor={editorId} />
             </div>
           </div>
@@ -169,6 +184,21 @@ export default function BlogEditor({
               className="hidden"
             />
             <div className="border-4 border-black bg-white min-h-[300px]">
+              <style>{`
+                .ProseMirror div.callout {
+                  position: relative !important;
+                }
+                .ProseMirror div.callout::before {
+                  content: '';
+                  position: absolute;
+                  left: 0;
+                  top: 0.65em;
+                  bottom: 0.65em;
+                  width: 2px;
+                  background: #d4d4d8;
+                  border-radius: 2px;
+                }
+              `}</style>
               <EditorContent editor={editorEn} />
             </div>
           </div>

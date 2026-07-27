@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "Profile API",
-        "description": "API untuk Data Diri & Social Media Links.",
+        "title": "About Page API",
+        "description": "API untuk mengelola konten halaman About (/about). Konten disimpan di database sebagai HTML (dari Tiptap editor), memungkinkan admin mengedit halaman About tanpa mengubah kode.\n\nStruktur: Singleton — hanya ada 1 row dalam tabel `about_pages`.\n\nCatatan: Saat content bernilai null, halaman About tidak akan menampilkan konten apapun (halaman kosong menunggu admin mengisi).",
         "version": "1.0.0"
     },
     "servers": [
@@ -17,75 +17,76 @@
                 "scheme": "bearer",
                 "bearerFormat": "JWT"
             }
+        },
+        "schemas": {
+            "AboutPage": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Konten HTML dari Tiptap editor. Bisa null jika belum diisi admin.",
+                        "example": "<h2>About Me</h2><p>Hello, I am Abdian...</p>"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-07-27T00:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-07-27T10:00:00.000000Z"
+                    }
+                }
+            }
         }
     },
     "paths": {
-        "/api/profile": {
+        "/api/about-page": {
             "get": {
-                "summary": "Get Full Profile & Socials (\ud83c\udf0d Global/Public)",
-                "description": "Mengambil object 'about' (data diri) DAN array 'social_media' (kontak) sekaligus.",
+                "summary": "Get About Page Content (🌍 Global/Public)",
+                "description": "Mengembalikan konten halaman About. Jika content bernilai null (belum diatur admin), frontend akan melakukan fallback ke konten hardcoded.\n\nResponse: `{ data: AboutPage | null, message: string }`",
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "Success - About page content",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "about": {
-                                            "type": "object",
-                                            "description": "Data Profile Singleton"
+                                        "data": {
+                                            "$ref": "#/components/schemas/AboutPage"
                                         },
-                                        "social_media": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object"
-                                            },
-                                            "description": "List semua sosmed dari tabel contacts"
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Pesan tambahan (misal: 'About page has not been set up yet.')",
+                                            "nullable": true
                                         }
                                     }
                                 },
                                 "example": {
-                                    "about": {
+                                    "data": {
                                         "id": 1,
-                                        "name": "Abdian",
-                                        "job_title": "Fullstack Developer (Laravel & Vue)",
-                                        "about_description": "Saya adalah pengembang web yang berfokus pada backend...",
-                                        "is_available_for_work": true,
-                                        "photo_path": "profile/my-photo.jpg",
-                                        "cv_path": "cv/my-cv-2025.pdf",
-                                        "show_featured_projects_on_home": true,
-                                        "show_featured_certificates_on_home": true,
-                                        "show_experiences_on_home": true,
-                                        "show_tech_on_home": true,
-                                        "created_at": "2025-01-01T00:00:00.000000Z",
-                                        "updated_at": "2025-02-01T10:00:00.000000Z"
-                                    },
-                                    "social_media": [
-                                        {
-                                            "id": 1,
-                                            "platform_name": "GitHub",
-                                            "url": "https://github.com/abdian",
-                                            "icon_path": "contacts/github-icon.svg",
-                                            "created_at": "..."
-                                        },
-                                        {
-                                            "id": 2,
-                                            "platform_name": "LinkedIn",
-                                            "url": "https://linkedin.com/in/abdian",
-                                            "icon_path": "contacts/linkedin-icon.svg",
-                                            "created_at": "..."
-                                        }
-                                    ]
+                                        "content": "<h2>About Me</h2><p>I am a fullstack developer...</p>",
+                                        "created_at": "2026-07-27T00:00:00.000000Z",
+                                        "updated_at": "2026-07-27T10:00:00.000000Z"
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            },
-            "post": {
-                "summary": "Save/Update Profile (\ud83d\udd12 Admin Only)",
-                "description": "Satu endpoint untuk Membuat ATAU Mengupdate data diri (Singleton). Menggunakan POST agar support upload file (Multipart).",
+            }
+        },
+        "/api/admin/about-page": {
+            "put": {
+                "summary": "Update About Page Content (🔒 Admin Only)",
+                "description": "Menyimpan atau memperbarui konten halaman About. Endpoint ini bersifat upsert — jika belum ada data, akan dibuat; jika sudah ada, akan diupdate.\n\nContent berisi HTML yang dihasilkan oleh Tiptap editor (termasuk callout block, code blocks, dll).",
                 "security": [
                     {
                         "bearerAuth": []
@@ -94,93 +95,16 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "type": "object",
+                                "required": ["content"],
                                 "properties": {
-                                    "name": {
+                                    "content": {
                                         "type": "string",
-                                        "example": "Abdian Update"
-                                    },
-                                    "job_title": {
-                                        "type": "string",
-                                        "example": "Senior Backend"
-                                    },
-                                    "about_description": {
-                                        "type": "string",
-                                        "example": "Deskripsi baru..."
-                                    },
-                                    "photo": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "description": "File gambar (jpg, png)"
-                                    },
-                                    "cv": {
-                                        "type": "string",
-                                        "format": "binary",
-                                        "description": "File dokumen (pdf)"
-                                    },
-                                    "is_available_for_work": {
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "hidden_skill_categories": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "description": "Array of skill categories to hide on home",
-                                        "example": [
-                                            "Frontend",
-                                            "Backend"
-                                        ]
-                                    },
-                                    "default_skill_category": {
-                                        "type": "string",
-                                        "description": "Default category to show on Home Tech section",
-                                        "example": "Frontend"
-                                    },
-                                    "skill_categories_order": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "description": "Custom order of skill categories on the Home Tech section",
-                                        "example": [
-                                            "Frontend",
-                                            "Backend",
-                                            "UI/UX"
-                                        ]
-                                    },
-                                    "skill_categories_info": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "description": "Tooltips/notes for skill categories",
-                                        "example": {
-                                            "Frontend": "My frontend stack"
-                                        }
-                                    },
-                                    "show_featured_projects_on_home": {
-                                        "type": "boolean",
-                                        "example": true,
-                                        "description": "Toggle visibility of Featured Projects on Homepage"
-                                    },
-                                    "show_featured_certificates_on_home": {
-                                        "type": "boolean",
-                                        "example": true,
-                                        "description": "Toggle visibility of Featured Certificates on Homepage"
-                                    },
-                                    "show_experiences_on_home": {
-                                        "type": "boolean",
-                                        "example": true,
-                                        "description": "Toggle visibility of Experiences on Homepage"
-                                    },
-                                    "show_tech_on_home": {
-                                        "type": "boolean",
-                                        "example": true,
-                                        "description": "Toggle visibility of Tech Stack on Homepage"
+                                        "nullable": true,
+                                        "description": "Konten HTML untuk halaman About. Bisa dikosongkan (null atau empty string).",
+                                        "example": "<h2>About Me</h2><p>I am a fullstack developer with 5 years of experience...</p><blockquote class=\"callout\">Note: This is a callout</blockquote>"
                                     }
                                 }
                             }
@@ -189,28 +113,35 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Profile Saved/Updated Successfully",
+                        "description": "About page updated successfully",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "About page updated successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/AboutPage"
+                                        }
+                                    }
+                                },
                                 "example": {
-                                    "message": "Profile updated",
+                                    "message": "About page updated successfully.",
                                     "data": {
                                         "id": 1,
-                                        "name": "Abdian Update",
-                                        "job_title": "Senior Backend",
-                                        "about_description": "Deskripsi baru...",
-                                        "is_available_for_work": true,
-                                        "photo_path": "profile/hashname.jpg",
-                                        "cv_path": "cv/hashname.pdf",
-                                        "show_featured_projects_on_home": true,
-                                        "show_featured_certificates_on_home": true,
-                                        "show_experiences_on_home": true,
-                                        "show_tech_on_home": true,
-                                        "updated_at": "2025-02-08T10:00:00.000000Z"
+                                        "content": "<h2>About Me</h2><p>Updated content...</p>",
+                                        "created_at": "2026-07-27T00:00:00.000000Z",
+                                        "updated_at": "2026-07-27T11:00:00.000000Z"
                                     }
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthenticated - No valid Bearer token"
                     },
                     "422": {
                         "description": "Validation Error",
@@ -219,11 +150,8 @@
                                 "example": {
                                     "message": "The given data was invalid.",
                                     "errors": {
-                                        "photo": [
-                                            "The photo field must be an image."
-                                        ],
-                                        "cv": [
-                                            "The cv field must be a file of type: pdf."
+                                        "content": [
+                                            "The content field must be a string."
                                         ]
                                     }
                                 }
