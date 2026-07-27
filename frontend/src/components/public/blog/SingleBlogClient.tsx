@@ -144,7 +144,7 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
         .prose a:hover { text-decoration-color: #171717 !important; }
         .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
         .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; cursor: pointer; }
-        .prose h2, .prose h3 { position: relative; }
+        .prose h2, .prose h3 { position: relative;  font-weight:normal; }
         .prose h2::before, .prose h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
         .prose h2:hover::before, .prose h3:hover::before { opacity: 1; }
         .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
@@ -154,7 +154,7 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
 
       {/* Desktop ToC Sidebar */}
       <div
-        className={`hidden lg:block fixed left-0 top-0 w-[calc(50%-24rem)] h-full z-40 pointer-events-auto transition-all duration-300 ease-in-out ${
+        className={`hidden lg:block fixed left-0 bottom-40 w-[calc(50%-24rem)] h-full z-40 pointer-events-auto transition-all duration-300 ease-in-out ${
           showToc ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
         }`}
         onMouseEnter={onMouseEnter}

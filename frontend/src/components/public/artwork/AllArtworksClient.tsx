@@ -50,7 +50,7 @@ export default function AllArtworksClient({ initialArtworks }: AllArtworksClient
   const closeModal = () => setSelectedImage(null);
 
   return (
-    <div className="pt-28 md:pt-36 pb-16 min-h-screen">
+    <div className="pt-20 md:pt-32 pb-16 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 pb-4 md:px-16 lg:px-7">
         {artworks.length === 0 && (
           <div className="text-center font-sans text-neutral-500 py-12">No artworks found.</div>

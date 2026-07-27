@@ -7,7 +7,7 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     const checkScroll = () => {
-      setIsVisible(window.scrollY > 300);
+      setIsVisible(window.scrollY > 100);
     };
 
     window.addEventListener("scroll", checkScroll);

@@ -49,14 +49,14 @@ export default function Navbar() {
     // { name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" },
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
-    { name: "Contacts", href: "/contacts", icon: "mdi:email-outline" },
+    { name: "Github", href: "/contacts", icon: "mingcute:github-line" },
   ];
 
   // Desktop nav items — icon only
   const iconLinks = [
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
-    { name: "Contacts", href: "/contacts", icon: "mdi:email-outline" },
+    { name: "Github", href: "https://github.com/gilangabdian", icon: "mingcute:github-line" },
   ];
 
   // ─── SVG mask helper ───────────────────────────────

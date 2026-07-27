@@ -157,14 +157,14 @@ export default function Hero({ profile }: HeroProps) {
           </div>
 
           <div className="hero-content flex gap-3 pt-1 w-full md:w-auto">
-            {profile.about.is_available_for_work && (
+            {/* {profile.about.is_available_for_work && (
               <a
                 href="mailto:qbdian@gmail.com?subject=Hi Gilang Abdian Anggara, I want to hire you!"
                 className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black px-0 md:px-5 py-2 rounded-xl border border-transparent font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.23)] hover:bg-black/90 dark:hover:bg-gray-200 active:scale-95 transition-all">
                 <Icon icon="mdi:handshake-outline" className="w-4 h-4 md:w-5 md:h-5" />
                 <span>Hire Me</span>
               </a>
-            )}
+            )} */}
 
             <a
               href={profile.about.cv_url}
@@ -174,7 +174,7 @@ export default function Hero({ profile }: HeroProps) {
                 profile.about.is_available_for_work ? "flex-1 md:flex-none px-0 md:px-5" : "flex-none px-6"
               } flex items-center justify-center gap-2 bg-white text-black dark:bg-dark-bg dark:text-white py-2 rounded-xl border border-black/20 dark:border-white/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] dark:shadow-[0_4px_14px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all`}>
               <Icon icon="mdi:file-download-outline" className="w-4 h-4 md:w-5 md:h-5" />
-              <span>Download CV</span>
+              <span>View Resume</span>
             </a>
           </div>
 

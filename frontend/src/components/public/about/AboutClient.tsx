@@ -13,24 +13,49 @@ interface AboutClientProps {
 export default function AboutClient({ initialProfile }: AboutClientProps) {
   const [profile] = useState<Profile | null>(initialProfile);
 
+  const currentDate: Date = new Date();
+
+  const formattedDate: string = currentDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
   useEffect(() => {
     NProgress.done();
   }, []);
 
   return (
-    <div className="min-h-screen mb-40">
-      <section className="-mt-20 md:-mt-12 min-h-screen flex justify-center py-24 px-4 sm:px-6 font-sans text-black dark:text-white">
+    <div className="min-h-screen">
+      <section className="-mt-12 md:-mt-2 min-h-screen flex justify-center py-24 px-4 sm:px-6 font-sans text-black dark:text-white">
         <div className="container max-w-[650px] w-full flex flex-col space-y-12 mt-10 mx-auto">
           {/* About Section */}
           <div className="flex flex-col space-y-4">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-wide text-black dark:text-white">Gilang Abdian</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-wide text-black dark:text-white">
+              Please introduce yourself
+            </h1>
+            <span className="text-sm md:text-base text-neutral-500 dark:text-neutral-500">
+              Last updated on {formattedDate}
+            </span>
+            <span className="flex my-6 items-center border-l-4 border-neutral-300 dark:border-neutral-700 pl-4 py-1 text-sm md:text-base text-neutral-400 dark:text-neutral-500">
+              Please note, this is going to be very long, so I wouldn't be surprised if you get bored. Feel free to move
+              on to another page if you wish.
+            </span>
 
-            <div className="space-y-6 text-sm md:text-base text-neutral-700 dark:text-neutral-400 font-normal leading-relaxed">
+            <div className="space-y-6 mt-4 text-sm md:text-base text-neutral-700 dark:text-neutral-400 font-normal leading-relaxed">
               <p>
-                Hello, I'm Gilang Abdian, based in Indonesia. I began learning programming in 2024. Previously, I had
-                attended university but decided to switch majors to pursue a field that I found interesting. Since then
-                (2024), I have been immersing myself in programming—learning everything from algorithms and
-                computational thinking to various programming languages, and more.
+                Hello, I am Gilang Abdian, based in Indonesia. I began learning programming by enrolling in the
+                Informatics Engineering Diploma program at Universitas Sebelas Maret in 2024, and I am currently in my
+                final year (time flies so fast). I've been to college before, but I decided to change majors because I
+                felt like I'd chosen the wrong major in the past and decided to pursue a field I found interesting. (I
+                hope I'll be more careful in making decisions in the future). Since then, I’ve met many new friends who
+                are younger than me—something that doesn't bother me, even though people say I started late (I ignore
+                such comments because I’m the one living my life, not them). What does bother me, however, is feeling a
+                bit envious of friends who began learning programming back in vocational or high school, whereas I’m
+                just getting started. Therefore, I felt I needed to study programming harder and not just rely on the
+                lecturer's material. I had to step out of my comfort zone and start learning independently, learning
+                various things, from algorithms and computational thinking to various programming languages, and so on.
+                While still studying the material provided by the lecturer.
               </p>
               <p>
                 At first, I felt overwhelmed by all the new concepts. To make matters more challenging, most
@@ -120,7 +145,7 @@ export default function AboutClient({ initialProfile }: AboutClientProps) {
                 <Link
                   href="/projects/simple"
                   className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  simple projects I worked on when I first started learning programming
+                  simple projects or experiment I worked on when I first started learning programming
                 </Link>{" "}
                 (mostly using HTML, CSS, and JavaScript, although some also used the React and Vue.js frameworks).
               </p>
@@ -146,16 +171,8 @@ export default function AboutClient({ initialProfile }: AboutClientProps) {
               </p>
 
               <p>Besides that, I can play the guitar a little.</p>
-              <p>
-                If you want to reach me up, you can go to{" "}
-                <Link
-                  href="/contacts"
-                  className="underline text-black dark:text-white decoration-black/20 hover:decoration-black dark:decoration-white/20 dark:hover:decoration-white underline-offset-4 transition-all duration-300">
-                  this page
-                </Link>
-                .
-              </p>
-              <p className="mt-32">Thank you for reading this boring introduction of mine!</p>
+
+              <p className="mt-24">Thank you for reading this boring introduction of mine!</p>
             </div>
           </div>
         </div>
