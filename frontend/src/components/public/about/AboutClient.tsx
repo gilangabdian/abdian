@@ -136,7 +136,13 @@ export default function AboutClient({ initialProfile }: AboutClientProps) {
                 also keep up with developments in other technology fields, though not as deeply as front-end
                 development.
               </p>
-              <p></p>
+              <p>
+                Besides deepening my knowledge in the field that I am interested in, I am currently also trying to
+                contribute to open source projects because I think it would be very exciting to be able to collaborate
+                with other people that we have never met before and it is also an opportunity to learn from great people
+                around the world.I also realize that exciting doesn't mean easy, but at least I'll try so I can provide
+                a little help to others around the world through open source projects.
+              </p>
               <p>
                 In case you are interested, here are some{" "}
                 <Link
