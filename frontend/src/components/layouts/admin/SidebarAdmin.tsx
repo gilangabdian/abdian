@@ -24,6 +24,7 @@ export default function SidebarAdmin({
   const menuItems = [
     { name: "Dashboard", icon: "lucide:layout-dashboard", route: "/admin/dashboard" },
     { name: "Profile", icon: "lucide:user", route: "/admin/profile" },
+    { name: "About", icon: "lucide:info", route: "/admin/about" },
     { name: "Experiences", icon: "lucide:briefcase", route: "/admin/experiences" },
     { name: "Projects", icon: "lucide:folder-kanban", route: "/admin/projects" },
     { name: "Certificates", icon: "lucide:award", route: "/admin/certificates" },
