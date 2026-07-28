@@ -263,9 +263,9 @@ export default function AboutFormClient() {
                   content: '';
                   position: absolute;
                   left: 0;
-                  top: 0.65em;
-                  bottom: 0.65em;
-                  width: 2px;
+                  top: 1.5em;
+                  bottom: 1.5em;
+                  width: 4px;
                   background: #d4d4d8;
                   border-radius: 2px;
                 }
@@ -342,9 +342,9 @@ export default function AboutFormClient() {
                     content: '';
                     position: absolute;
                     left: 0;
-                    top: 0.65em;
-                    bottom: 0.65em;
-                    width: 2px;
+                    top: 1.5em;
+                    bottom: 1.5em;
+                    width: 4px;
                     background: #d4d4d8;
                     border-radius: 2px;
                   }

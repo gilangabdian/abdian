@@ -6,6 +6,7 @@ import "nprogress/nprogress.css";
 import gsap from "gsap";
 import PhotoControls from "./PhotoControls";
 import { Photo } from "@/types";
+import { createPortal } from "react-dom";
 
 interface AllPhotosClientProps {
   initialPhotos: Photo[];
@@ -88,13 +89,15 @@ export default function AllPhotosClient({ initialPhotos }: AllPhotosClientProps)
         )}
       </div>
 
-      {selectedImage && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
-          onClick={closeModal}>
-          <img src={selectedImage} className="w-full h-full object-contain" alt="Enlarged Photo" />
-        </div>
-      )}
+      {selectedImage &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+            onClick={closeModal}>
+            <img src={selectedImage} className="w-full h-full object-contain" alt="Enlarged Photo" />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

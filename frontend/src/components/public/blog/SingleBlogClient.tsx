@@ -12,6 +12,7 @@ import { injectHeadingIds } from "@/lib/heading-utils";
 
 interface SingleBlogClientProps {
   initialBlog: Blog;
+  initialLang: string;
 }
 
 const BlogContent = React.memo(
@@ -72,7 +73,7 @@ const BlogContent = React.memo(
       <div
         ref={contentRef}
         suppressHydrationWarning={true}
-        className="prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg"
+        className="prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
         dangerouslySetInnerHTML={{ __html: processedHtml }}
       />
     );
@@ -81,9 +82,9 @@ const BlogContent = React.memo(
 
 BlogContent.displayName = "BlogContent";
 
-export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps) {
+export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlogClientProps) {
   const [blog] = useState<Blog>(initialBlog);
-  const [currentLang, setCurrentLang] = useState("id");
+  const [currentLang, setCurrentLang] = useState(initialLang);
   const [toc, setToc] = useState<{ id: string; text: string; level: string }[]>([]);
   const [showToc, setShowToc] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -92,11 +93,16 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
   const articleRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    NProgress.done();
+  }, []);
+
+  // Sync language preference from localStorage (set by AllBlogsClient toggle)
+  // Overrides the server-provided initialLang with the actual user preference
+  useEffect(() => {
     const savedLang = localStorage.getItem("blogLang");
     if (savedLang) {
       setCurrentLang(savedLang);
     }
-    NProgress.done();
   }, []);
 
   // On mount, check if cursor is already over the content area
@@ -133,6 +139,30 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
   return (
     <div className="pt-20 pb-20 min-h-screen bg-white dark:bg-black text-neutral-800 dark:text-neutral-300 font-[Inter]">
       <style>{`
+      div.callout {
+          position: relative !important;
+        }
+        div.callout::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top:1.5em;
+          bottom: 1.5em;
+          width: 4px;
+          background: #d4d4d8;
+          border-radius: 2px;
+        }
+        .dark div.callout::before {
+          background: #404040;
+        }
+        /* Links: underline only on hover */
+        .prose a {
+          text-decoration: none !important;
+        }
+        .prose a:hover {
+          text-decoration: underline !important;
+          text-decoration-color: inherit !important;
+        }
         .prose p:empty::before { content: "\\00a0"; display: inline-block; }
         .prose p { color: #52525b !important; font-size: 16px; line-height: 28px }
         .dark .prose p { color: #a1a1aa !important; }
@@ -140,7 +170,7 @@ export default function SingleBlogClient({ initialBlog }: SingleBlogClientProps)
         .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
         .prose a:hover { text-decoration-color: #171717 !important; }
         .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
-        .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; cursor: pointer; }
+        .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; }
         .prose h2, .prose h3 { position: relative;  font-weight:normal; }
         .prose h2::before, .prose h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
         .prose h2:hover::before, .prose h3:hover::before { opacity: 1; }

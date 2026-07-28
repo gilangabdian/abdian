@@ -32,14 +32,32 @@
                                     {
                                         "id": 1,
                                         "title": "Belajar Laravel Vue",
+                                        "title_en": "Learning Laravel Vue",
                                         "slug": "belajar-laravel-vue",
-                                        "content": "<p>Halo semua</p>",
                                         "read_time": 2,
-                                        "is_published": true,
+                                        "is_external": false,
+                                        "external_url": null,
                                         "created_at": "2026-06-15T00:00:00.000000Z",
                                         "updated_at": "2026-06-15T00:00:00.000000Z"
                                     }
-                                ]
+                                ],
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": { "type": "integer" },
+                                            "title": { "type": "string" },
+                                            "title_en": { "type": "string", "nullable": true },
+                                            "slug": { "type": "string" },
+                                            "read_time": { "type": "integer" },
+                                            "is_external": { "type": "boolean" },
+                                            "external_url": { "type": "string", "nullable": true },
+                                            "created_at": { "type": "string", "format": "date-time" },
+                                            "updated_at": { "type": "string", "format": "date-time" }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

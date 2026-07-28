@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateAboutPageRequest;
 use App\Models\AboutPage;
+use App\Services\RevalidationService;
 
 class AboutPageController extends Controller
 {
@@ -45,6 +46,8 @@ class AboutPageController extends Controller
         $about->content = $validated['content'] ?? null;
         $about->save();
         $about->refresh();
+
+        RevalidationService::tag('about-page');
 
         return response()->json([
             'message' => 'About page updated successfully.',

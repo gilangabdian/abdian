@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Services\RevalidationService;
 
 class BlogController extends Controller
 {
@@ -18,8 +19,11 @@ class BlogController extends Controller
     // PUBLIK
     public function indexPublic()
     {
-        // Hanya yang published
-        $blogs = Blog::where('is_published', true)->latest()->get();
+        // Hanya yang published, select kolom yang diperlukan untuk list view
+        // (content/content_en TIDAK diambil untuk menjaga response < 2MB cache limit)
+        $blogs = Blog::where('is_published', true)
+            ->latest()
+            ->get(['id', 'title', 'title_en', 'slug', 'read_time', 'is_external', 'external_url', 'created_at', 'updated_at']);
         return response()->json($blogs);
     }
 
@@ -47,6 +51,8 @@ class BlogController extends Controller
         $data = $request->validated();
         $blog = Blog::create($data);
 
+        RevalidationService::tag('blogs');
+
         return response()->json([
             'message' => 'Blog created successfully',
             'data' => $blog
@@ -60,6 +66,8 @@ class BlogController extends Controller
         
         $blog->update($data);
 
+        RevalidationService::tag('blogs');
+
         return response()->json([
             'message' => 'Blog updated successfully',
             'data' => $blog
@@ -70,6 +78,8 @@ class BlogController extends Controller
     {
         $blog = Blog::findOrFail($id);
         $blog->delete();
+
+        RevalidationService::tag('blogs');
 
         return response()->json([
             'message' => 'Blog deleted successfully'

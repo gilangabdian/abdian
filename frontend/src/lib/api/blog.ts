@@ -21,7 +21,7 @@ export const getAllBlogs = async (queryParams: Record<string, string> = {}): Pro
 export const getBlogBySlug = async (slug: string): Promise<Blog | null> => {
   try {
     const res = await fetch(`${API_URL}/blogs/${slug}`, {
-      next: { revalidate: 60, tags: ['blogs', `blog-${slug}`] },
+      cache: 'no-store',
     });
     if (!res.ok) return null;
     const responseData = await res.json();

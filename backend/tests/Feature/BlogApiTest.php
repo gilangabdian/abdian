@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Blog;
@@ -187,5 +188,133 @@ class BlogApiTest extends TestCase
         // Check file exists in folder
         $files = Storage::disk('public')->files('blogs_inline');
         $this->assertCount(1, $files);
+    }
+
+    public function test_revalidation_is_called_on_blog_create()
+    {
+        Http::fake([
+            '*/api/revalidate' => Http::response(['revalidated' => true], 200),
+        ]);
+
+        config(['services.nextjs.base_url' => 'http://localhost:5173']);
+        config(['services.nextjs.revalidate_secret' => 'test-secret']);
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+                         ->postJson('/api/blogs', [
+                             'title' => 'Revalidation Test',
+                             'content' => 'Testing revalidation trigger on create',
+                             'is_published' => true,
+                         ]);
+
+        $response->assertStatus(201);
+
+        Http::assertSent(function (\Illuminate\Http\Client\Request $request) {
+            return str_contains($request->url(), '/api/revalidate')
+                && $request['tag'] === 'blogs'
+                && $request['secret'] === 'test-secret';
+        });
+    }
+
+    public function test_revalidation_is_called_on_blog_update()
+    {
+        Http::fake([
+            '*/api/revalidate' => Http::response(['revalidated' => true], 200),
+        ]);
+
+        config(['services.nextjs.base_url' => 'http://localhost:5173']);
+        config(['services.nextjs.revalidate_secret' => 'test-secret']);
+
+        $blog = Blog::create(['title' => 'Original', 'content' => 'Original Content']);
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+                         ->putJson('/api/blogs/' . $blog->id, [
+                             'title' => 'Updated',
+                             'content' => 'Updated Content',
+                         ]);
+
+        $response->assertStatus(200);
+
+        Http::assertSent(function (\Illuminate\Http\Client\Request $request) {
+            return str_contains($request->url(), '/api/revalidate')
+                && $request['tag'] === 'blogs';
+        });
+    }
+
+    public function test_revalidation_is_called_on_blog_delete()
+    {
+        Http::fake([
+            '*/api/revalidate' => Http::response(['revalidated' => true], 200),
+        ]);
+
+        config(['services.nextjs.base_url' => 'http://localhost:5173']);
+        config(['services.nextjs.revalidate_secret' => 'test-secret']);
+
+        $blog = Blog::create(['title' => 'To Delete Reval', 'content' => 'Content']);
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+                         ->deleteJson('/api/blogs/' . $blog->id);
+
+        $response->assertStatus(200);
+
+        Http::assertSent(function (\Illuminate\Http\Client\Request $request) {
+            return str_contains($request->url(), '/api/revalidate')
+                && $request['tag'] === 'blogs';
+        });
+    }
+
+    public function test_revalidation_does_not_block_response_if_nextjs_unreachable()
+    {
+        // When Next.js is not running, revalidation silently fails and doesn't block CRUD
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+                         ->postJson('/api/blogs', [
+                             'title' => 'Unreachable Next Test',
+                             'content' => 'Content',
+                             'is_published' => true,
+                         ]);
+
+        $response->assertStatus(201);
+    }
+
+    /** @test */
+    public function public_blog_list_response_has_expected_columns()
+    {
+        // Create a published blog with all fields populated
+        Blog::create([
+            'title' => 'Test Blog',
+            'title_en' => 'Test Blog EN',
+            'content' => '<p>Content</p>',
+            'content_en' => '<p>Content EN</p>',
+            'is_published' => true,
+            'is_external' => false,
+            'read_time' => 5,
+        ]);
+
+        $response = $this->getJson('/api/blogs');
+
+        $response->assertStatus(200)
+                 ->assertJsonCount(1);
+
+        $blog = $response->json()[0];
+
+        // Must have these columns (list view only - content/content_en excluded for cache size)
+        $this->assertArrayHasKey('id', $blog);
+        $this->assertArrayHasKey('title', $blog);
+        $this->assertArrayHasKey('title_en', $blog);
+        $this->assertArrayHasKey('slug', $blog);
+        $this->assertArrayHasKey('read_time', $blog);
+        $this->assertArrayHasKey('is_external', $blog);
+        $this->assertArrayHasKey('external_url', $blog);
+        $this->assertArrayHasKey('created_at', $blog);
+
+        // Must NOT have content/content_en in list response
+        $this->assertArrayNotHasKey('content', $blog, 'content should not be in list response to keep size < 2MB');
+        $this->assertArrayNotHasKey('content_en', $blog, 'content_en should not be in list response to keep size < 2MB');
+
+        // Verify no unexpected columns
+        $allowedKeys = ['id', 'title', 'title_en', 'slug', 'read_time', 'is_external', 'external_url', 'created_at', 'updated_at'];
+        foreach ($blog as $key => $value) {
+            $this->assertContains($key, $allowedKeys, "Unexpected key '{$key}' found in blog list response");
+        }
     }
 }

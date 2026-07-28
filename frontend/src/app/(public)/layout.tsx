@@ -25,9 +25,9 @@ export default function PublicLayout({
           href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
           rel="stylesheet"
         />
-        
+
         <GenerativeArtEffect />
-        <main className="flex-grow relative z-10">{children}</main>
+        <main className="flex-grow relative ">{children}</main>
         <div className="relative z-10">
           <Footer />
         </div>

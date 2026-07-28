@@ -22,7 +22,7 @@ interface AboutClientProps {
 function injectDateAfterFirstH2(html: string, formattedDate: string): string {
   if (!html) return html;
 
-  const dateHtml = `<span class="block text-sm md:text-base text-neutral-500 dark:text-neutral-500 mt-3 mb-4">Last updated on ${formattedDate}</span>`;
+  const dateHtml = `<span class="block text-sm md:text-base text-neutral-500 dark:text-neutral-500 -mt-4 mb-4">Last updated on ${formattedDate}</span>`;
 
   // Find the first closing heading tag (h1-h3) and inject date after it
   const headingMatch = html.match(/<\/(h[1-3])>/i);
@@ -95,7 +95,7 @@ const AboutContent = React.memo(
       <div
         ref={contentRef}
         suppressHydrationWarning={true}
-        className="prose prose-neutral dark:text-neutral-300 max-w-none mt-4 text-sm md:text-base leading-relaxed prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-black dark:prose-headings:text-white prose-a:no-underline prose-a:text-black dark:prose-a:text-white hover:prose-a:underline prose-a:decoration-black/20 dark:prose-a:decoration-white/20 hover:prose-a:decoration-black dark:hover:prose-a:decoration-white prose-a:underline-offset-4 prose-a:transition-all prose-a:duration-300 prose-img:rounded-lg prose-img:my-4 prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-neutral-800 dark:prose-code:text-neutral-200 prose-blockquote:border-l-4 prose-blockquote:border-neutral-300 dark:prose-blockquote:border-neutral-700 prose-blockquote:pl-4 prose-blockquote:py-1 prose-blockquote:text-neutral-400 dark:prose-blockquote:text-neutral-500 prose-blockquote:not-italic prose-blockquote:my-6 [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
+        className="prose prose-neutral dark:text-neutral-300 max-w-none mt-4 text-sm md:text-base leading-relaxed prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-black dark:prose-headings:text-white prose-a:no-underline prose-a:text-black dark:prose-a:text-white hover:prose-a:underline prose-a:decoration-black/20 dark:prose-a:decoration-white/20 hover:prose-a:decoration-black dark:hover:prose-a:decoration-white prose-a:underline-offset-4 prose-a:transition-all prose-a:duration-300 prose-img:rounded-lg prose-img:my-4 prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-neutral-800 dark:prose-code:text-neutral-200 prose-blockquote:border-l-4 prose-blockquote:border-neutral-300 dark:prose-blockquote:border-neutral-700 prose-blockquote:pl-4 prose-blockquote:py-1 prose-blockquote:text-neutral-400 dark:prose-blockquote:text-neutral-500 prose-blockquote:not-italic prose-blockquote:my-6 [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic [&_p:empty]:min-h-[1.5em] [&_p:empty]:block"
         dangerouslySetInnerHTML={{
           __html: processedHtml,
         }}
@@ -137,12 +137,9 @@ export default function AboutClient({ initialProfile, aboutContent, aboutUpdated
     NProgress.done();
   }, []);
 
-  const handleTocExtracted = useCallback(
-    (items: { id: string; text: string; level: string }[]) => {
-      setToc(items);
-    },
-    [],
-  );
+  const handleTocExtracted = useCallback((items: { id: string; text: string; level: string }[]) => {
+    setToc(items);
+  }, []);
 
   const handleImageClick = useCallback((url: string) => {
     setImageZoom(url);
@@ -158,9 +155,9 @@ export default function AboutClient({ initialProfile, aboutContent, aboutUpdated
           content: '';
           position: absolute;
           left: 0;
-          top: 0.65em;
-          bottom: 0.65em;
-          width: 2px;
+          top:1.5em;
+          bottom: 1.5em;
+          width: 4px;
           background: #d4d4d8;
           border-radius: 2px;
         }
@@ -180,15 +177,9 @@ export default function AboutClient({ initialProfile, aboutContent, aboutUpdated
       {/* Image Zoom Modal */}
       {imageZoom && (
         <div
-          className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 cursor-zoom-out"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
           onClick={() => setImageZoom(null)}>
-          <Image
-            src={imageZoom}
-            alt="Zoomed content"
-            width={1200}
-            height={800}
-            className="max-w-full max-h-[90vh] object-contain rounded-lg"
-          />
+          <img src={imageZoom} alt="Zoomed content" className="w-full h-full object-contain" />
         </div>
       )}
 
