@@ -26,6 +26,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
     const newLang = e.target.checked ? "en" : "id";
     setCurrentLang(newLang);
     localStorage.setItem("blogLang", newLang);
+    document.cookie = `blogLang=${newLang}; path=/; max-age=31536000; SameSite=Lax`;
   };
 
   const groupedBlogs = useMemo(() => {

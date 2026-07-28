@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { cookies } from "next/headers";
 import { getBlogBySlug } from "@/lib/api/blog";
 import { notFound } from "next/navigation";
 import SingleBlogClient from "@/components/public/blog/SingleBlogClient";
@@ -34,5 +35,8 @@ export default async function SingleBlogPage({ params }: Props) {
     notFound();
   }
 
-  return <SingleBlogClient initialBlog={blog} />;
+  const cookieStore = await cookies();
+  const initialLang = cookieStore.get("blogLang")?.value || "id";
+
+  return <SingleBlogClient initialBlog={blog} initialLang={initialLang} />;
 }

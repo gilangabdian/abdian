@@ -25,10 +25,7 @@ export default function BlogPreview({
   handleSubmit,
   isSaving,
 }: BlogPreviewProps) {
-  const displayTitle =
-    activeTab === "id"
-      ? title || "Untitled Blog"
-      : title_en || "Untitled Blog (EN)";
+  const displayTitle = activeTab === "id" ? title || "Untitled Blog" : title_en || "Untitled Blog (EN)";
 
   const displayContent = activeTab === "id" ? content : content_en;
 
@@ -43,6 +40,30 @@ export default function BlogPreview({
   return (
     <div className="bg-white border-4 border-black p-6 md:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] space-y-8">
       <style>{`
+      div.callout {
+          position: relative !important;
+        }
+        div.callout::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top:1.5em;
+          bottom: 1.5em;
+          width: 4px;
+          background: #d4d4d8;
+          border-radius: 2px;
+        }
+        .dark div.callout::before {
+          background: #404040;
+        }
+        /* Links: underline only on hover */
+        .prose a {
+          text-decoration: none !important;
+        }
+        .prose a:hover {
+          text-decoration: underline !important;
+          text-decoration-color: inherit !important;
+        }
         .prose p:empty::before { content: "\\00a0"; display: inline-block; }
         .prose p { color: #52525b !important; }
         .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
@@ -60,31 +81,23 @@ export default function BlogPreview({
           type="button"
           onClick={() => setActiveTab("id")}
           className={`${
-            activeTab === "id"
-              ? "bg-black text-white"
-              : "bg-gray-200 text-black"
-          } px-4 py-2 font-bold font-mono border-2 border-black transition-colors`}
-        >
+            activeTab === "id" ? "bg-black text-white" : "bg-gray-200 text-black"
+          } px-4 py-2 font-bold font-mono border-2 border-black transition-colors`}>
           Bahasa Indonesia
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("en")}
           className={`${
-            activeTab === "en"
-              ? "bg-black text-white"
-              : "bg-gray-200 text-black"
-          } px-4 py-2 font-bold font-mono border-2 border-black transition-colors`}
-        >
+            activeTab === "en" ? "bg-black text-white" : "bg-gray-200 text-black"
+          } px-4 py-2 font-bold font-mono border-2 border-black transition-colors`}>
           English
         </button>
       </div>
 
       <article className="relative mt-8">
         <header className="mb-12">
-          <h1 className="text-3xl md:text-5xl font-medium leading-tight mb-4 text-black">
-            {displayTitle}
-          </h1>
+          <h1 className="text-3xl md:text-5xl font-medium leading-tight mb-4 text-black">{displayTitle}</h1>
           <div className="flex flex-wrap items-center gap-2 text-sm text-neutral-500">
             <span>
               {new Date().toLocaleDateString("en-US", {
@@ -99,7 +112,7 @@ export default function BlogPreview({
         </header>
 
         <div
-          className="prose prose-neutral prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black prose-a:text-neutral-600 hover:prose-a:text-black prose-a:transition-colors prose-img:rounded-lg prose-img:mx-auto"
+          className="prose prose-neutral prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black prose-a:text-neutral-600 hover:prose-a:text-black prose-a:transition-colors prose-img:rounded-lg prose-img:mx-auto [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
           dangerouslySetInnerHTML={{ __html: displayContent }}
         />
       </article>
@@ -108,16 +121,14 @@ export default function BlogPreview({
         <button
           type="button"
           onClick={() => setIsPreviewMode(false)}
-          className="bg-gray-200 text-black px-8 py-3 font-black tracking-widest uppercase border-4 border-black hover:bg-black hover:text-white transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-        >
+          className="bg-gray-200 text-black px-8 py-3 font-black tracking-widest uppercase border-4 border-black hover:bg-black hover:text-white transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
           Back to Edit
         </button>
         <button
           type="button"
           onClick={handleSubmit}
           disabled={isSaving}
-          className="bg-black text-white px-8 py-3 font-black tracking-widest uppercase border-4 border-black hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+          className="bg-black text-white px-8 py-3 font-black tracking-widest uppercase border-4 border-black hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed">
           {isSaving ? "Saving..." : "Save Blog"}
         </button>
       </div>

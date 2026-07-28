@@ -44,4 +44,9 @@ return [
         'webhook_url' => env('VERCEL_WEBHOOK_URL'),
     ],
 
+    'nextjs' => [
+        'base_url' => env('NEXTJS_BASE_URL', 'http://localhost:5173'),
+        'revalidate_secret' => env('NEXTJS_REVALIDATION_SECRET'),
+    ],
+
 ];

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import gsap from "gsap";
@@ -91,12 +92,13 @@ export default function AllArtworksClient({ initialArtworks }: AllArtworksClient
         )}
       </div>
 
-      {selectedImage && (
+      {selectedImage && createPortal(
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
           onClick={closeModal}>
           <img src={selectedImage} className="w-full h-full object-contain" alt="Enlarged Artwork" />
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

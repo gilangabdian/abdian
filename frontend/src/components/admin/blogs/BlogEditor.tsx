@@ -50,8 +50,7 @@ export default function BlogEditor({
           onClick={() => setActiveTab("id")}
           className={`${
             activeTab === "id" ? "bg-black text-white" : "bg-gray-200 text-black"
-          } px-4 py-2 font-bold font-mono border-2 border-black transition-colors`}
-        >
+          } px-4 py-2 font-bold font-mono border-2 border-black transition-colors`}>
           Bahasa Indonesia
         </button>
         <button
@@ -59,8 +58,7 @@ export default function BlogEditor({
           onClick={() => setActiveTab("en")}
           className={`${
             activeTab === "en" ? "bg-black text-white" : "bg-gray-200 text-black"
-          } px-4 py-2 font-bold font-mono border-2 border-black transition-colors`}
-        >
+          } px-4 py-2 font-bold font-mono border-2 border-black transition-colors`}>
           English (Optional)
         </button>
       </div>
@@ -104,13 +102,11 @@ export default function BlogEditor({
             <div
               className={`${
                 form.is_external ? "bg-black" : "bg-gray-300"
-              } block w-14 h-8 transition-colors border-2 border-black`}
-            ></div>
+              } block w-14 h-8 transition-colors border-2 border-black`}></div>
             <div
               className={`${
                 form.is_external ? "translate-x-6" : "translate-x-0"
-              } dot absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black`}
-            ></div>
+              } dot absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black`}></div>
           </div>
           <span className="font-bold font-mono">Link ke Artikel Luar (Medium/Dev.to)</span>
         </label>
@@ -134,7 +130,7 @@ export default function BlogEditor({
       {!form.is_external && (
         <div>
           <label className="block font-bold font-mono mb-2 uppercase text-sm">Content</label>
-          
+
           <div style={{ display: activeTab === "id" ? "block" : "none" }}>
             <BlogEditorToolbar
               editor={editorId}
@@ -158,9 +154,9 @@ export default function BlogEditor({
                   content: '';
                   position: absolute;
                   left: 0;
-                  top: 0.65em;
-                  bottom: 0.65em;
-                  width: 2px;
+                  top: 1.5em;
+                  bottom: 1.5em;
+                  width: 4px;
                   background: #d4d4d8;
                   border-radius: 2px;
                 }
@@ -192,9 +188,9 @@ export default function BlogEditor({
                   content: '';
                   position: absolute;
                   left: 0;
-                  top: 0.65em;
-                  bottom: 0.65em;
-                  width: 2px;
+                  top: 1.5em;
+                  bottom: 1.5em;
+                  width: 4px;
                   background: #d4d4d8;
                   border-radius: 2px;
                 }
@@ -218,24 +214,19 @@ export default function BlogEditor({
             <div
               className={`${
                 form.is_published ? "bg-black" : "bg-gray-300"
-              } block w-14 h-8 transition-colors border-2 border-black`}
-            ></div>
+              } block w-14 h-8 transition-colors border-2 border-black`}></div>
             <div
               className={`${
                 form.is_published ? "translate-x-6" : "translate-x-0"
-              } dot absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black`}
-            ></div>
+              } dot absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black`}></div>
           </div>
-          <span className="font-bold font-mono">
-            {form.is_published ? "Publish immediately" : "Save as Draft"}
-          </span>
+          <span className="font-bold font-mono">{form.is_published ? "Publish immediately" : "Save as Draft"}</span>
         </label>
 
         <button
           type="button"
           onClick={() => setIsPreviewMode(true)}
-          className="bg-black text-white px-8 py-3 font-black tracking-widest uppercase border-4 border-black hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-        >
+          className="bg-black text-white px-8 py-3 font-black tracking-widest uppercase border-4 border-black hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
           Preview Blog
         </button>
       </div>

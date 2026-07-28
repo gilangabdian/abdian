@@ -6,7 +6,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
  */
 export async function getAboutPage() {
   const response = await fetch(`${API_URL}/about-page`, {
-    next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
+    next: { revalidate: 60, tags: ['about-page'] }, // ISR + on-demand revalidation
   });
 
   if (!response.ok) {
