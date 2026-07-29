@@ -100,8 +100,9 @@ class ProfileApiTest extends TestCase
         $this->assertCount(3, $profile->hero_photos);
         $this->assertNotNull($profile->cv_path, 'CV path null');
 
-        Storage::disk('public')->assertExists($profile->hero_photos[0]);
+        $this->assertEquals('http://existing-url.com/image.jpg', $profile->hero_photos[0]);
         Storage::disk('public')->assertExists($profile->hero_photos[1]);
+        Storage::disk('public')->assertExists($profile->hero_photos[2]);
     }
 
     public function test_validation_error_works()
