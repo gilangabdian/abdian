@@ -44,7 +44,7 @@
     "@iconify-icon/react": "^3.0.3",
     "@iconify/react": "^6.0.2",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/sortablejs": "^1.15.9",
