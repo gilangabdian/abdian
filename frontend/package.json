@@ -17,7 +17,7 @@
     "@tiptap/extension-link": "^3.29.0",
     "@tiptap/extension-text-align": "^3.29.0",
     "@tiptap/extension-underline": "^3.29.0",
-    "@tiptap/pm": "^3.29.0",
+    "@tiptap/pm": "^3.29.2",
     "@tiptap/react": "^3.29.0",
     "@tiptap/starter-kit": "^3.29.0",
     "@types/marked": "^5.0.2",
