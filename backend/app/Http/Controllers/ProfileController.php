@@ -17,7 +17,7 @@ class ProfileController extends Controller
     public function update(UpdateProfileRequest $request)
     {
         // 1. Ambil data teks
-        $data = $request->safe()->except(['photo_path', 'cv', 'secondary_image']);
+        $data = $request->safe()->except(['hero_photos', 'cv']);
 
         if (isset($data['hidden_skill_categories']) && is_array($data['hidden_skill_categories'])) {
             $data['hidden_skill_categories'] = array_values(array_filter($data['hidden_skill_categories'], function($val) {
@@ -35,22 +35,31 @@ class ProfileController extends Controller
         // 4. Handle Uploads
         // (Logika ini tetap jalan normal karena $profile->photo_path tersedia jika data ada)
 
-        // Handle Primary Photo
-        if ($request->hasFile('photo_path')) {
-            $data['photo_path'] = $this->handleFileUpload(
-                $request->file('photo_path'),
-                'profile',
-                $profile->photo_path
-            );
-        }
+        // 4. Handle Hero Photos
+        if ($request->has('hero_photos')) {
+            $heroPhotos = [];
+            $mixedPhotos = $request->all()['hero_photos'] ?? [];
+            $baseUrl = url(Storage::url(''));
 
-        // Handle Secondary Image
-        if ($request->hasFile('secondary_image')) {
-            $data['secondary_image'] = $this->handleFileUpload(
-                $request->file('secondary_image'),
-                'profile-secondary',
-                $profile->secondary_image
-            );
+            foreach ($mixedPhotos as $photo) {
+                if (is_string($photo)) {
+                    // Cek jika ini URL lokal storage, ubah jadi path relatif
+                    if (str_starts_with($photo, $baseUrl)) {
+                        $relativePath = ltrim(str_replace($baseUrl, '', $photo), '/');
+                        $heroPhotos[] = $relativePath;
+                    } else {
+                        // URL full dari Cloudinary atau eksternal
+                        $heroPhotos[] = $photo;
+                    }
+                } elseif ($photo instanceof \Illuminate\Http\UploadedFile) {
+                    $uploadedPath = $this->handleFileUpload(
+                        $photo,
+                        'hero_photos'
+                    );
+                    $heroPhotos[] = $uploadedPath;
+                }
+            }
+            $data['hero_photos'] = $heroPhotos;
         }
 
         // Handle CV
@@ -72,8 +81,13 @@ class ProfileController extends Controller
         $profile->refresh();
 
         // 6. Append URLs
-        $profile->photo_url = $this->resolveUrl($profile->photo_path);
-        $profile->secondary_image_url = $this->resolveUrl($profile->secondary_image);
+        if (is_array($profile->hero_photos)) {
+            $profile->hero_photo_urls = array_map(function($path) {
+                return $this->resolveUrl($path);
+            }, $profile->hero_photos);
+        } else {
+            $profile->hero_photo_urls = [];
+        }
         $profile->cv_url = $this->resolveUrl($profile->cv_path);
 
         return response()->json([
@@ -90,8 +104,13 @@ class ProfileController extends Controller
         $contacts = Contact::whereRaw('LOWER(platform_name) != ?', ['email'])->get();
 
         if ($profile) {
-            $profile->photo_url = $this->resolveUrl($profile->photo_path);
-            $profile->secondary_image_url = $this->resolveUrl($profile->secondary_image);
+            if (is_array($profile->hero_photos)) {
+                $profile->hero_photo_urls = array_map(function($path) {
+                    return $this->resolveUrl($path);
+                }, $profile->hero_photos);
+            } else {
+                $profile->hero_photo_urls = [];
+            }
             $profile->cv_url = $this->resolveUrl($profile->cv_path);
         }
 

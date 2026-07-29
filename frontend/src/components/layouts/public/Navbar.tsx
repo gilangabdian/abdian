@@ -49,13 +49,14 @@ export default function Navbar() {
     // { name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" },
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
-    { name: "Github", href: "https://github.com/gilangabdian", icon: "mingcute:github-line" },
+    // { name: "Github", href: "https://github.com/gilangabdian", icon: "mingcute:github-line" },
   ];
 
   // Desktop nav items — icon only
   const iconLinks = [
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
+    { name: "Bluesky", href: "https://bsky.app/profile/enkdevur.bsky.social", icon: "ri:bluesky-line" },
     { name: "Github", href: "https://github.com/gilangabdian", icon: "mingcute:github-line" },
   ];
 
@@ -104,23 +105,23 @@ export default function Navbar() {
 
       {/* Kanan: Semua icon */}
       <div className="flex items-center gap-x-4">
-          {mobileIconLinks.map((link) => {
-            const isGithub = link.name === "Github";
-            return (
-              <Link
-                key={`mobile-${link.name}`}
-                href={link.href}
-                title={link.name}
-                {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className={`transition-colors duration-200 ${
-                  isActive(link.href)
-                    ? "text-black dark:text-white"
-                    : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
-                }`}>
-                <Icon icon={link.icon} className="w-5 h-5" />
-              </Link>
-            );
-          })}
+        {mobileIconLinks.map((link) => {
+          const isGithub = link.name === "Github";
+          return (
+            <Link
+              key={`mobile-${link.name}`}
+              href={link.href}
+              title={link.name}
+              {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className={`transition-colors duration-200 ${
+                isActive(link.href)
+                  ? "text-black dark:text-white"
+                  : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
+              }`}>
+              <Icon icon={link.icon} className="w-5 h-5" />
+            </Link>
+          );
+        })}
 
         {/* Theme Toggle */}
         <button
@@ -164,12 +165,13 @@ export default function Navbar() {
         ))}
         {iconLinks.map((link) => {
           const isGithub = link.name === "Github";
+          const isBluesky = link.name === "Bluesky";
           return (
             <Link
               key={link.name}
               href={link.href}
               title={link.name}
-              {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              {...(isGithub || isBluesky ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className={`transition-colors duration-200 ${
                 isActive(link.href)
                   ? "text-black dark:text-white"

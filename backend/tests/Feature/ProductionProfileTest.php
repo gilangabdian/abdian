@@ -67,18 +67,18 @@ class ProductionProfileTest extends TestCase
                 'name' => 'Gilang',
                 'job_title' => 'Dev',
                 'about_description' => 'Desc',
-                'photo_path' => $file,
+                'hero_photos' => [$file],
             ]);
 
         $response->assertStatus(200);
 
         // Pastikan path tersimpan di DB
         $profile = Profile::first();
-        $this->assertNotNull($profile->photo_path);
+        $this->assertNotNull($profile->hero_photos);
 
         // Pastikan file ada di 'disk' storage fake
-        // Note: Controller menyimpan hash name, jadi kita cek folder profile tidak kosong
-        $this->assertNotEmpty(Storage::disk('public')->allFiles('profile'));
+        // Note: Controller menyimpan hash name, jadi kita cek folder hero_photos tidak kosong
+        $this->assertNotEmpty(Storage::disk('public')->allFiles('hero_photos'));
     }
 
     /**

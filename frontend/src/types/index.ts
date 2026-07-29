@@ -112,8 +112,8 @@ export interface ProfileAbout {
   job_title: string;
   about_description: string;
   is_available_for_work: boolean;
-  photo_path?: string;
-  secondary_image?: string;
+  hero_photos?: string[];
+  hero_photo_urls?: string[];
   cv_path?: string;
   hidden_skill_categories?: string[];
   default_skill_category?: string;
@@ -125,8 +125,6 @@ export interface ProfileAbout {
   show_tech_on_home?: boolean;
   created_at?: string;
   updated_at?: string;
-  photo_url?: string;
-  secondary_image_url?: string;
   cv_url?: string;
 }
 

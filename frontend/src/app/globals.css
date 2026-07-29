@@ -304,3 +304,8 @@ html.dark::-webkit-scrollbar-thumb:hover {
     transform: translateY(0);
   }
 }
+
+.custom-bounce {
+  /* Nilai kedua (3.0) ini yang membuatnya overshoot (kebablasan) ke 200deg sebelum menetap di 120deg */
+  transition-timing-function: cubic-bezier(0.4, 4, 0.6, 1);
+}
