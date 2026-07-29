@@ -113,7 +113,7 @@ export default function Hero({ profile }: HeroProps) {
     <div
       ref={heroRef}
       className="container mx-auto px-6 pt-26 pb-6 md:pt-8 md:pb-0 min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-8 md:gap-2 mt-8">
+      <div className="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-2 mt-8">
         {/* Left Content */}
         <div className="flex-1 flex flex-col items-start space-y-3 md:space-y-3 mt-4">
           {profile.about.is_available_for_work && (
@@ -124,7 +124,7 @@ export default function Hero({ profile }: HeroProps) {
 
           <div className="space-y-0.5">
             <h1 className="hero-text text-4xl md:text-5xl font-bold leading-tight font-[Inter] tracking-tight">
-              Hi, I&apos;m <br className="hidden md:block" />
+              Hi, I&apos;m{" "}
               <span className="underline decoration-4 underline-offset-4 decoration-black dark:decoration-white">
                 {profile.about.name}
               </span>
@@ -210,7 +210,7 @@ export default function Hero({ profile }: HeroProps) {
             loading="lazy"
             src={profile.about.photo_url}
             alt={profile.about.name}
-            className="w-[400px] md:w-[300px] -mt-32 md:mt-0 h-auto object-cover contrast-110 border-b border-black/20 dark:border-white/20"
+            className="w-[400px] md:w-[300px] -mt-28 md:-mt-32 h-auto object-cover contrast-110 border-b border-black/20 dark:border-white/20"
           />
         </div>
       </div>
