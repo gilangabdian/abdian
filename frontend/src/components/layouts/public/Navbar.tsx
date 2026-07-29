@@ -56,6 +56,7 @@ export default function Navbar() {
   const iconLinks = [
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
+    { name: "Bluesky", href: "https://bsky.app/profile/enkdevur.bsky.social", icon: "ri:bluesky-line" },
     { name: "Github", href: "https://github.com/gilangabdian", icon: "mingcute:github-line" },
   ];
 
@@ -164,12 +165,13 @@ export default function Navbar() {
         ))}
         {iconLinks.map((link) => {
           const isGithub = link.name === "Github";
+          const isBluesky = link.name === "Bluesky";
           return (
             <Link
               key={link.name}
               href={link.href}
               title={link.name}
-              {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              {...(isGithub || isBluesky ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className={`transition-colors duration-200 ${
                 isActive(link.href)
                   ? "text-black dark:text-white"

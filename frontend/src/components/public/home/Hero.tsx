@@ -152,10 +152,31 @@ export default function Hero({ profile }: HeroProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const heroPhotos = profile?.about?.hero_photo_urls || [];
 
   const currentDecorations = DECORATIONS_CONFIG[currentIndex] || { static: [], hoverOnly: [] };
+
+  useEffect(() => {
+    // Check mobile screen
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    // Load saved index from localStorage
+    const savedIndex = localStorage.getItem("hero_last_index");
+    if (savedIndex !== null) {
+      const idx = parseInt(savedIndex, 10);
+      if (!isNaN(idx) && heroPhotos.length > 0 && idx < heroPhotos.length) {
+        setCurrentIndex(idx);
+      }
+    }
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, [heroPhotos.length]);
+
+  const showDecorations = isHovered || isMobile;
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -166,7 +187,7 @@ export default function Hero({ profile }: HeroProps) {
   };
 
   const handleClick = () => {
-    if (heroPhotos.length <= 1) return;
+    if (heroPhotos.length <= 1 || isAnimating) return;
     setIsAnimating(true);
     setTimeout(() => {
       let nextIndex = currentIndex + 1;
@@ -174,6 +195,7 @@ export default function Hero({ profile }: HeroProps) {
         nextIndex = 0;
       }
       setCurrentIndex(nextIndex);
+      localStorage.setItem("hero_last_index", nextIndex.toString());
       setTimeout(() => setIsAnimating(false), 200);
     }, 150);
   };
@@ -386,7 +408,7 @@ export default function Hero({ profile }: HeroProps) {
                     key={`hover-${currentIndex}-${idx}`}
                     src={deco.src}
                     alt="decoration hover"
-                    className={`absolute ${deco.position} ${deco.size} transition-all duration-300 ease-out ${deco.delay || ""} ${isHovered ? "opacity-100 translate-x-0 translate-y-0 scale-100 " + (deco.animation || "") : "opacity-0 " + (deco.slideFrom || "scale-50")}`}
+                    className={`absolute ${deco.position} ${deco.size} transition-all duration-300 ease-out ${deco.delay || ""} ${showDecorations ? "opacity-100 translate-x-0 translate-y-0 scale-100 " + (deco.animation || "") : "opacity-0 " + (deco.slideFrom || "scale-50")}`}
                   />
                 ))}
               </div>
