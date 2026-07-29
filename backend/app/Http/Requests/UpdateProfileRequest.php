@@ -17,8 +17,25 @@ class UpdateProfileRequest extends FormRequest
             'name' => 'required|string|max:255',
             'job_title' => 'required|string|max:255',
             'about_description' => 'required|string',
-            'photo_path' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Max 2MB
-            'secondary_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'hero_photos' => 'nullable|array|max:10',
+            'hero_photos.*' => [
+                function ($attribute, $value, $fail) {
+                    if (is_string($value)) {
+                        return; // URL foto lama
+                    }
+                    if ($value instanceof \Illuminate\Http\UploadedFile) {
+                        $validator = \Illuminate\Support\Facades\Validator::make(
+                            ['file' => $value],
+                            ['file' => 'image|mimes:jpeg,png,jpg,webp,avif|max:10240']
+                        );
+                        if ($validator->fails()) {
+                            $fail($validator->errors()->first('file'));
+                        }
+                        return;
+                    }
+                    $fail('Format foto tidak valid. Harus berupa file gambar atau URL string.');
+                },
+            ],
             'cv' => 'nullable|mimes:pdf|max:10240', // Max 10MB
             'is_available_for_work' => 'nullable|boolean',
             'hidden_skill_categories' => 'nullable|array',

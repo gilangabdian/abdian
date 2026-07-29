@@ -12,8 +12,7 @@ class Profile extends Model
         'job_title',
         'about_description',
         'is_available_for_work',
-        'photo_path',
-        'secondary_image',
+        'hero_photos',
         'cv_path',
         'hidden_skill_categories',
         'default_skill_category',
@@ -26,6 +25,7 @@ class Profile extends Model
     ];
 
     protected $casts = [
+        'hero_photos' => 'array',
         'is_available_for_work' => 'boolean',
         'hidden_skill_categories' => 'array',
         'skill_categories_order' => 'array',

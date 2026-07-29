@@ -51,7 +51,14 @@
                                         "name": "Abdian",
                                         "job_title": "Fullstack Developer (Laravel & Vue)",
                                         "about_description": "Saya adalah pengembang web yang berfokus pada backend...",
-                                        "photo_path": "profile/my-photo.jpg",
+                                        "hero_photos": [
+                                            "hero_photos/my-photo.jpg",
+                                            "hero_photos/second-photo.jpg"
+                                        ],
+                                        "hero_photo_urls": [
+                                            "http://localhost:8000/storage/hero_photos/my-photo.jpg",
+                                            "http://localhost:8000/storage/hero_photos/second-photo.jpg"
+                                        ],
                                         "cv_path": "cv/my-cv-2025.pdf",
                                         "created_at": "2025-01-01T00:00:00.000000Z",
                                         "updated_at": "2025-02-01T10:00:00.000000Z"
@@ -105,9 +112,12 @@
                                         "type": "string",
                                         "example": "Deskripsi baru..."
                                     },
-                                    "photo": {
-                                        "type": "string",
-                                        "format": "binary",
+                                    "hero_photos": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        },
                                         "description": "File gambar (jpg, png)"
                                     },
                                     "cv": {

@@ -30,8 +30,7 @@ class ProfileUrlTest extends TestCase
             'job_title' => 'Tester', // <--- WAJIB
             'about_description' => 'Test', // <--- WAJIB
             'bio' => 'Bio', // <--- WAJIB (jika di DB not null)
-            'photo_path' => 'profile/test.jpg',
-            'secondary_image' => 'profile/illustration.jpg',
+            'hero_photos' => ['hero_photos/test.jpg', 'hero_photos/illustration.jpg'],
         ]);
 
         $response = $this->getJson('/api/profile');
@@ -39,24 +38,23 @@ class ProfileUrlTest extends TestCase
         $response->assertStatus(200);
 
         $this->assertEquals(
-            'https://api-testing.com/storage/profile/test.jpg',
-            $response->json('about.photo_url')
+            'https://api-testing.com/storage/hero_photos/test.jpg',
+            $response->json('about.hero_photo_urls.0')
         );
 
-        // Sesuaikan dengan key JSON di Controller (secondary_image_url)
         $this->assertEquals(
-            'https://api-testing.com/storage/profile/illustration.jpg',
-            $response->json('about.secondary_image_url')
+            'https://api-testing.com/storage/hero_photos/illustration.jpg',
+            $response->json('about.hero_photo_urls.1')
         );
 
         // Simulasi Cloudinary
-        $cloudinaryUrl = 'https://res.cloudinary.com/demo/image/upload/v1/profile/test.jpg';
+        $cloudinaryUrl = 'https://res.cloudinary.com/demo/image/upload/v1/hero_photos/test.jpg';
 
-        $profile->update(['photo_path' => $cloudinaryUrl]);
+        $profile->update(['hero_photos' => [$cloudinaryUrl]]);
         $profile->refresh();
 
         $response = $this->getJson('/api/profile');
 
-        $this->assertEquals($cloudinaryUrl, $response->json('about.photo_url'));
+        $this->assertEquals($cloudinaryUrl, $response->json('about.hero_photo_urls.0'));
     }
 }

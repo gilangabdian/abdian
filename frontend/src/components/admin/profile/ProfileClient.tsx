@@ -32,24 +32,31 @@ export default function ProfileClient() {
     show_tech_on_home: true,
   });
 
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-
-  const [secondaryImagePreview, setSecondaryImagePreview] = useState<string | null>(null);
-  const [secondaryImageFile, setSecondaryImageFile] = useState<File | null>(null);
+  type HeroPhoto = { id: string; file?: File; preview: string; isExisting?: boolean; originalUrl?: string };
+  const [heroPhotos, setHeroPhotos] = useState<HeroPhoto[]>([]);
+  const [originalHeroPhotos, setOriginalHeroPhotos] = useState<HeroPhoto[]>([]);
 
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [currentCvPath, setCurrentCvPath] = useState<string | null>(null);
 
-  const photoInputRef = useRef<HTMLInputElement>(null);
-  const secondaryImageInputRef = useRef<HTMLInputElement>(null);
+  const heroPhotoInputRef = useRef<HTMLInputElement>(null);
   const cvInputRef = useRef<HTMLInputElement>(null);
 
   const hasChanges = useMemo(() => {
-    const hasNewFiles =
-      photoFile !== null ||
-      secondaryImageFile !== null ||
-      cvFile !== null;
+    const hasNewFiles = cvFile !== null;
+    
+    // Check if hero photos changed (different length, or different items)
+    let heroPhotosChanged = false;
+    if (heroPhotos.length !== originalHeroPhotos.length) {
+      heroPhotosChanged = true;
+    } else {
+      for (let i = 0; i < heroPhotos.length; i++) {
+        if (heroPhotos[i].id !== originalHeroPhotos[i].id || heroPhotos[i].file) {
+          heroPhotosChanged = true;
+          break;
+        }
+      }
+    }
 
     const hasTextChanges =
       form.name !== originalForm.name ||
@@ -61,8 +68,8 @@ export default function ProfileClient() {
       form.show_experiences_on_home !== originalForm.show_experiences_on_home ||
       form.show_tech_on_home !== originalForm.show_tech_on_home;
 
-    return hasNewFiles || hasTextChanges;
-  }, [form, originalForm, photoFile, secondaryImageFile, cvFile]);
+    return hasNewFiles || hasTextChanges || heroPhotosChanged;
+  }, [form, originalForm, heroPhotos, originalHeroPhotos, cvFile]);
 
   const fetchData = async () => {
     try {
@@ -92,8 +99,19 @@ export default function ProfileClient() {
           show_tech_on_home: result.about.show_tech_on_home ?? true,
         });
 
-        if (result.about.photo_url) setPhotoPreview(result.about.photo_url);
-        if (result.about.secondary_image_url) setSecondaryImagePreview(result.about.secondary_image_url);
+        if (result.about.hero_photo_urls && Array.isArray(result.about.hero_photo_urls)) {
+          const loadedPhotos = result.about.hero_photo_urls.map((url: string, index: number) => ({
+            id: `existing-${index}`,
+            preview: url,
+            isExisting: true,
+            originalUrl: url
+          }));
+          setHeroPhotos(loadedPhotos);
+          setOriginalHeroPhotos(loadedPhotos);
+        } else {
+          setHeroPhotos([]);
+          setOriginalHeroPhotos([]);
+        }
         if (result.about.cv_url) setCurrentCvPath(result.about.cv_url);
       }
     } catch (error) {
@@ -103,20 +121,30 @@ export default function ProfileClient() {
     }
   };
 
-  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setPhotoFile(file);
-      setPhotoPreview(URL.createObjectURL(file));
+  const handleHeroPhotosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    const newPhotos: HeroPhoto[] = [];
+    Array.from(files).forEach((file, index) => {
+      if (heroPhotos.length + newPhotos.length < 10) {
+        newPhotos.push({
+          id: `new-${Date.now()}-${index}`,
+          file,
+          preview: URL.createObjectURL(file),
+        });
+      }
+    });
+
+    if (newPhotos.length > 0) {
+      setHeroPhotos([...heroPhotos, ...newPhotos]);
     }
+    
+    if (heroPhotoInputRef.current) heroPhotoInputRef.current.value = "";
   };
 
-  const handleSecondaryImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSecondaryImageFile(file);
-      setSecondaryImagePreview(URL.createObjectURL(file));
-    }
+  const removeHeroPhoto = (idToRemove: string) => {
+    setHeroPhotos(heroPhotos.filter(p => p.id !== idToRemove));
   };
 
   const handleCvChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,12 +153,10 @@ export default function ProfileClient() {
   };
 
   const handleCancel = () => {
-    setPhotoFile(null);
-    setSecondaryImageFile(null);
+    setHeroPhotos([...originalHeroPhotos]);
     setCvFile(null);
 
-    if (photoInputRef.current) photoInputRef.current.value = "";
-    if (secondaryImageInputRef.current) secondaryImageInputRef.current.value = "";
+    if (heroPhotoInputRef.current) heroPhotoInputRef.current.value = "";
     if (cvInputRef.current) cvInputRef.current.value = "";
 
     setForm({ ...originalForm });
@@ -155,8 +181,24 @@ export default function ProfileClient() {
       formData.append("show_experiences_on_home", form.show_experiences_on_home ? "1" : "0");
       formData.append("show_tech_on_home", form.show_tech_on_home ? "1" : "0");
 
-      if (photoFile) formData.append("photo_path", photoFile);
-      if (secondaryImageFile) formData.append("secondary_image", secondaryImageFile);
+      heroPhotos.forEach((hp) => {
+        if (hp.isExisting && hp.originalUrl) {
+          formData.append("hero_photos[]", hp.originalUrl);
+        } else if (hp.file) {
+          formData.append("hero_photos[]", hp.file);
+        }
+      });
+
+      if (heroPhotos.length === 0) {
+        // Jika dihapus semua, kirim array kosong (atau penanda agar backend tahu dikosongkan)
+        // FormData append tidak bisa array kosong secara langsung jika tidak dikirim.
+        // Backend akan menganggap tidak ada perubahan jika hero_photos tidak dikirim.
+        // Supaya backend tahu dikosongkan, kita bisa mengirim array string kosong, namun lebih baik backend membaca has('hero_photos') dari payload.
+        formData.append("hero_photos[]", ""); // ini akan difilter di backend atau ditolak validasi?
+        // Solusi lebih aman jika hero_photos wajib diperbarui:
+        // Di ProfileController, backend mengecek $request->has('hero_photos'). 
+        // Mengirimkan array kosong di FormData: 
+      }
       if (cvFile) formData.append("cv", cvFile);
 
       const response = await saveProfile(token, formData);
@@ -164,12 +206,9 @@ export default function ProfileClient() {
       if (response.ok) {
         await alertSuccess("Profile berhasil diupdate!");
 
-        if (photoInputRef.current) photoInputRef.current.value = "";
-        if (secondaryImageInputRef.current) secondaryImageInputRef.current.value = "";
+        if (heroPhotoInputRef.current) heroPhotoInputRef.current.value = "";
         if (cvInputRef.current) cvInputRef.current.value = "";
 
-        setPhotoFile(null);
-        setSecondaryImageFile(null);
         setCvFile(null);
 
         fetchData();
@@ -209,51 +248,49 @@ export default function ProfileClient() {
 
           <form onSubmit={handleSubmit} className="space-y-6 mt-2">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="md:col-span-1 flex flex-col gap-8">
-                <div className="flex flex-col gap-4">
-                  <label className="font-bold uppercase border-b-2 border-black inline-block w-max">Profile Picture</label>
-                  <div className="relative group">
-                    <div className="w-full border-4 border-black bg-gray-100 flex items-center justify-center overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                      {photoPreview ? (
-                        <img loading="lazy" src={photoPreview} className="w-full h-auto" alt="Profile Preview" />
-                      ) : (
-                        <div className="text-gray-400 flex flex-col items-center">
-                          <Icon icon="lucide:image" className="w-12 h-12 mb-2" />
-                          <span className="font-mono text-xs uppercase">No Image</span>
-                        </div>
-                      )}
-                    </div>
-                    <label className="absolute bottom-2 right-2 bg-white border-2 border-black p-2 cursor-pointer hover:scale-110 transition-transform shadow-sm" title="Change Photo">
-                      <Icon icon="lucide:camera" className="w-5 h-5" />
-                      <input ref={photoInputRef} type="file" onChange={handlePhotoChange} accept="image/*" className="hidden" />
-                    </label>
-                  </div>
-                  <p className="text-xs font-mono text-gray-500 text-center">*Main Photo (JPG/PNG)</p>
+              <div className="md:col-span-3 flex flex-col gap-4">
+                <div className="flex justify-between items-center border-b-2 border-black pb-2">
+                  <label className="font-bold uppercase inline-block">Hero Photos (Max 10)</label>
+                  <span className="font-mono text-sm">{heroPhotos.length}/10</span>
                 </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {heroPhotos.map((photo, index) => (
+                    <div key={photo.id} className="relative group aspect-[4/5] border-4 border-black bg-gray-100 flex items-center justify-center overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                      <img loading="lazy" src={photo.preview} className="w-full h-full object-cover" alt={`Hero ${index + 1}`} />
+                      <div className="absolute top-1 left-1 bg-black text-white px-2 py-0.5 text-xs font-bold font-mono">
+                        {index + 1}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeHeroPhoto(photo.id)}
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1.5 hover:bg-red-600 hover:scale-110 transition-transform shadow-sm opacity-0 group-hover:opacity-100"
+                        title="Remove Photo"
+                      >
+                        <Icon icon="lucide:trash-2" className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
 
-                <div className="flex flex-col gap-4">
-                  <label className="font-bold uppercase border-b-2 border-black inline-block w-max">Hero Swap Image</label>
-                  <div className="relative group">
-                    <div className="w-full aspect-[4/5] border-4 border-black bg-gray-100 flex items-center justify-center overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                      {secondaryImagePreview ? (
-                        <img src={secondaryImagePreview} loading="lazy" className="w-full h-full object-cover" alt="Secondary Preview" />
-                      ) : (
-                        <div className="text-gray-400 flex flex-col items-center">
-                          <Icon icon="lucide:image-plus" className="w-12 h-12 mb-2" />
-                          <span className="font-mono text-xs uppercase">No Swap Image</span>
-                        </div>
-                      )}
-                    </div>
-                    <label className="absolute bottom-2 right-2 bg-gray-100 border-2 border-black p-2 cursor-pointer hover:scale-110 transition-transform shadow-sm" title="Change Secondary Photo">
-                      <Icon icon="lucide:camera" className="w-5 h-5" />
-                      <input ref={secondaryImageInputRef} type="file" onChange={handleSecondaryImageChange} accept="image/*" className="hidden" />
+                  {heroPhotos.length < 10 && (
+                    <label className="aspect-[4/5] border-4 border-black bg-white flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-y-[4px] hover:translate-x-[4px]">
+                      <Icon icon="lucide:plus" className="w-8 h-8 mb-2" />
+                      <span className="font-mono text-xs uppercase font-bold text-center px-2">Add Photo</span>
+                      <input 
+                        ref={heroPhotoInputRef} 
+                        type="file" 
+                        onChange={handleHeroPhotosChange} 
+                        accept="image/*" 
+                        multiple 
+                        className="hidden" 
+                      />
                     </label>
-                  </div>
-                  <p className="text-xs font-mono text-gray-500 text-center">*Shown on Click/Hover (Optional)</p>
+                  )}
                 </div>
+                <p className="text-xs font-mono text-gray-500">* Photos will be displayed interactively on the home page. Hover changes to even photos, click changes to next odd photo.</p>
               </div>
 
-              <div className="md:col-span-2 space-y-5">
+              <div className="md:col-span-3 space-y-5 mt-6">
                 <div>
                   <label className="block font-bold uppercase mb-2">Full Name <span className="text-red-500">*</span></label>
                   <input

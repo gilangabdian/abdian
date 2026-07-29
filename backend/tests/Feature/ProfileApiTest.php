@@ -81,8 +81,11 @@ class ProfileApiTest extends TestCase
                 'job_title' => 'Fullstack',
                 'about_description' => 'Coding', // <--- PERBAIKAN DISINI (Wajib diisi)
                 'bio' => 'Hello',
-                'photo_path' => $photo,
-                'secondary_image' => $secondaryData,
+                'hero_photos' => [
+                    $photo,
+                    $secondaryData,
+                    'http://existing-url.com/image.jpg'
+                ],
                 'cv' => $cv,
             ]);
 
@@ -93,13 +96,12 @@ class ProfileApiTest extends TestCase
 
         $profile = Profile::first();
 
-        $this->assertNotNull($profile->photo_path, 'Photo path null');
-        $this->assertNotNull($profile->secondary_image, 'Secondary Image path null');
+        $this->assertNotNull($profile->hero_photos, 'Hero photos array null');
+        $this->assertCount(3, $profile->hero_photos);
         $this->assertNotNull($profile->cv_path, 'CV path null');
 
-        Storage::disk('public')->assertExists($profile->photo_path);
-        Storage::disk('public')->assertExists($profile->secondary_image);
-        Storage::disk('public')->assertExists($profile->cv_path);
+        Storage::disk('public')->assertExists($profile->hero_photos[0]);
+        Storage::disk('public')->assertExists($profile->hero_photos[1]);
     }
 
     public function test_validation_error_works()

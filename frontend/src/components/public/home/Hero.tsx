@@ -7,6 +7,137 @@ import { Profile } from "@/types";
 import { Icon } from "@iconify/react";
 import LeaveMark from "./LeaveMark";
 
+type Decoration = {
+  src: string;
+  position: string;
+  size: string;
+  hoverEffect?: string;
+  animation?: string;
+  slideFrom?: string;
+  delay?: string;
+};
+
+type ConfigItem = {
+  static: Decoration[];
+  hoverOnly: Decoration[];
+};
+
+const DECORATIONS_CONFIG: Record<number, ConfigItem> = {
+  0: {
+    static: [
+      {
+        src: "/decorations/deco0-1.png",
+        position: "-top-[-30px] left-[-1px]",
+        size: "w-8",
+        hoverEffect: "scale-110 -rotate-12 translate-x-2",
+      },
+      {
+        src: "/decorations/deco0-1.png",
+        position: "md:-top-[-240px] top-[310px] left-[70px] md:left-[50px]",
+        size: "w-4",
+        hoverEffect: "scale-110 translate-x-2",
+      },
+      {
+        src: "/decorations/deco0-1.png",
+        position: "bottom-[10px] right-[20px]",
+        size: "w-6",
+        hoverEffect: "scale-125 rotate-12",
+      },
+    ],
+    hoverOnly: [
+      {
+        src: "/decorations/deco0-hover.png",
+        position: "-top-[35px] -right-[2px]",
+        size: "w-20",
+        animation: "scale-110",
+        slideFrom: "translate-y-5",
+      },
+    ],
+  },
+  1: {
+    static: [
+      {
+        src: "/decorations/deco1-1.png",
+        position: "-bottom-[-85px] right-[30px]",
+        size: "w-8",
+        hoverEffect: "rotate-15",
+      },
+      {
+        src: "/decorations/deco1-1.png",
+        position: "-top-[-10px] left-[10px]",
+        size: "w-8",
+        hoverEffect: "scale-105 rotate-20",
+      },
+    ],
+    hoverOnly: [
+      {
+        src: "/decorations/deco1-hover.png",
+        position: "-top-[25px] right-[0px] rotate-16",
+        size: "w-30",
+        hoverEffect: "rotate-15",
+        slideFrom: "translate-x-10",
+      },
+    ],
+  },
+  2: {
+    static: [
+      {
+        src: "/decorations/deco2-1.png",
+        position: "md:-top-[-230px] top-[300px] left-[30px] md:left-[1px]",
+        size: "w-16",
+        hoverEffect: "rotate-[120deg] transition-transform duration-700 custom-bounce",
+      },
+      {
+        src: "/decorations/deco2-2.png",
+        position: "md:-bottom-[-100px] -bottom-[-110px] right-[30px] md:right-[2px]",
+        size: "w-14",
+        hoverEffect: "rotate-[-40deg] transition-transform duration-700 custom-bounce",
+      },
+    ],
+    hoverOnly: [
+      {
+        src: "/decorations/deco2-hover.png",
+        position: "-top-[50px] right-[20px]",
+        size: "w-14",
+        animation: "",
+        slideFrom: "-translate-y-10",
+      },
+    ],
+  },
+  3: {
+    static: [
+      {
+        src: "/decorations/deco3-2.png",
+        position: "-bottom-[-100px] right-[26px]",
+        size: "w-8",
+        hoverEffect: "scale-125 ",
+      },
+      {
+        src: "/decorations/deco3-1.png",
+        position: "md:top-[234px] top-[300px] left-[50px] md:left-[35px]",
+        size: "w-8",
+        hoverEffect: "scale-125 rotate-20",
+      },
+    ],
+    hoverOnly: [
+      {
+        src: "/decorations/deco3-hover.png",
+        position: "md:top-[-55px] top-[-50px] left:-[60px] md:left-[-6px]",
+        size: "w-16",
+        hoverEffect: "scale-125 rotate-110",
+        slideFrom: "translate-y-2",
+        delay: "delay-0",
+      },
+    ],
+  },
+  4: { static: [], hoverOnly: [] },
+  5: { static: [], hoverOnly: [] },
+  6: { static: [], hoverOnly: [] },
+  7: { static: [], hoverOnly: [] },
+  8: { static: [], hoverOnly: [] },
+  9: { static: [], hoverOnly: [] },
+};
+
 gsap.registerPlugin(useGSAP);
 
 interface HeroProps {
@@ -17,6 +148,35 @@ export default function Hero({ profile }: HeroProps) {
   const [displayedJob, setDisplayedJob] = useState("");
   const [cursorVisible, setCursorVisible] = useState(true);
   const heroRef = useRef<HTMLDivElement>(null);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const heroPhotos = profile?.about?.hero_photo_urls || [];
+
+  const currentDecorations = DECORATIONS_CONFIG[currentIndex] || { static: [], hoverOnly: [] };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const handleClick = () => {
+    if (heroPhotos.length <= 1) return;
+    setIsAnimating(true);
+    setTimeout(() => {
+      let nextIndex = currentIndex + 1;
+      if (nextIndex >= heroPhotos.length) {
+        nextIndex = 0;
+      }
+      setCurrentIndex(nextIndex);
+      setTimeout(() => setIsAnimating(false), 200);
+    }, 150);
+  };
 
   // Typewriter Effect
   useEffect(() => {
@@ -203,16 +363,49 @@ export default function Hero({ profile }: HeroProps) {
         </div>
 
         {/* Right Content - Profile Image */}
-        <div className="w-full md:w-5/12 flex justify-center md:justify-end relative hero-image">
-          <div className="absolute inset-0 bg-gray-100 dark:bg-white/5 rounded-full scale-90 blur-3xl -z-10 opacity-50"></div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            loading="lazy"
-            src={profile.about.photo_url}
-            alt={profile.about.name}
-            className="w-[400px] md:w-[300px] -mt-28 md:-mt-32 h-auto object-cover contrast-110 border-b border-black/20 dark:border-white/20"
-          />
-        </div>
+        {heroPhotos.length > 0 && (
+          <div className="w-full md:w-5/12 flex justify-center md:justify-end hero-image">
+            <div className="relative inline-block w-[400px] md:w-[300px] -mt-18 md:-mt-32">
+              <div className="absolute inset-0 bg-gray-100 dark:bg-white/5 rounded-full scale-90 blur-3xl -z-10 opacity-50"></div>
+
+              {/* Decorations Container */}
+              <div
+                className={`absolute inset-0 z-20 pointer-events-none transition-all duration-300 ${isAnimating ? "blur-md opacity-50" : "blur-0 opacity-100"}`}>
+                {currentDecorations.static.map((deco, idx) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={`static-${currentIndex}-${idx}`}
+                    src={deco.src}
+                    alt="decoration"
+                    className={`absolute ${deco.position} ${deco.size} transition-all duration-300 ease-out ${isHovered ? deco.hoverEffect || "" : ""}`}
+                  />
+                ))}
+                {currentDecorations.hoverOnly.map((deco, idx) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={`hover-${currentIndex}-${idx}`}
+                    src={deco.src}
+                    alt="decoration hover"
+                    className={`absolute ${deco.position} ${deco.size} transition-all duration-300 ease-out ${deco.delay || ""} ${isHovered ? "opacity-100 translate-x-0 translate-y-0 scale-100 " + (deco.animation || "") : "opacity-0 " + (deco.slideFrom || "scale-50")}`}
+                  />
+                ))}
+              </div>
+
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                loading="lazy"
+                src={heroPhotos[currentIndex]}
+                alt={profile.about.name}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={handleClick}
+                className={`w-full h-full object-cover border-b border-black/20 dark:border-white/20 transition-all duration-300 ${
+                  isHovered ? "scale-105" : "scale-100"
+                } ${isAnimating ? "blur-md opacity-50" : "blur-0 opacity-100"}`}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
