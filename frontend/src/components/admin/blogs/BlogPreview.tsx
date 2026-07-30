@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import hljs from "highlight.js";
 import "highlight.js/styles/night-owl.css";
+import { formatGithubLinks } from "@/lib/github-link-formatter";
 
 interface BlogPreviewProps {
   title: string;
@@ -30,6 +31,11 @@ export default function BlogPreview({
   const displayContent = activeTab === "id" ? content : content_en;
 
   useEffect(() => {
+    const container = document.querySelector(".prose") as HTMLElement;
+    if (container) {
+      formatGithubLinks(container);
+    }
+
     const codeBlocks = document.querySelectorAll(".prose pre code");
     codeBlocks.forEach((block) => {
       block.removeAttribute("data-highlighted");

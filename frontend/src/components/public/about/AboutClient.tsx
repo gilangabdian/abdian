@@ -7,6 +7,7 @@ import { Profile } from "@/types";
 import Image from "next/image";
 import TableOfContents from "@/components/global/TableOfContents";
 import { injectHeadingIds } from "@/lib/heading-utils";
+import { formatGithubLinks } from "@/lib/github-link-formatter";
 
 interface AboutClientProps {
   initialProfile: Profile | null;
@@ -72,9 +73,12 @@ const AboutContent = React.memo(
       onTocExtracted(toc);
     }, [toc, onTocExtracted]);
 
-    // Effect 2: Image click handlers (requires DOM)
+    // Effect 2: Image click handlers and format GitHub links (requires DOM)
     useEffect(() => {
       if (!contentRef.current) return;
+
+      // Format GitHub links
+      formatGithubLinks(contentRef.current);
 
       const images = contentRef.current.querySelectorAll("img");
       const handleImageClick = (e: Event) => {

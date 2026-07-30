@@ -6,9 +6,11 @@ import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import hljs from "highlight.js";
 import "highlight.js/styles/night-owl.css";
-import { Blog } from "@/types";
+import { Blog, Profile } from "@/types";
+import Image from "next/image";
 import TableOfContents from "@/components/global/TableOfContents";
 import { injectHeadingIds } from "@/lib/heading-utils";
+import { formatGithubLinks } from "@/lib/github-link-formatter";
 
 interface SingleBlogClientProps {
   initialBlog: Blog;
@@ -40,6 +42,9 @@ const BlogContent = React.memo(
     // Effect 2: Highlight code blocks and image click handlers
     useEffect(() => {
       if (!contentRef.current) return;
+
+      // Format GitHub links
+      formatGithubLinks(contentRef.current);
 
       // Highlight code blocks
       const t = setTimeout(() => {
