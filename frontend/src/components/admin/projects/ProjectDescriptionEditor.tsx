@@ -27,7 +27,7 @@ export default function ProjectDescriptionEditor({ value, onChange }: ProjectDes
     },
     editorProps: {
       attributes: {
-        class: "prose prose-sm md:prose-base dark:prose-invert max-w-none focus:outline-none min-h-[150px] text-gray-900 [&_p]:text-gray-900 [&_h1]:text-gray-900 [&_h2]:text-gray-900 [&_li]:text-gray-900",
+        class: "prose prose-sm md:prose-base max-w-none focus:outline-none min-h-[150px] text-gray-900 [&_p]:text-gray-900 [&_h1]:text-gray-900 [&_h2]:text-gray-900 [&_li]:text-gray-900 prose-a:text-black prose-a:underline prose-a:decoration-black/30 hover:prose-a:decoration-black prose-a:underline-offset-4 prose-a:transition-colors",
       },
     },
   });
@@ -44,7 +44,7 @@ export default function ProjectDescriptionEditor({ value, onChange }: ProjectDes
 
   return (
     <div className="border-2 border-black focus-within:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] focus-within:bg-gray-50 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,0)] bg-white">
-      <div className="border-b-2 border-black bg-gray-100 flex flex-wrap gap-2 p-2">
+      <div className="sticky top-0 z-40 border-b-2 border-black bg-gray-100 flex flex-wrap gap-2 p-2">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
