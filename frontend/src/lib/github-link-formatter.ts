@@ -20,18 +20,19 @@ export function formatGithubLinks(container: HTMLElement) {
           // Modify classes to look like a pill badge
           // Remove top, bottom, and left padding so the image touches the borders directly
           link.className =
-            "inline-flex items-center gap-2 pr-3 py-0 pl-0 rounded-full bg-neutral-200 dark:bg-neutral-800 text-sm !font-light !text-neutral-900 dark:!text-neutral-100 !no-underline hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors mx-1 align-middle whitespace-nowrap overflow-hidden";
+            "inline-flex font-[Inter] items-center gap-2 pr-3 py-0 pl-0 rounded-full bg-neutral-200 dark:bg-neutral-800 text-sm !font-normal !text-neutral-500 dark:!text-neutral-400 !no-underline hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors mx-1 align-middle whitespace-nowrap overflow-hidden";
 
           // Inject the avatar image and the username text
           // The image is sized to fill the height closely
+          // We use ?size=120 to ensure it is very crisp on high-DPI (Retina) displays
           link.innerHTML = `
             <img
-              src="https://github.com/${username}.png?size=60"
+              src="https://github.com/${username}.png?size=120"
               alt="${username}"
               class="w-6 h-6 rounded-full m-0 !my-0"
               style="display: block;"
             />
-            <span>${linkText}</span>
+            <span class="leading-none mb-[2px]">${linkText}</span>
           `;
         }
       }

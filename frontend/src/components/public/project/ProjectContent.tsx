@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import { Project } from '@/types';
+import { formatGithubLinks } from '@/lib/github-link-formatter';
 
 interface ProjectContentProps {
   project: Project;
 }
 
 export default function ProjectContent({ project }: ProjectContentProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      formatGithubLinks(contentRef.current);
+    }
+  }, [project.description]);
+
   const formatLabel = (value?: string) => {
     if (!value) return '';
     return value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
@@ -107,6 +116,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
                 Description
               </h4>
               <div
+                ref={contentRef}
                 className="markdown-preview font-sans text-sm md:text-base text-neutral-700 dark:text-neutral-300 leading-relaxed mt-3 break-words [&_a]:break-all prose prose-sm md:prose-base dark:prose-invert max-w-none"
                 dangerouslySetInnerHTML={{ __html: project.description }}
               />
