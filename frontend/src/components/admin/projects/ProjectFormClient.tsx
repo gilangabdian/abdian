@@ -45,6 +45,7 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
   const [skills, setSkills] = useState<Skill[]>([]);
   const [selectedSkillIds, setSelectedSkillIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [isFetchingSkills, setIsFetchingSkills] = useState(true);
 
   const [form, setForm] = useState<ProjectFormData>(DEFAULT_FORM);
@@ -178,6 +179,7 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
     }
 
     setIsLoading(true);
+    setUploadProgress(0);
     try {
       if (!token) throw new Error("No token");
 
@@ -225,12 +227,17 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
       let response;
       if (isEditMode && projectId) {
         formData.append("_method", "PUT");
-        response = await adminUpdateProject(token, projectId, formData);
+        response = await adminUpdateProject(token, projectId, formData, (progress) => {
+          setUploadProgress(progress);
+        });
       } else {
-        response = await adminUploadProject(token, formData);
+        response = await adminUploadProject(token, formData, (progress) => {
+          setUploadProgress(progress);
+        });
       }
 
       if (response.ok || response.status === 201 || response.status === 200) {
+        setUploadProgress(100);
         await alertSuccess(isEditMode ? "Project berhasil diupdate! 🚀" : "Project berhasil diluncurkan! 🚀");
         router.push("/admin/projects");
       } else {
@@ -242,6 +249,7 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
       alertError("Terjadi kesalahan sistem.");
     } finally {
       setIsLoading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -361,19 +369,36 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-4 bg-black text-white hover:text-black hover:bg-gray-100 border-2 border-black font-black text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-800 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 uppercase italic"
+              className="relative w-full py-4 bg-black text-white hover:text-black hover:bg-gray-100 border-2 border-black font-black text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-800 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-80 disabled:cursor-not-allowed flex items-center justify-center gap-3 uppercase italic overflow-hidden"
             >
-              {isLoading ? (
-                <>
-                  <Icon icon="svg-spinners:3-dots-fade" className="text-2xl" />
-                  <span>{isEditMode ? "Updating..." : "Uploading..."}</span>
-                </>
-              ) : (
-                <>
-                  <span>{isEditMode ? "Update Project" : "Launch Project"}</span>
-                  <Icon icon="lucide:rocket" />
-                </>
+              {isLoading && uploadProgress > 0 && uploadProgress < 100 && (
+                <div
+                  className="absolute left-0 top-0 bottom-0 bg-blue-600/30 transition-all duration-300 ease-out z-0"
+                  style={{ width: `${uploadProgress}%` }}
+                />
               )}
+              
+              <div className="relative z-10 flex items-center gap-3">
+                {isLoading ? (
+                  <>
+                    <Icon icon="svg-spinners:3-dots-fade" className="text-2xl" />
+                    <span>
+                      {uploadProgress > 0 && uploadProgress < 100
+                        ? `Uploading Media... ${uploadProgress}%`
+                        : uploadProgress === 100
+                        ? "Processing..."
+                        : isEditMode
+                        ? "Updating..."
+                        : "Uploading..."}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span>{isEditMode ? "Update Project" : "Launch Project"}</span>
+                    <Icon icon="lucide:rocket" />
+                  </>
+                )}
+              </div>
             </button>
 
             <Link

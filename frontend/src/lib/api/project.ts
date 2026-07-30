@@ -36,25 +36,78 @@ export const getSingleProject = async (idOrSlug: string | number): Promise<Proje
   }
 };
 
-export const adminUploadProject = async (token: string, formData: FormData) => {
-  return await fetch(`${API_URL}/projects`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
-    },
-    body: formData,
+export const adminUploadProject = async (
+  token: string, 
+  formData: FormData, 
+  onProgress?: (progress: number) => void
+): Promise<Response> => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${API_URL}/projects`, true);
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.setRequestHeader("Accept", "application/json");
+
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
+    }
+
+    xhr.onload = () => {
+      // Resolve using standard Response interface so it matches previous fetch behavior
+      const response = new Response(xhr.response, {
+        status: xhr.status,
+        statusText: xhr.statusText,
+      });
+      resolve(response);
+    };
+
+    xhr.onerror = () => {
+      reject(new Error("Network Error"));
+    };
+
+    xhr.send(formData);
   });
 };
 
-export const adminUpdateProject = async (token: string, id: string | number, formData: FormData) => {
-  return await fetch(`${API_URL}/projects/${id}`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/json',
-    },
-    body: formData,
+export const adminUpdateProject = async (
+  token: string, 
+  id: string | number, 
+  formData: FormData,
+  onProgress?: (progress: number) => void
+): Promise<Response> => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    // Gunakan POST, dan formData sudah membawa _method=PUT dari form client
+    xhr.open("POST", `${API_URL}/projects/${id}`, true);
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.setRequestHeader("Accept", "application/json");
+
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
+    }
+
+    xhr.onload = () => {
+      const response = new Response(xhr.response, {
+        status: xhr.status,
+        statusText: xhr.statusText,
+      });
+      resolve(response);
+    };
+
+    xhr.onerror = () => {
+      reject(new Error("Network Error"));
+    };
+
+    xhr.send(formData);
   });
 };
 

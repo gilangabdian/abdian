@@ -22,9 +22,9 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 # Aktifkan mod_rewrite untuk URL Laravel
 RUN a2enmod rewrite
 
-# Menambahkan konfigurasi kustom untuk menaikkan batas upload PHP menjadi 10MB
-RUN echo "upload_max_filesize = 10M" > /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "post_max_size = 10M" >> /usr/local/etc/php/conf.d/uploads.ini
+# Menambahkan konfigurasi kustom untuk menaikkan batas upload PHP menjadi 100MB
+RUN echo "upload_max_filesize = 100M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Install Composer dari image official
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
