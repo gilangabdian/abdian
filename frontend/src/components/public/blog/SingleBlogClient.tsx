@@ -162,6 +162,25 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
         .dark div.callout::before {
           background: #404040;
         }
+        /* Custom blockquote styling to match callout border */
+        .prose blockquote {
+          position: relative !important;
+          border-left: none !important;
+          padding-left: 1.5rem !important;
+        }
+        .prose blockquote::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0.5em;
+          bottom: 0.5em;
+          width: 4px;
+          background: #d4d4d8;
+          border-radius: 2px;
+        }
+        .dark .prose blockquote::before {
+          background: #404040;
+        }
         /* Links: underline only on hover */
         .prose a {
           text-decoration: none !important;
