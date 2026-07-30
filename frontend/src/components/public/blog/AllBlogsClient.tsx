@@ -57,6 +57,8 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
   return (
     <div className="pt-24 md:pt-40 pb-16 min-h-screen flex flex-col items-center font-[Inter]">
       <style>{`
+      .prose div.callout p { color: #a3a3a3 !important; }
+      .dark .prose div.callout p { color: #737373 !important; }
         .year-watermark {
           color: transparent;
           -webkit-text-stroke: 1px rgba(0, 0, 0, 0.1);

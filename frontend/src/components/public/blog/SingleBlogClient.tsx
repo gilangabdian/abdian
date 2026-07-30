@@ -142,6 +142,8 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
       div.callout {
           position: relative !important;
         }
+      .prose div.callout p { color: #a3a3a3 !important; }
+      .dark .prose div.callout p { color: #737373 !important; }
         div.callout::before {
           content: '';
           position: absolute;
