@@ -280,6 +280,22 @@ export default function AboutFormClient() {
                   background: #d4d4d8;
                   border-radius: 2px;
                 }
+                /* Custom blockquote styling to match callout border */
+                .ProseMirror blockquote {
+                  position: relative !important;
+                  border-left: none !important;
+                  padding-left: 1.5rem !important;
+                }
+                .ProseMirror blockquote::before {
+                  content: '';
+                  position: absolute;
+                  left: 0;
+                  top: 0.5em;
+                  bottom: 0.5em;
+                  width: 4px;
+                  background: #d4d4d8;
+                  border-radius: 2px;
+                }
               `}</style>
               <EditorContent editor={editor} />
             </div>
@@ -360,6 +376,25 @@ export default function AboutFormClient() {
                     border-radius: 2px;
                   }
                   .dark div.callout::before {
+                    background: #404040;
+                  }
+                  /* Custom blockquote styling to match callout border */
+                  .prose blockquote {
+                    position: relative !important;
+                    border-left: none !important;
+                    padding-left: 1.5rem !important;
+                  }
+                  .prose blockquote::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 0.5em;
+                    bottom: 0.5em;
+                    width: 4px;
+                    background: #d4d4d8;
+                    border-radius: 2px;
+                  }
+                  .dark .prose blockquote::before {
                     background: #404040;
                   }
                 `}</style>

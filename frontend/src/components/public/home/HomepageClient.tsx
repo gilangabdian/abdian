@@ -148,8 +148,9 @@ export default function HomepageClient({
 
     // Simulasi pengambilan API (1500ms) seperti Vue agar loadingnya jalan
     setTimeout(() => {
-      if (profile?.about?.photo_url) {
-        preloadImage(profile.about.photo_url).then(() => {
+      const firstHeroPhoto = profile?.about?.hero_photo_urls?.[0];
+      if (firstHeroPhoto) {
+        preloadImage(firstHeroPhoto).then(() => {
           finalizeLoading();
         });
       } else {
@@ -158,7 +159,7 @@ export default function HomepageClient({
     }, 1500);
 
     return () => clearInterval(interval);
-  }, [profile?.about?.photo_url]);
+  }, [profile?.about?.hero_photo_urls]);
 
   // Removed GSAP Stacking Animation per user request because it caused visual bugs in Next.js
 
