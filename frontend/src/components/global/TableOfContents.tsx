@@ -36,12 +36,12 @@ export default function TableOfContents({
         .dark .toc-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
       `}</style>
       <div
-        className={`hidden lg:block fixed left-0 bottom-40 w-[calc(50%-24rem)] h-full z-40 pointer-events-auto transition-all duration-300 ease-in-out ${
-          show ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"
+        className={`hidden lg:block fixed left-0 top-28 bottom-0 w-[calc(50%-24rem)] z-40 pointer-events-auto transition-all duration-300 ease-in-out ${
+          show ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
         }`}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}>
-        <div className="toc-sidebar absolute left-0 top-34 pl-7 xl:pl-10 mt-32 max-h-[70vh] overflow-y-auto">
+        <div className="toc-sidebar absolute left-0 top-8 pl-7 xl:pl-10 max-h-[70vh] overflow-y-auto">
           <ul className="flex flex-col gap-2 text-xs border-l-2 border-neutral-200 dark:border-neutral-800 pl-4 w-48 xl:w-64 select-none">
             {toc.map((item, index) => (
               <li key={`${index}-${item.id}`} className={`w-fit ${item.level === "h3" ? "ml-4 text-xs" : ""}`}>
