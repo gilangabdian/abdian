@@ -85,7 +85,7 @@ export default function AboutFormClient() {
     },
     editorProps: {
       attributes: {
-        class: "prose max-w-none min-h-[300px] outline-none p-4 font-[Inter]",
+        class: "prose prose-neutral max-w-none min-h-[300px] outline-none p-4 md:p-8 font-[Inter] text-sm md:text-base leading-relaxed prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-black prose-a:no-underline prose-a:text-black hover:prose-a:underline prose-a:decoration-black/20 hover:prose-a:decoration-black prose-a:underline-offset-4 prose-a:transition-all prose-a:duration-300 prose-img:rounded-lg prose-img:my-4 prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-neutral-800 prose-blockquote:border-l-4 prose-blockquote:border-neutral-300 prose-blockquote:pl-4 prose-blockquote:py-1 prose-blockquote:text-neutral-400 prose-blockquote:not-italic prose-blockquote:my-6 [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:not-italic [&_p:empty]:min-h-[1.5em] [&_p:empty]:block",
       },
       transformPastedHTML(html) {
         // Prevent pasted text from being auto-converted to code snippets.
@@ -295,6 +295,14 @@ export default function AboutFormClient() {
                   width: 4px;
                   background: #d4d4d8;
                   border-radius: 2px;
+                }
+                /* Links: underline only on hover */
+                .ProseMirror a {
+                  text-decoration: none !important;
+                }
+                .ProseMirror a:hover {
+                  text-decoration: underline !important;
+                  text-decoration-color: inherit !important;
                 }
               `}</style>
               <EditorContent editor={editor} />

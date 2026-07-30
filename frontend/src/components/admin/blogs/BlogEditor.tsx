@@ -150,6 +150,7 @@ export default function BlogEditor({
                 .ProseMirror div.callout {
                   position: relative !important;
                 }
+                .ProseMirror div.callout p { color: #a3a3a3 !important; }
                 .ProseMirror div.callout::before {
                   content: '';
                   position: absolute;
@@ -160,6 +161,32 @@ export default function BlogEditor({
                   background: #d4d4d8;
                   border-radius: 2px;
                 }
+                .ProseMirror blockquote {
+                  position: relative !important;
+                  border-left: none !important;
+                  padding-left: 1.5rem !important;
+                }
+                .ProseMirror blockquote::before {
+                  content: '';
+                  position: absolute;
+                  left: 0;
+                  top: 0.5em;
+                  bottom: 0.5em;
+                  width: 4px;
+                  background: #d4d4d8;
+                  border-radius: 2px;
+                }
+                .ProseMirror p:empty::before { content: "\\00a0"; display: inline-block; }
+                .ProseMirror p { color: #52525b !important; font-size: 16px; line-height: 28px }
+                .ProseMirror a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
+                .ProseMirror a:hover { text-decoration-color: #171717 !important; }
+                .ProseMirror img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; }
+                .ProseMirror h2, .ProseMirror h3 { position: relative;  font-weight:normal; }
+                .ProseMirror h2::before, .ProseMirror h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
+                .ProseMirror h2:hover::before, .ProseMirror h3:hover::before { opacity: 1; }
+                .ProseMirror ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
+                .ProseMirror ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
+                .ProseMirror li { margin-bottom: 0.5em; }
               `}</style>
               <EditorContent editor={editorId} />
             </div>
@@ -184,6 +211,7 @@ export default function BlogEditor({
                 .ProseMirror div.callout {
                   position: relative !important;
                 }
+                .ProseMirror div.callout p { color: #a3a3a3 !important; }
                 .ProseMirror div.callout::before {
                   content: '';
                   position: absolute;
@@ -194,6 +222,32 @@ export default function BlogEditor({
                   background: #d4d4d8;
                   border-radius: 2px;
                 }
+                .ProseMirror blockquote {
+                  position: relative !important;
+                  border-left: none !important;
+                  padding-left: 1.5rem !important;
+                }
+                .ProseMirror blockquote::before {
+                  content: '';
+                  position: absolute;
+                  left: 0;
+                  top: 0.5em;
+                  bottom: 0.5em;
+                  width: 4px;
+                  background: #d4d4d8;
+                  border-radius: 2px;
+                }
+                .ProseMirror p:empty::before { content: "\\00a0"; display: inline-block; }
+                .ProseMirror p { color: #52525b !important; font-size: 16px; line-height: 28px }
+                .ProseMirror a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
+                .ProseMirror a:hover { text-decoration-color: #171717 !important; }
+                .ProseMirror img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; }
+                .ProseMirror h2, .ProseMirror h3 { position: relative;  font-weight:normal; }
+                .ProseMirror h2::before, .ProseMirror h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
+                .ProseMirror h2:hover::before, .ProseMirror h3:hover::before { opacity: 1; }
+                .ProseMirror ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
+                .ProseMirror ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
+                .ProseMirror li { margin-bottom: 0.5em; }
               `}</style>
               <EditorContent editor={editorEn} />
             </div>

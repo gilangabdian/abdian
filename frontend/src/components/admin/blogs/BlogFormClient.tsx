@@ -133,7 +133,7 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
     },
     editorProps: {
       attributes: {
-        class: "prose max-w-none min-h-[300px] outline-none p-4 font-[Inter]",
+        class: "prose prose-neutral prose-lg max-w-none min-h-[300px] outline-none p-4 md:p-8 font-[Inter] prose-headings:font-black prose-headings:text-black prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:not-italic",
       },
     },
   });
@@ -147,7 +147,7 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
     },
     editorProps: {
       attributes: {
-        class: "prose max-w-none min-h-[300px] outline-none p-4 font-[Inter]",
+        class: "prose prose-neutral prose-lg max-w-none min-h-[300px] outline-none p-4 md:p-8 font-[Inter] prose-headings:font-black prose-headings:text-black prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:not-italic",
       },
     },
   });
