@@ -18,7 +18,7 @@ export default function BlogEditorToolbar({
   if (!editor) return null;
 
   return (
-    <div className="border-4 border-black mb-[-4px] relative z-10 bg-gray-100 flex flex-wrap gap-2 p-2">
+    <div className="border-4 border-black mb-[-4px] sticky top-0 z-40 bg-gray-100 flex flex-wrap gap-2 p-2">
       <button
         type="button"
         onClick={() => editor.chain().focus().undo().run()}
