@@ -38,7 +38,7 @@ function getDuration(start?: string, end?: string, isMounted?: boolean) {
   const years = Math.floor(total / 12);
   const months = total % 12;
 
-  let result = [];
+  const result = [];
   if (years > 0) result.push(`${years} ${years > 1 ? "yrs" : "yr"}`);
   if (months > 0) result.push(`${months} ${months > 1 ? "mos" : "mo"}`);
 

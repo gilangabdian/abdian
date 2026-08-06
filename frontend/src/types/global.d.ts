@@ -8,7 +8,7 @@ declare global {
         class?: string;
         width?: string | number;
         height?: string | number;
-        [key: string]: any;
+        [key: string]: unknown;
       };
     }
   }
