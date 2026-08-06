@@ -76,7 +76,7 @@ export default function GenerativeArtEffect() {
       draw() {
         if (!ctx) return;
         const isDark = document.documentElement.classList.contains("dark");
-        let baseColor = isDark ? "rgba(255, 255, 255, 0.3)" : "rgba(0, 0, 0, 0.3)";
+        const baseColor = isDark ? "rgba(255, 255, 255, 0.3)" : "rgba(0, 0, 0, 0.3)";
         let colorToUse = baseColor;
         
         if (this.colorLife > 0) {
@@ -97,9 +97,9 @@ export default function GenerativeArtEffect() {
         if (this.colorLife > 0) this.colorLife--;
 
         if (mouse.x !== null && mouse.y !== null) {
-          let dx = mouse.x - this.x;
-          let dy = mouse.y - this.y;
-          let distance = Math.sqrt(dx * dx + dy * dy);
+          const dx = mouse.x - this.x;
+          const dy = mouse.y - this.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
           if (distance < mouse.radius + this.size) {
             if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 1.5;
             if (mouse.x > this.x && this.x > this.size * 10) this.x -= 1.5;
@@ -127,11 +127,11 @@ export default function GenerativeArtEffect() {
       if (numberOfParticles > 60) numberOfParticles = 60; 
 
       for (let i = 0; i < numberOfParticles; i++) {
-        let size = Math.random() * 1.5 + 0.5;
-        let x = Math.random() * (innerWidth - size * 2 - size * 2) + size * 2;
-        let y = Math.random() * (innerHeight - size * 2 - size * 2) + size * 2;
-        let directionX = (Math.random() * 0.2) - 0.1;
-        let directionY = (Math.random() * 0.2) - 0.1;
+        const size = Math.random() * 1.5 + 0.5;
+        const x = Math.random() * (innerWidth - size * 2 - size * 2) + size * 2;
+        const y = Math.random() * (innerHeight - size * 2 - size * 2) + size * 2;
+        const directionX = (Math.random() * 0.2) - 0.1;
+        const directionY = (Math.random() * 0.2) - 0.1;
         
         particlesArray.push(new Particle(x, y, directionX, directionY, size));
       }
@@ -144,7 +144,7 @@ export default function GenerativeArtEffect() {
       
       for (let a = 0; a < particlesArray.length; a++) {
         for (let b = a; b < particlesArray.length; b++) {
-          let distance = 
+          const distance = 
             ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + 
             ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
             

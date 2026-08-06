@@ -41,10 +41,22 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
       .map(Number)
       .sort((a, b) => b - a);
 
-    return sortedKeys.map((year) => ({
-      year,
-      blogs: groups[year],
-    }));
+    return sortedKeys.reduce<{
+      result: { year: number; blogs: Blog[]; startIndex: number }[];
+      currentStagger: number;
+    }>((acc, year) => {
+      const groupBlogs = groups[year];
+      const startIndex = acc.currentStagger;
+      
+      acc.result.push({
+        year,
+        blogs: groupBlogs,
+        startIndex
+      });
+      
+      acc.currentStagger += 1 + groupBlogs.length;
+      return acc;
+    }, { result: [], currentStagger: 0 }).result;
   }, [blogs]);
 
   const formatDate = (dateString: string) => {
@@ -93,13 +105,16 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
             {groupedBlogs.map((group) => (
               <div key={group.year} className="relative w-full mt-10 md:mt-16">
                 {/* Background Year (Hollow Text) */}
-                <div className="absolute top-0 -left-2 md:-left-4 -translate-y-6 md:-translate-y-15 text-[7rem] md:text-[8rem] font-black select-none z-0 leading-none pointer-events-none year-watermark">
+                <div 
+                  data-animate
+                  style={{ "--stagger": group.startIndex } as React.CSSProperties}
+                  className="absolute top-0 -left-2 md:-left-4 -translate-y-6 md:-translate-y-15 text-[7rem] md:text-[8rem] font-black select-none z-0 leading-none pointer-events-none year-watermark">
                   {group.year}
                 </div>
 
                 {/* Articles List */}
                 <div className="relative z-10 w-full flex flex-col items-start px-2 pt-6 md:pt-0 md:px-8">
-                  {group.blogs.map((blog) => {
+                  {group.blogs.map((blog, index) => {
                     const isExternal = blog.is_external;
                     const href = isExternal ? blog.external_url || "#" : `/blogs/${blog.slug}`;
                     const target = isExternal ? "_blank" : undefined;
@@ -113,6 +128,8 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
                         href={href}
                         target={target}
                         rel={rel}
+                        data-animate
+                        style={{ "--stagger": group.startIndex + 1 + index } as React.CSSProperties}
                         className="blog-row cursor-pointer group flex flex-col sm:flex-row justify-start items-start sm:items-center w-full py-2 transition-colors gap-3 md:gap-4">
                         <h2 className="text-lg md:text-xl font-small text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors leading-tight flex items-center gap-[2px]">
                           {currentLang === "en" ? blog.title_en || blog.title : blog.title}

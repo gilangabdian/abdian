@@ -46,6 +46,13 @@ const BlogContent = React.memo(
       // Format GitHub links
       formatGithubLinks(contentRef.current);
 
+      // Inject staggered animations for paragraphs and headings
+      const elements = contentRef.current.querySelectorAll("p, h2, h3");
+      elements.forEach((el, index) => {
+        el.setAttribute("data-animate", "true");
+        (el as HTMLElement).style.setProperty("--stagger", String(index + 1));
+      });
+
       // Highlight code blocks
       const t = setTimeout(() => {
         if (contentRef.current) {

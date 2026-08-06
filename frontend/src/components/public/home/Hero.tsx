@@ -202,10 +202,8 @@ export default function Hero({ profile }: HeroProps) {
 
   // Typewriter Effect
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-
     // Blinking cursor
-    intervalId = setInterval(() => {
+    const intervalId = setInterval(() => {
       setCursorVisible((v) => !v);
     }, 500);
 
