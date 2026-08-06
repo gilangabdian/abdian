@@ -197,8 +197,8 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
           text-decoration-color: inherit !important;
         }
         .prose p:empty::before { content: "\\00a0"; display: inline-block; }
-        .prose p { color: #52525b !important; font-size: 16px; line-height: 28px }
-        .dark .prose p { color: #a1a1aa !important; }
+        .prose p { color: #404040  !important; font-size: 16px; line-height: 28px }
+        .dark .prose p { color: #a3a3a3  !important; }
         .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
         .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
         .prose a:hover { text-decoration-color: #171717 !important; }

@@ -38,14 +38,14 @@ export function formatGithubLinks(container: HTMLElement) {
 
           // Modify classes to look like a pill badge
           link.className =
-            "inline-flex font-[Inter] items-center gap-2 pr-3 py-0 pl-0 rounded-full bg-neutral-200 dark:bg-neutral-800 text-sm !font-normal !text-neutral-500 dark:!text-neutral-400 !no-underline hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors mx-1 align-middle whitespace-nowrap overflow-hidden";
+            "inline-flex font-[Inter] items-center gap-2 pr-3 py-0 pl-0 rounded-full bg-neutral-200 dark:bg-neutral-900 text-sm !font-semibold !text-neutral-500 dark:!text-neutral-500 !no-underline hover:bg-neutral-300 dark:hover:bg-neutral-800 transition-colors mx-1 align-middle whitespace-nowrap overflow-hidden";
 
           link.innerHTML = `
             <img
               src="${avatarUrl}"
               alt="${linkText}"
-              class="w-6 h-6 m-0 !my-0 ${isCustomIcon ? 'rounded-md p-[2px]' : 'rounded-full'}"
-              style="display: block; ${isCustomIcon ? 'object-fit: contain;' : ''}"
+              class="w-6 h-6 m-0 !my-0 ${isCustomIcon ? "rounded-md p-[2px]" : "rounded-full"}"
+              style="display: block; ${isCustomIcon ? "object-fit: contain;" : ""}"
             />
             <span class="leading-none mb-[2px]">${linkText}</span>
           `;
