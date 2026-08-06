@@ -309,3 +309,34 @@ html.dark::-webkit-scrollbar-thumb:hover {
   /* Nilai kedua (3.0) ini yang membuatnya overshoot (kebablasan) ke 200deg sebelum menetap di 120deg */
   transition-timing-function: cubic-bezier(0.4, 4, 0.6, 1);
 }
+
+/* Custom Staggered Animation */
+@keyframes enter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-animate] {
+  --stagger: 0;
+  --delay: 120ms;
+  --start: 0ms;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-animate] {
+    animation: enter 0.6s both;
+    animation-delay: calc(var(--stagger) * var(--delay) + var(--start));
+  }
+}
+
+[data-animation-controller="false"] [data-animate] {
+  animation: none;
+}
+

@@ -23,7 +23,7 @@ interface AboutClientProps {
 function injectDateAfterFirstH2(html: string, formattedDate: string): string {
   if (!html) return html;
 
-  const dateHtml = `<span class="block text-sm md:text-base text-neutral-500 dark:text-neutral-500 -mt-4 mb-4">Last updated on ${formattedDate}</span>`;
+  const dateHtml = `<span class="about-last-updated block text-sm md:text-base text-neutral-500 dark:text-neutral-500 -mt-4 mb-4">Last updated on ${formattedDate}</span>`;
 
   // Find the first closing heading tag (h1-h3) and inject date after it
   const headingMatch = html.match(/<\/(h[1-3])>/i);
@@ -79,6 +79,13 @@ const AboutContent = React.memo(
 
       // Format GitHub links
       formatGithubLinks(contentRef.current);
+
+      // Inject staggered animations for paragraphs, headings, and the last updated text
+      const elements = contentRef.current.querySelectorAll("p, h2, h3, .about-last-updated");
+      elements.forEach((el, index) => {
+        el.setAttribute("data-animate", "true");
+        (el as HTMLElement).style.setProperty("--stagger", String(index + 1));
+      });
 
       const images = contentRef.current.querySelectorAll("img");
       const handleImageClick = (e: Event) => {
