@@ -106,7 +106,7 @@ const AboutContent = React.memo(
       <div
         ref={contentRef}
         suppressHydrationWarning={true}
-        className="prose prose-neutral dark:text-neutral-300 max-w-none mt-4 text-sm md:text-base leading-relaxed prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-black dark:prose-headings:text-white prose-a:no-underline prose-a:text-black dark:prose-a:text-white hover:prose-a:underline prose-a:decoration-black/20 dark:prose-a:decoration-white/20 hover:prose-a:decoration-black dark:hover:prose-a:decoration-white prose-a:underline-offset-4 prose-a:transition-all prose-a:duration-300 prose-img:rounded-lg prose-img:my-4 prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-neutral-800 dark:prose-code:text-neutral-200 prose-blockquote:border-l-4 prose-blockquote:border-neutral-300 dark:prose-blockquote:border-neutral-700 prose-blockquote:pl-4 prose-blockquote:py-1 prose-blockquote:text-neutral-400 dark:prose-blockquote:text-neutral-500 prose-blockquote:not-italic prose-blockquote:my-6 [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic [&_p:empty]:min-h-[1.5em] [&_p:empty]:block"
+        className="prose prose-neutral dark:text-neutral-400 max-w-none mt-4 text-sm md:text-base leading-relaxed prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-black dark:prose-headings:text-white prose-a:no-underline prose-a:text-black dark:prose-a:text-white hover:prose-a:underline prose-a:decoration-black/20 dark:prose-a:decoration-white/20 hover:prose-a:decoration-black dark:hover:prose-a:decoration-white prose-a:underline-offset-4 prose-a:transition-all prose-a:duration-300 prose-img:rounded-lg prose-img:my-4 prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-neutral-800 dark:prose-code:text-neutral-200 prose-blockquote:border-l-4 prose-blockquote:border-neutral-300 dark:prose-blockquote:border-neutral-700 prose-blockquote:pl-4 prose-blockquote:py-1 prose-blockquote:text-neutral-400 dark:prose-blockquote:text-neutral-500 prose-blockquote:not-italic prose-blockquote:my-6 [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic [&_p:empty]:min-h-[1.5em] [&_p:empty]:block"
         dangerouslySetInnerHTML={{
           __html: processedHtml,
         }}
@@ -194,14 +194,12 @@ export default function AboutClient({ initialProfile, aboutContent, aboutUpdated
         .dark .prose blockquote::before {
           background: #404040;
         }
-        /* Links: underline only on hover */
-        .prose a {
-          text-decoration: none !important;
-        }
-        .prose a:hover {
-          text-decoration: underline !important;
-          text-decoration-color: inherit !important;
-        }
+               /* Links: sama persis seperti di blog (menyala & standby underline) */
+        .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
+        .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
+        .prose a:hover { text-decoration-color: #171717 !important; }
+        .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
+
       `}</style>
 
       {/* Image Zoom Modal */}

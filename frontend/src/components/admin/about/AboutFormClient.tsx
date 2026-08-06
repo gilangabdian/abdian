@@ -85,7 +85,8 @@ export default function AboutFormClient() {
     },
     editorProps: {
       attributes: {
-        class: "prose prose-neutral max-w-none min-h-[300px] outline-none p-4 md:p-8 font-[Inter] text-sm md:text-base leading-relaxed prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-black prose-a:no-underline prose-a:text-black hover:prose-a:underline prose-a:decoration-black/20 hover:prose-a:decoration-black prose-a:underline-offset-4 prose-a:transition-all prose-a:duration-300 prose-img:rounded-lg prose-img:my-4 prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-neutral-800 prose-blockquote:border-l-4 prose-blockquote:border-neutral-300 prose-blockquote:pl-4 prose-blockquote:py-1 prose-blockquote:text-neutral-400 prose-blockquote:not-italic prose-blockquote:my-6 [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:not-italic [&_p:empty]:min-h-[1.5em] [&_p:empty]:block",
+        class:
+          "prose prose-neutral max-w-none min-h-[300px] outline-none p-4 md:p-8 font-[Inter] text-sm md:text-base leading-relaxed prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-black prose-a:no-underline prose-a:text-black hover:prose-a:underline prose-a:decoration-black/20 hover:prose-a:decoration-black prose-a:underline-offset-4 prose-a:transition-all prose-a:duration-300 prose-img:rounded-lg prose-img:my-4 prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-neutral-800 prose-blockquote:border-l-4 prose-blockquote:border-neutral-300 prose-blockquote:pl-4 prose-blockquote:py-1 prose-blockquote:text-neutral-400 prose-blockquote:not-italic prose-blockquote:my-6 [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:not-italic [&_p:empty]:min-h-[1.5em] [&_p:empty]:block",
       },
       transformPastedHTML(html) {
         // Prevent pasted text from being auto-converted to code snippets.
@@ -296,14 +297,10 @@ export default function AboutFormClient() {
                   background: #d4d4d8;
                   border-radius: 2px;
                 }
-                /* Links: underline only on hover */
-                .ProseMirror a {
-                  text-decoration: none !important;
-                }
-                .ProseMirror a:hover {
-                  text-decoration: underline !important;
-                  text-decoration-color: inherit !important;
-                }
+                                /* Links: selalu mode terang karena background editor putih pekat */
+                .ProseMirror a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
+                .ProseMirror a:hover { text-decoration-color: #171717 !important; }
+
               `}</style>
               <EditorContent editor={editor} />
             </div>
@@ -402,9 +399,14 @@ export default function AboutFormClient() {
                     background: #d4d4d8;
                     border-radius: 2px;
                   }
-                  .dark .prose blockquote::before {
+                                    .dark .prose blockquote::before {
                     background: #404040;
                   }
+                  /* Links: menyala di dark mode dan ada underline standby */
+                  .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
+                  .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
+                  .prose a:hover { text-decoration-color: #171717 !important; }
+                  .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
                 `}</style>
 
                 <div
