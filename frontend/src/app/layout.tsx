@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import "@/app/globals.css";
 import "highlight.js/styles/night-owl.css";
 import Provider from "./provider";
+import Script from "next/script";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Gilang Abdian",
@@ -39,7 +43,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Gilang Abdian",
-    alternateName: ["Gilang", "Abdian", "gilangabdian"],
+    alternateName: ["Gilang", "Abdian", "gilangabdian", "abdian", "gilang"],
     url: "https://abdian.vercel.app/",
     image: "https://abdian.vercel.app/abdian.png",
     jobTitle: "Software Engineer",
@@ -47,17 +51,14 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" suppressHydrationWarning className="antialiased h-full">
+    <html lang="en" suppressHydrationWarning className={`${inter.className} antialiased h-full`}>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-          rel="stylesheet"
-        />
+        {/* <Script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" strategy="beforeInteractive" /> */}
+        <Script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.0/dist/iconify-icon.min.js"></Script>
       </head>
-      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
+
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <Provider>{children}</Provider>
       </body>
     </html>

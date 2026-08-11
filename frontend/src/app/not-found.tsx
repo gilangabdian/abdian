@@ -1,20 +1,18 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useEffect } from "react";
 import NProgress from "nprogress";
 
 export default function NotFound() {
-  const { setTheme } = useTheme();
+  // const { setTheme } = useTheme();
 
   useEffect(() => {
-    setTheme("dark");
     NProgress.done();
-  }, [setTheme]);
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center transition-colors duration-300 px-6 text-center font-sans">
+    <div className="public-theme min-h-screen flex flex-col items-center justify-center transition-colors duration-300 px-6 text-center font-sans">
       {/* 404 Kecil */}
       <h1 className="text-xl md:text-2xl font-bold text-black dark:text-white mb-2 tracking-widest">404</h1>
       {/* Deskripsi */}

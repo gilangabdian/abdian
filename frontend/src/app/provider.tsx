@@ -28,7 +28,7 @@ export default function Provider({ children, ...props }: ThemeProviderProps) {
   }, []);
 
   return (
-    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange {...props}>
+    <NextThemesProvider attribute="class" defaultTheme="dark" disableTransitionOnChange {...props}>
       <React.Suspense fallback={null}>
         <NextTopLoader
           color="#9ca3af"

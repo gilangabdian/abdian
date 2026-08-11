@@ -292,7 +292,7 @@ export default function Hero({ profile }: HeroProps) {
   return (
     <div
       ref={heroRef}
-      className="container mx-auto px-6 pt-26 pb-6 md:pt-8 md:pb-0 min-h-screen flex items-center justify-center overflow-hidden">
+      className="container mx-auto px-6 pt-26 pb-6 md:pt-8 md:pb-0 min-h-screen flex items-center justify-center font-[Inter] overflow-hidden">
       <div className="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-2 mt-8">
         {/* Left Content */}
         <div className="flex-1 flex flex-col items-start space-y-3 md:space-y-3 mt-4">

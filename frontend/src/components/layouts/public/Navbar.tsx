@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Icon } from "@iconify/react";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -118,7 +117,7 @@ export default function Navbar() {
                   ? "text-black dark:text-white"
                   : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
               }`}>
-              <Icon icon={link.icon} className="w-5 h-5" />
+              <iconify-icon icon={link.icon} height="20" width="20" />
             </Link>
           );
         })}
@@ -130,10 +129,10 @@ export default function Navbar() {
           className="cursor-pointer transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
           suppressHydrationWarning>
           <span className="hidden dark:block">
-            <Icon icon="lucide:sun" className="w-5 h-5" />
+            <iconify-icon icon="lucide:sun" height="20" width="20" />
           </span>
           <span className="block dark:hidden">
-            <Icon icon="ri:moon-line" className="w-5 h-5" />
+            <iconify-icon icon="ri:moon-line" height="20" width="20" />
           </span>
         </button>
       </div>
@@ -177,7 +176,7 @@ export default function Navbar() {
                   ? "text-black dark:text-white"
                   : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
               }`}>
-              <Icon icon={link.icon} className="w-5 h-5" />
+              <iconify-icon icon={link.icon} height="20" width="20" />
             </Link>
           );
         })}
@@ -189,10 +188,10 @@ export default function Navbar() {
           className="cursor-pointer transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white active:scale-95"
           suppressHydrationWarning>
           <span className="hidden dark:block">
-            <Icon icon="lucide:sun" className="w-5 h-5" />
+            <iconify-icon icon="lucide:sun" height="20" width="20" />
           </span>
           <span className="block dark:hidden">
-            <Icon icon="ri:moon-line" className="w-5 h-5" />
+            <iconify-icon icon="ri:moon-line" height="20" width="20" />
           </span>
         </button>
       </div>

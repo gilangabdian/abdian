@@ -340,3 +340,8 @@ html.dark::-webkit-scrollbar-thumb:hover {
   animation: none;
 }
 
+iconify-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
