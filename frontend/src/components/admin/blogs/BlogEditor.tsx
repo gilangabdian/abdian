@@ -284,6 +284,23 @@ export default function BlogEditor({
           Preview Blog
         </button>
       </div>
+
+      {/* Floating Language Toggle Button */}
+      <button
+        type="button"
+        onClick={() => setActiveTab(activeTab === "id" ? "en" : "id")}
+        className="fixed bottom-8 right-8 z-50 flex items-center justify-center w-16 h-16 bg-black text-white rounded-full border-4 border-black shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:scale-110 active:scale-95 transition-all group"
+        title="Switch Language"
+      >
+        <span className="font-black font-mono text-xl uppercase">
+          {activeTab}
+        </span>
+        
+        {/* Tooltip */}
+        <span className="absolute -top-10 right-0 bg-black text-white text-xs px-2 py-1 font-mono font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          Switch to {activeTab === "id" ? "English" : "Indonesia"}
+        </span>
+      </button>
     </div>
   );
 }
