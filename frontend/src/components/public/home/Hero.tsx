@@ -390,14 +390,14 @@ export default function Hero({ profile }: HeroProps) {
 
               {/* Decorations Container */}
               <div
-                className={`absolute inset-0 z-20 pointer-events-none transition-all duration-300 ${isAnimating ? "blur-md opacity-50" : "blur-0 opacity-100"}`}>
+                className={`absolute inset-0 z-20 pointer-events-none transition-bounce-hover ${isAnimating ? "blur-md opacity-50" : "blur-0 opacity-100"}`}>
                 {currentDecorations.static.map((deco, idx) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     key={`static-${currentIndex}-${idx}`}
                     src={deco.src}
                     alt="decoration"
-                    className={`absolute ${deco.position} ${deco.size} transition-all duration-300 ease-out ${isHovered ? deco.hoverEffect || "" : ""}`}
+                    className={`absolute ${deco.position} ${deco.size} transition-bounce-hover ${isHovered ? deco.hoverEffect || "" : ""}`}
                   />
                 ))}
                 {currentDecorations.hoverOnly.map((deco, idx) => (
@@ -406,7 +406,7 @@ export default function Hero({ profile }: HeroProps) {
                     key={`hover-${currentIndex}-${idx}`}
                     src={deco.src}
                     alt="decoration hover"
-                    className={`absolute ${deco.position} ${deco.size} transition-all duration-300 ease-out ${deco.delay || ""} ${showDecorations ? "opacity-100 translate-x-0 translate-y-0 scale-100 " + (deco.animation || "") : "opacity-0 " + (deco.slideFrom || "scale-50")}`}
+                    className={`absolute ${deco.position} ${deco.size} transition-bounce-hover ${deco.delay || ""} ${showDecorations ? "opacity-100 translate-x-0 translate-y-0 scale-100 " + (deco.animation || "") : "opacity-0 " + (deco.slideFrom || "scale-50")}`}
                   />
                 ))}
               </div>
@@ -419,8 +419,8 @@ export default function Hero({ profile }: HeroProps) {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onClick={handleClick}
-                className={`w-full h-full object-cover border-b border-black/20 dark:border-white/20 transition-all duration-300 ${
-                  isHovered ? "scale-105" : "scale-100"
+                className={`w-full h-full object-cover border-b border-black/20 dark:border-white/20 transition-bounce-hover ${
+                  isHovered ? "scale-[1.08]" : "scale-100"
                 } ${isAnimating ? "blur-md opacity-50" : "blur-0 opacity-100"}`}
               />
             </div>

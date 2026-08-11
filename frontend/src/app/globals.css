@@ -114,6 +114,12 @@ body:has(.public-theme) {
   .dark .public-theme .placeholder-gray-400::placeholder {
     color: #6b7280 !important;
   }
+
+  .transition-bounce-hover {
+    transition-property: all;
+    transition-duration: 600ms;
+    transition-timing-function: cubic-bezier(0.4, 2.2, 0.5, 1);
+  }
 }
 
 /* NProgress Customization */
