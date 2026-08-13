@@ -20,6 +20,7 @@ export default async function AboutPage() {
       aboutUpdatedAt = aboutData.data.updated_at;
     }
   } catch (e) {
+    console.error(e);
     // Silently fail, fallback to hardcoded
   }
 

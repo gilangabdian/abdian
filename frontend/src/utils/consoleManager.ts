@@ -11,7 +11,9 @@ export const initConsoleFeatures = (): void => {
 
   try {
     console.clear();
-  } catch (e) {}
+  } catch (e) {
+    console.error(e);
+  }
 
   // ==========================================
   // 1. SAPAAN AWAL

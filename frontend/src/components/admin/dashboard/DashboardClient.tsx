@@ -151,6 +151,7 @@ export default function DashboardClient() {
           setIsDbConnected(false);
         }
       } catch (e) {
+        console.error(e);
         setIsDbConnected(false);
       }
     }, 5000);
@@ -159,6 +160,7 @@ export default function DashboardClient() {
       clearInterval(timeInterval);
       clearInterval(statusInterval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteVisitor = async (id: number | string) => {

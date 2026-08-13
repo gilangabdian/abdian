@@ -119,14 +119,9 @@ export default function SkillClient() {
       setHiddenCategories(data?.hidden_skill_categories || []);
       setDefaultCategory(data?.default_skill_category || "");
       setCategoryTooltips(data?.skill_categories_info || {});
-      
-      const savedOrder = data?.skill_categories_order || [];
-      const currentActive = new Set<string>();
-      
       // Need active categories dynamically based on skills at this moment
       // since useMemo might be slightly delayed
       
-      const allActive = Array.from(currentActive);
       // Wait, we need the latest activeCategories. We will sync this in a useEffect
     } catch (e) {
       console.error(e);
@@ -170,7 +165,7 @@ export default function SkillClient() {
     setGroupedSkills(sortedGroups);
     
     // Also sync customOrderedCategories for Category Manager
-    setCustomOrderedCategories(prev => {
+    setCustomOrderedCategories(() => {
       const allActive = Array.from(new Set(skills.map(s => s.category).filter(c => c && c !== 'Uncategorized')));
       const ordered = (profileData?.skill_categories_order || []).filter((cat: string) => allActive.includes(cat));
       const newCats = allActive.filter(cat => !ordered.includes(cat));
@@ -288,6 +283,7 @@ export default function SkillClient() {
         await alertError(responseBody.message);
       }
     } catch (e) {
+      console.error(e);
       alertError("Gagal menghapus");
     }
   };
@@ -331,6 +327,7 @@ export default function SkillClient() {
         await alertError(responseBody.message || "Gagal menghapus skills");
       }
     } catch (e) {
+      console.error(e);
       alertError("Terjadi kesalahan sistem");
     } finally {
       setIsSubmitting(false);

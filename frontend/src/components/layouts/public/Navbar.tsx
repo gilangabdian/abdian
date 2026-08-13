@@ -9,21 +9,12 @@ export default function Navbar() {
   const pathname = usePathname();
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [scrolledPast, setScrolledPast] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Detect scroll to hide right nav items
-  useEffect(() => {
-    const onScroll = () => {
-      setScrolledPast(window.scrollY > 60);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+
 
   const isDark = resolvedTheme === "dark";
 

@@ -203,6 +203,7 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
         alertError("Gagal menghapus data.");
       }
     } catch (e) {
+      console.error(e);
       alertError("Terjadi kesalahan sistem.");
     }
   };

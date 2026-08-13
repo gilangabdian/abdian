@@ -21,6 +21,7 @@ export default function ArtworkClient() {
       const data = await getAllArtworks();
       setArtworks(data || []);
     } catch (error) {
+      console.error(error);
       alertError("Gagal mengambil data artworks");
     } finally {
       setIsLoading(false);
@@ -88,6 +89,7 @@ export default function ArtworkClient() {
       resetForm();
       fetchArtworks();
     } catch (error) {
+      console.error(error);
       alertError("Terjadi kesalahan saat mengupload");
     } finally {
       setIsUploading(false);
@@ -108,6 +110,7 @@ export default function ArtworkClient() {
         await alertSuccess("Artwork berhasil dihapus.");
         fetchArtworks();
       } catch (error) {
+        console.error(error);
         alertError("Gagal menghapus artwork");
       }
     }
@@ -125,6 +128,7 @@ export default function ArtworkClient() {
     return () => {
       previewImages.forEach(url => URL.revokeObjectURL(url));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -39,7 +39,8 @@ export default function Tech({ skills = [], profile = null }: TechProps) {
     });
 
     return visibleCats;
-  }, [skills, hiddenCategories, customOrder]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skills]);
 
   useEffect(() => {
     if (profile && !isUserChanged) {
@@ -122,7 +123,7 @@ export default function Tech({ skills = [], profile = null }: TechProps) {
   }, [activeCategory]);
 
   // Handle entry animation for cards
-  const prevSkillsCountRef = useRef(0);
+
   useEffect(() => {
     if (!isVisible) return;
     

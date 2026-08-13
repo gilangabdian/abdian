@@ -124,7 +124,7 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
     }
   }, []);
 
-  const openModal = (url: string) => setSelectedImage(url);
+
   const closeModal = () => setSelectedImage(null);
 
   const onMouseEnter = () => {

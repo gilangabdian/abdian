@@ -77,6 +77,7 @@ export default function ProjectsClient() {
         await alertError("Gagal menghapus data.");
       }
     } catch (error) {
+      console.error(error);
       alertError("Terjadi kesalahan sistem.");
     }
   };

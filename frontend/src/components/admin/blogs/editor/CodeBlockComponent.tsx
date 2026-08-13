@@ -17,7 +17,6 @@ const languages = [
 export default function CodeBlockComponent({
   node,
   updateAttributes,
-  extension,
 }: any) {
   return (
     <NodeViewWrapper className="code-block border-2 border-black rounded-lg overflow-hidden my-4" data-type="codeBlock">

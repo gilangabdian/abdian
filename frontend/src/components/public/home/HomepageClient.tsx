@@ -34,7 +34,7 @@ export default function HomepageClient({
   experiences,
 }: HomepageClientProps) {
   const [hasSeenIntro, setHasSeenIntro] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [loadingPercent, setLoadingPercent] = useState(0);
 
@@ -101,7 +101,6 @@ export default function HomepageClient({
     // Jika sudah pernah melihat di tab ini, langsung hilangkan dari React DOM
     if (isReturningVisitor) {
       setHasSeenIntro(true);
-      setIsLoading(false);
       window.dispatchEvent(new CustomEvent("content-loaded"));
       setTimeout(() => ScrollTrigger.refresh(), 200);
       return;
@@ -137,7 +136,6 @@ export default function HomepageClient({
       setTimeout(() => {
         setIsFadingOut(true); 
         setTimeout(() => {
-          setIsLoading(false);
           setHasSeenIntro(true);
           sessionStorage.setItem("has_seen_intro", "true");
           window.dispatchEvent(new CustomEvent("content-loaded"));

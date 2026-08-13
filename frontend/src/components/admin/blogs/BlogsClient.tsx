@@ -19,6 +19,7 @@ export default function BlogsClient() {
       const data = await getAllBlogsAdmin(token);
       setBlogs(data || []);
     } catch (error) {
+      console.error(error);
       alertError("Gagal mengambil data blogs");
     } finally {
       setIsLoading(false);
@@ -50,6 +51,7 @@ export default function BlogsClient() {
         await alertSuccess("Artikel berhasil dihapus.");
         fetchBlogs();
       } catch (error) {
+        console.error(error);
         alertError("Terjadi kesalahan");
       }
     }

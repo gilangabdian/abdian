@@ -66,6 +66,7 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
             });
           }
         } catch (error) {
+          console.error(error);
           alertError("Gagal memuat data blog");
           router.push("/admin/blogs");
         } finally {
@@ -244,6 +245,7 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
         throw new Error("Gagal mendapatkan URL gambar");
       }
     } catch (err) {
+      console.error(err);
       alertError("Gagal mengunggah gambar");
     }
 

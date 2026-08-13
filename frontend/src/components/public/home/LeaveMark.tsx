@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { getVisitorMarkCount, leaveVisitorMark } from "@/lib/api/visitor";
@@ -90,6 +90,7 @@ export default function LeaveMark() {
         })
         .catch((err) => console.error("Failed to fetch mark count", err));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceId]);
 
   const removeTooltip = React.useCallback((id: number) => {

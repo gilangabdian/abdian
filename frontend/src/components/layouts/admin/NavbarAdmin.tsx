@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 import { removeToken } from "@/utils/auth"; // Assuming an auth util
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { Profile } from "@/types";
-import Image from "next/image";
+
 import TableOfContents from "@/components/global/TableOfContents";
 import { injectHeadingIds } from "@/lib/heading-utils";
 import { formatGithubLinks } from "@/lib/github-link-formatter";
@@ -117,8 +117,8 @@ const AboutContent = React.memo(
 
 AboutContent.displayName = "AboutContent";
 
-export default function AboutClient({ initialProfile, aboutContent, aboutUpdatedAt }: AboutClientProps) {
-  const [profile] = useState<Profile | null>(initialProfile);
+export default function AboutClient({ aboutContent, aboutUpdatedAt }: AboutClientProps) {
+
   const [imageZoom, setImageZoom] = useState<string | null>(null);
   const [showToc, setShowToc] = useState(false);
   const [toc, setToc] = useState<{ id: string; text: string; level: string }[]>([]);

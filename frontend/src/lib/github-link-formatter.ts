@@ -63,6 +63,7 @@ export function formatGithubLinks(container: HTMLElement) {
         }
       }
     } catch (e) {
+      console.error(e);
       // Invalid URL, safely ignore
     }
   });

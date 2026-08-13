@@ -21,6 +21,7 @@ export default function PhotoClient() {
       const data = await getAllPhotos();
       setPhotos(data || []);
     } catch (error) {
+      console.error(error);
       alertError("Gagal mengambil data photos");
     } finally {
       setIsLoading(false);
@@ -91,6 +92,7 @@ export default function PhotoClient() {
       resetForm();
       fetchPhotos();
     } catch (error) {
+      console.error(error);
       alertError("Terjadi kesalahan saat mengupload");
     } finally {
       setIsUploading(false);
@@ -111,6 +113,7 @@ export default function PhotoClient() {
         await alertSuccess("Photo berhasil dihapus.");
         fetchPhotos();
       } catch (error) {
+        console.error(error);
         alertError("Gagal menghapus photo");
       }
     }
@@ -128,6 +131,7 @@ export default function PhotoClient() {
     return () => {
       previewImages.forEach((url) => URL.revokeObjectURL(url));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

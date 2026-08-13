@@ -136,6 +136,7 @@ export default function ContactClient() {
         alertError("Gagal menghapus kontak");
       }
     } catch (e) {
+      console.error(e);
       alertError("Terjadi kesalahan sistem");
     }
   };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Editor, useEditor, EditorContent, ReactNodeViewRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -42,6 +42,7 @@ export default function AboutFormClient() {
           setContent(response.data.content);
         }
       } catch (error) {
+        console.error(error);
         // No about data yet, that's fine
       } finally {
         setIsLoading(false);
@@ -111,6 +112,7 @@ export default function AboutFormClient() {
     if (editor && !isLoading && content) {
       editor.commands.setContent(content || "");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor, isLoading]);
 
   // Format GitHub links in the preview when it is open
@@ -172,6 +174,7 @@ export default function AboutFormClient() {
         throw new Error("Gagal mendapatkan URL gambar");
       }
     } catch (err) {
+      console.error(err);
       alertError("Gagal mengunggah gambar");
     }
 
