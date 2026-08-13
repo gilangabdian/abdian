@@ -8,9 +8,13 @@ export function formatGithubLinks(container: HTMLElement) {
       if (url.hostname === "github.com") {
         const pathSegments = url.pathname.split("/").filter(Boolean);
 
-        // We want to handle either github.com/username (1 segment)
-        // or github.com/username/repo (2 segments)
-        if (pathSegments.length === 1 || pathSegments.length === 2) {
+        const isProfile = pathSegments.length === 1;
+        const isRepo = pathSegments.length === 2;
+        const hasCustomIcon = url.hash && url.hash.startsWith("#icon-");
+
+        // We want to handle github.com/username (Profile) 
+        // OR github.com/username/repo only if it has a custom icon requested
+        if (isProfile || ((isProfile || isRepo) && hasCustomIcon)) {
           const username = pathSegments[0];
           const repo = pathSegments.length === 2 ? pathSegments[1] : null;
 

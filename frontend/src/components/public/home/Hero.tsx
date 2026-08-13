@@ -392,7 +392,7 @@ export default function Hero({ profile }: HeroProps) {
               <div
                 className={`absolute inset-0 z-20 pointer-events-none transition-bounce-hover ${isAnimating ? "blur-md opacity-50" : "blur-0 opacity-100"}`}>
                 {currentDecorations.static.map((deco, idx) => (
-                  // eslint-disable-next-line @next/next/no-img-element
+                   
                   <img
                     key={`static-${currentIndex}-${idx}`}
                     src={deco.src}
@@ -401,7 +401,7 @@ export default function Hero({ profile }: HeroProps) {
                   />
                 ))}
                 {currentDecorations.hoverOnly.map((deco, idx) => (
-                  // eslint-disable-next-line @next/next/no-img-element
+                   
                   <img
                     key={`hover-${currentIndex}-${idx}`}
                     src={deco.src}
@@ -411,7 +411,7 @@ export default function Hero({ profile }: HeroProps) {
                 ))}
               </div>
 
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+              { }
               <img
                 loading="lazy"
                 src={heroPhotos[currentIndex]}

@@ -35,7 +35,7 @@ export default function NavbarAdmin({ onToggleMenu }: { onToggleMenu: () => void
         </div>
 
         <div className="h-10 w-10 md:h-12 md:w-12 bg-gray-200 rounded-full border-2 border-black overflow-hidden shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          { }
           <img loading="lazy" src="/abdian.png" alt="Admin" className="object-cover object-top w-full h-full" />
         </div>
 
