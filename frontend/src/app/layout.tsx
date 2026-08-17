@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     images: ["https://abdian.vercel.app/abdian.png"],
   },
   verification: {
-    google: "Fb9M_rgQZxEhbLF4WbLPj6OBCioj5nQ0aYpKsJELsDc",
+    google: "FnSR5V_A9QHTGt_cKUdziQtpTBvFqG4_aBz5-m-iHGc",
   },
   icons: {
     icon: [{ url: "/abdian.svg", type: "image/svg+xml" }],
