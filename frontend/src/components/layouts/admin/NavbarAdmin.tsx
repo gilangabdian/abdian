@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useRouter } from "next/navigation";
 import { removeToken } from "@/utils/auth"; // Assuming an auth util
 
@@ -32,11 +31,6 @@ export default function NavbarAdmin({ onToggleMenu }: { onToggleMenu: () => void
         <div className="hidden md:flex flex-col items-end mr-2 text-black">
           <span className="font-bold text-sm">Super Admin</span>
           <span className="text-xs font-mono bg-black text-white px-1">ONLINE</span>
-        </div>
-
-        <div className="h-10 w-10 md:h-12 md:w-12 bg-gray-200 rounded-full border-2 border-black overflow-hidden shrink-0">
-          { }
-          <img loading="lazy" src="/abdian.png" alt="Admin" className="object-cover object-top w-full h-full" />
         </div>
 
         <button
