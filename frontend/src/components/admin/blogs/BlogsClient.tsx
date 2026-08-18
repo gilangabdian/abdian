@@ -104,6 +104,12 @@ export default function BlogsClient() {
                       <Icon icon="carbon:arrow-up-right" /> External
                     </div>
                   )}
+
+                  {blog.type === "note" && (
+                    <div className="px-2 py-1 text-xs font-bold font-mono border-2 border-black bg-purple-100 text-purple-800 flex items-center gap-1 w-fit">
+                      <Icon icon="mdi:note-outline" /> Note
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -123,7 +129,11 @@ export default function BlogsClient() {
                 </div>
               </div>
 
-              <h2 className="text-xl font-bold font-serif mb-2 line-clamp-2 leading-tight">{blog.title}</h2>
+              <h2 className="text-xl font-bold font-serif mb-2 line-clamp-2 leading-tight break-words">
+                {blog.type === "note"
+                  ? blog.content?.replace(/<[^>]*>?/gm, "").substring(0, 50) + "..."
+                  : blog.title}
+              </h2>
 
               <div className="mt-auto pt-4 flex gap-4 text-xs font-mono text-gray-600 border-t-2 border-dashed border-gray-300">
                 {!blog.is_external && (
