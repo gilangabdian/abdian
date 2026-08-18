@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { Blog } from "@/types";
@@ -12,6 +13,7 @@ interface NotesClientProps {
 export default function NotesClient({ initialNotes }: NotesClientProps) {
   const [notes] = useState<Blog[]>(initialNotes);
   const [currentLang, setCurrentLang] = useState("id");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("blogLang");
@@ -36,6 +38,14 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
     return { day, month, year };
   };
 
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === "IMG") {
+      const src = (target as HTMLImageElement).src;
+      if (src) setSelectedImage(src);
+    }
+  };
+
   return (
     <div className="pt-24 md:pt-40 pb-16 min-h-screen flex flex-col items-center font-[Inter]">
       <div className="w-full max-w-3xl px-4 md:px-8">
@@ -45,12 +55,12 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
           <div className="w-full flex flex-col relative">
             {/* Language Toggle */}
             <div className="mb-10 flex items-center justify-start z-20">
-              <label className="flex items-center gap-2 cursor-pointer text-sm text-black/30 dark:text-white/30">
+              <label className="flex items-center gap-2 text-sm text-black/30 dark:text-white/30">
                 <input
                   type="checkbox"
                   checked={currentLang === "en"}
                   onChange={updateLang}
-                  className="w-[13px] h-[13px] cursor-pointer appearance-none border-[1.4px] border-black/30 dark:border-white/30 rounded-[1px] bg-transparent flex items-center justify-center checked:before:content-[''] checked:before:w-[4px] checked:before:h-[6.5px] checked:before:border-r-[1.4px] checked:before:border-b-[1.4px] checked:before:border-black/30 dark:checked:before:border-white/30 checked:before:rotate-45 checked:before:-mt-[1px]"
+                  className="w-[13px] h-[13px] appearance-none border-[1.4px] border-black/30 dark:border-white/30 rounded-[1px] bg-transparent flex items-center justify-center checked:before:content-[''] checked:before:w-[4px] checked:before:h-[6.5px] checked:before:border-r-[1.4px] checked:before:border-b-[1.4px] checked:before:border-black/30 dark:checked:before:border-white/30 checked:before:rotate-45 checked:before:-mt-[1px]"
                 />
                 <span>Read in English</span>
               </label>
@@ -85,6 +95,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
                       hover:prose-a:decoration-black dark:hover:prose-a:decoration-white prose-a:transition-colors
                       prose-img:rounded-lg"
                       dangerouslySetInnerHTML={{ __html: content }}
+                      onClick={handleContentClick}
                     />
                   </div>
                 );
@@ -93,6 +104,17 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
           </div>
         )}
       </div>
+
+      {selectedImage &&
+        typeof window !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+            onClick={() => setSelectedImage(null)}>
+            <img src={selectedImage} className="w-full h-full object-contain" alt="Enlarged Note Image" />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
