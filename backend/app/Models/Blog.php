@@ -20,6 +20,7 @@ class Blog extends Model
         'is_published',
         'is_external',
         'external_url',
+        'type',
     ];
 
     protected $casts = [

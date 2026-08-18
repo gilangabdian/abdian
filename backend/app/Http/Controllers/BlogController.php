@@ -19,11 +19,20 @@ class BlogController extends Controller
     // PUBLIK
     public function indexPublic()
     {
-        // Hanya yang published, select kolom yang diperlukan untuk list view
-        // (content/content_en TIDAK diambil untuk menjaga response < 2MB cache limit)
-        $blogs = Blog::where('is_published', true)
-            ->latest()
-            ->get(['id', 'title', 'title_en', 'slug', 'read_time', 'is_external', 'external_url', 'created_at', 'updated_at']);
+        $query = Blog::where('is_published', true)->latest();
+        
+        if (request()->has('type') && request('type') !== 'all') {
+            $query->where('type', request('type'));
+        } elseif (!request()->has('type')) {
+            $query->where('type', 'blog');
+        }
+
+        if (request('type') === 'note') {
+            $blogs = $query->get(['id', 'title', 'title_en', 'slug', 'type', 'read_time', 'is_external', 'external_url', 'created_at', 'updated_at', 'content', 'content_en']);
+        } else {
+            $blogs = $query->get(['id', 'title', 'title_en', 'slug', 'type', 'read_time', 'is_external', 'external_url', 'created_at', 'updated_at']);
+        }
+        
         return response()->json($blogs);
     }
 
@@ -36,7 +45,13 @@ class BlogController extends Controller
     // ADMIN
     public function indexAdmin()
     {
-        $blogs = Blog::latest()->get();
+        $query = Blog::latest();
+        
+        if (request()->has('type') && request('type') !== 'all') {
+            $query->where('type', request('type'));
+        }
+
+        $blogs = $query->get();
         return response()->json($blogs);
     }
 
@@ -49,6 +64,11 @@ class BlogController extends Controller
     public function store(StoreBlogRequest $request)
     {
         $data = $request->validated();
+        
+        if (($data['type'] ?? 'blog') === 'note' && empty($data['title'])) {
+            $data['title'] = 'Note ' . now()->format('YmdHis');
+        }
+
         $blog = Blog::create($data);
 
         RevalidationService::tag('blogs');
@@ -63,6 +83,10 @@ class BlogController extends Controller
     {
         $blog = Blog::findOrFail($id);
         $data = $request->validated();
+        
+        if (($data['type'] ?? $blog->type) === 'note' && empty($data['title'])) {
+            $data['title'] = $blog->title ?? 'Note ' . now()->format('YmdHis');
+        }
         
         $blog->update($data);
 

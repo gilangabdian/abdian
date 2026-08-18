@@ -50,6 +50,7 @@
                                             "title": { "type": "string" },
                                             "title_en": { "type": "string", "nullable": true },
                                             "slug": { "type": "string" },
+                                            "type": { "type": "string", "enum": ["blog", "note"] },
                                             "read_time": { "type": "integer" },
                                             "is_external": { "type": "boolean" },
                                             "external_url": { "type": "string", "nullable": true },
@@ -96,6 +97,11 @@
                                         "type": "string",
                                         "description": "HTML string in English",
                                         "nullable": true
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": ["blog", "note"],
+                                        "default": "blog"
                                     },
                                     "is_published": {
                                         "type": "boolean"

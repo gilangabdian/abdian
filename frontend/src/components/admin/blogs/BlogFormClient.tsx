@@ -41,6 +41,7 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
     is_published: true,
     is_external: false,
     external_url: "",
+    type: "blog",
   });
 
   const imageInputId = useRef<HTMLInputElement | null>(null);
@@ -63,6 +64,7 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
               is_published: blogData.is_published,
               is_external: blogData.is_external || false,
               external_url: blogData.external_url || "",
+              type: blogData.type || "blog",
             });
           }
         } catch (error) {
@@ -253,8 +255,8 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
   };
 
   const saveBlog = async () => {
-    if (!form.title) {
-      alertError("Judul tidak boleh kosong");
+    if (form.type === "blog" && !form.title) {
+      alertError("Judul tidak boleh kosong untuk Blog");
       return;
     }
     if (form.is_external && !form.external_url) {
@@ -277,6 +279,7 @@ export default function BlogFormClient({ isEdit = false }: { isEdit?: boolean })
       formData.append("is_published", form.is_published ? "1" : "0");
       formData.append("is_external", form.is_external ? "1" : "0");
       formData.append("external_url", form.external_url || "");
+      formData.append("type", form.type);
       if (isEdit) formData.append("_method", "PUT");
 
       let response;
