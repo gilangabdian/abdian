@@ -11,6 +11,7 @@ interface BlogEditorProps {
     is_published: boolean;
     is_external: boolean;
     external_url: string;
+    type: string;
   };
   setForm: React.Dispatch<React.SetStateAction<any>>;
   activeTab: "id" | "en";
@@ -63,10 +64,23 @@ export default function BlogEditor({
         </button>
       </div>
 
+      {/* Post Type */}
+      <div className="bg-gray-100 p-4 border-4 border-black mb-6">
+        <label className="block font-bold font-mono mb-2 uppercase text-sm">Post As</label>
+        <select
+          value={form.type}
+          onChange={(e) => setForm((prev: any) => ({ ...prev, type: e.target.value }))}
+          className="w-full p-2 border-4 border-black text-lg bg-white focus:outline-none focus:ring-4 focus:ring-gray-300 font-mono font-bold cursor-pointer"
+        >
+          <option value="blog">Blog</option>
+          <option value="note">Note</option>
+        </select>
+      </div>
+
       {/* Title */}
       <div style={{ display: activeTab === "id" ? "block" : "none" }}>
         <label className="block font-bold font-mono mb-2 uppercase text-sm">
-          Blog Title (ID) <span className="text-red-500">*</span>
+          {form.type === "note" ? "Note Title (ID) (Optional)" : "Blog Title (ID) *"}
         </label>
         <input
           value={form.title}
@@ -78,7 +92,7 @@ export default function BlogEditor({
       </div>
       <div style={{ display: activeTab === "en" ? "block" : "none" }}>
         <label className="block font-bold font-mono mb-2 uppercase text-sm">
-          Blog Title (EN) <span className="text-red-500">*</span>
+          {form.type === "note" ? "Note Title (EN) (Optional)" : "Blog Title (EN) *"}
         </label>
         <input
           value={form.title_en}

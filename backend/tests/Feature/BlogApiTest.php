@@ -312,9 +312,27 @@ class BlogApiTest extends TestCase
         $this->assertArrayNotHasKey('content_en', $blog, 'content_en should not be in list response to keep size < 2MB');
 
         // Verify no unexpected columns
-        $allowedKeys = ['id', 'title', 'title_en', 'slug', 'read_time', 'is_external', 'external_url', 'created_at', 'updated_at'];
+        $allowedKeys = ['id', 'title', 'title_en', 'slug', 'type', 'read_time', 'is_external', 'external_url', 'created_at', 'updated_at'];
         foreach ($blog as $key => $value) {
             $this->assertContains($key, $allowedKeys, "Unexpected key '{$key}' found in blog list response");
         }
+    }
+
+    public function test_can_filter_by_type_blog_and_note()
+    {
+        Blog::create(['title' => 'Blog Post', 'content' => 'Content', 'type' => 'blog', 'is_published' => true]);
+        Blog::create(['title' => 'Note Post', 'content' => 'Content', 'type' => 'note', 'is_published' => true]);
+
+        // Default should be blog
+        $response = $this->getJson('/api/blogs');
+        $response->assertStatus(200)
+                 ->assertJsonCount(1)
+                 ->assertJsonFragment(['type' => 'blog']);
+
+        // Type note
+        $response2 = $this->getJson('/api/blogs?type=note');
+        $response2->assertStatus(200)
+                  ->assertJsonCount(1)
+                  ->assertJsonFragment(['type' => 'note']);
     }
 }

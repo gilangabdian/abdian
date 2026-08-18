@@ -25,6 +25,7 @@ export default function Navbar() {
   const textLinks = [
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blogs" },
+    { name: "Notes", href: "/notes" },
     { name: "Projects", href: "/projects" },
     // { name: "Certificates", href: "/certificates" },
   ];
@@ -33,6 +34,7 @@ export default function Navbar() {
   const mobileIconLinks = [
     { name: "About", href: "/about", icon: "mdi:card-account-details-outline" },
     { name: "Blog", href: "/blogs", icon: "material-symbols-light:post-outline" },
+    { name: "Notes", href: "/notes", icon: "mdi:note-outline" },
     { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
     // { name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" },
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },

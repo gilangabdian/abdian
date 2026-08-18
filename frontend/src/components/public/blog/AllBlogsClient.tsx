@@ -44,19 +44,22 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
     return sortedKeys.reduce<{
       result: { year: number; blogs: Blog[]; startIndex: number }[];
       currentStagger: number;
-    }>((acc, year) => {
-      const groupBlogs = groups[year];
-      const startIndex = acc.currentStagger;
-      
-      acc.result.push({
-        year,
-        blogs: groupBlogs,
-        startIndex
-      });
-      
-      acc.currentStagger += 1 + groupBlogs.length;
-      return acc;
-    }, { result: [], currentStagger: 0 }).result;
+    }>(
+      (acc, year) => {
+        const groupBlogs = groups[year];
+        const startIndex = acc.currentStagger;
+
+        acc.result.push({
+          year,
+          blogs: groupBlogs,
+          startIndex,
+        });
+
+        acc.currentStagger += 1 + groupBlogs.length;
+        return acc;
+      },
+      { result: [], currentStagger: 0 },
+    ).result;
   }, [blogs]);
 
   const formatDate = (dateString: string) => {
@@ -85,6 +88,9 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
       `}</style>
 
       <div className="w-full max-w-3xl px-4 md:px-8">
+        <h1 className="text-3xl font-bold tracking-wide text-black dark:text-white block md:hidden mb-24 -mt-6 text-center">
+          Blog
+        </h1>
         {blogs.length === 0 && <div className="text-center text-neutral-500 py-12">no article yet!</div>}
 
         {blogs.length > 0 && (
@@ -105,7 +111,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
             {groupedBlogs.map((group) => (
               <div key={group.year} className="relative w-full mt-10 md:mt-16">
                 {/* Background Year (Hollow Text) */}
-                <div 
+                <div
                   data-animate
                   style={{ "--stagger": group.startIndex } as React.CSSProperties}
                   className="absolute top-0 -left-2 md:-left-4 -translate-y-6 md:-translate-y-15 text-[7rem] md:text-[8rem] font-black select-none z-0 leading-none pointer-events-none year-watermark">
