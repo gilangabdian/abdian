@@ -20,14 +20,14 @@ export const metadata: Metadata = {
     title: "Gilang Abdian",
     description:
       "Hello World from Gilang Abdian. He is an independent software engineer who loves to experiment. In his spare time, he enjoys contributing to open-source libraries.",
-    images: ["https://abdian.vercel.app/abdian.png"],
+    images: ["https://abdian.vercel.app/hide-tokyo-ghoul.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Gilang Abdian",
     description:
       "Hello World from Gilang Abdian. He is an independent software engineer who loves to experiment. In his spare time, he enjoys contributing to open-source libraries.",
-    images: ["https://abdian.vercel.app/abdian.png"],
+    images: ["https://abdian.vercel.app/hide-tokyo-ghoul.png"],
   },
   verification: {
     google: "FnSR5V_A9QHTGt_cKUdziQtpTBvFqG4_aBz5-m-iHGc",
@@ -48,7 +48,7 @@ export default function RootLayout({
     name: "Gilang Abdian",
     alternateName: ["Gilang", "Abdian", "gilangabdian", "abdian", "gilang"],
     url: "https://abdian.vercel.app/",
-    image: "https://abdian.vercel.app/abdian.png",
+    image: "https://abdian.vercel.app/hide-tokyo-ghoul.png",
     jobTitle: "Software Engineer",
     sameAs: ["https://github.com/gilangabdian"],
   };
