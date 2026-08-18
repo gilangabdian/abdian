@@ -109,7 +109,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
               .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
               .prose a:hover { text-decoration-color: #171717 !important; }
               .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
-              .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; cursor: pointer; }
+              .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; }
               .prose h2, .prose h3 { position: relative;  font-weight:normal; }
               .prose h2::before, .prose h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
               .prose h2:hover::before, .prose h3:hover::before { opacity: 1; }
