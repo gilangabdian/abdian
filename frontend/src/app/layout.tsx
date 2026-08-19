@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Gilang Abdian",
   description:
-    "Hello World from Gilang Abdian. He is an independent software engineer who loves to experiment. In his spare time, he enjoys contributing to open-source libraries.",
+    "Hello World from Gilang Abdian. He is an independent software engineer who loves to experiment. In his free time, he enjoys contributing to open-source libraries.",
   keywords:
     "Gilang Abdian, Software Engineer, Gilang, Abdian, gilangabdian, gilang, abdian, personal website, Personal Website, gilang abdian, software engineer, Portfolio",
   authors: [{ name: "Gilang Abdian" }],
@@ -19,14 +19,14 @@ export const metadata: Metadata = {
     url: "https://abdian.vercel.app/",
     title: "Gilang Abdian",
     description:
-      "Hello World from Gilang Abdian. He is an independent software engineer who loves to experiment. In his spare time, he enjoys contributing to open-source libraries.",
+      "Hello World from Gilang Abdian. He is an independent software engineer who loves to experiment. In his free time, he enjoys contributing to open-source libraries.",
     images: ["https://abdian.vercel.app/hide-tokyo-ghoul.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Gilang Abdian",
     description:
-      "Hello World from Gilang Abdian. He is an independent software engineer who loves to experiment. In his spare time, he enjoys contributing to open-source libraries.",
+      "Hello World from Gilang Abdian. He is an independent software engineer who loves to experiment. In his free time, he enjoys contributing to open-source libraries.",
     images: ["https://abdian.vercel.app/hide-tokyo-ghoul.png"],
   },
   verification: {
