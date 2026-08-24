@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import hljs from "highlight.js";
+import "highlight.js/styles/night-owl.css";
 import { Blog } from "@/types";
 
 interface NotesClientProps {
@@ -14,6 +16,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
   const [notes] = useState<Blog[]>(initialNotes);
   const [currentLang, setCurrentLang] = useState("id");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("blogLang");
@@ -22,6 +25,19 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
     }
     NProgress.done();
   }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (containerRef.current) {
+        const codeBlocks = containerRef.current.querySelectorAll("pre code");
+        codeBlocks.forEach((block) => {
+          block.removeAttribute("data-highlighted");
+          hljs.highlightElement(block as HTMLElement);
+        });
+      }
+    }, 10);
+    return () => clearTimeout(t);
+  }, [currentLang, notes]);
 
   const updateLang = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newLang = e.target.checked ? "en" : "id";
@@ -55,7 +71,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
         {notes.length === 0 && <div className="text-center text-neutral-500 py-12">no notes yet!</div>}
 
         {notes.length > 0 && (
-          <div className="w-full flex flex-col relative">
+          <div className="w-full flex flex-col relative" ref={containerRef}>
             <style>{`
             div.callout {
                 position: relative !important;

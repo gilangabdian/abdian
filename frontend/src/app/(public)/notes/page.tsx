@@ -17,14 +17,19 @@ export default async function NotesPage() {
     name: "Notes",
     description: "A collection of random thoughts, snippets, and learnings.",
     url: "https://abdian.vercel.app/notes",
-    blogPost: notes.map((note) => ({
-      "@type": "BlogPosting",
-      headline: note.title,
-      description: note.excerpt || (note.content || "").substring(0, 150).replace(/<[^>]*>?/gm, ""),
-      url: `https://abdian.vercel.app/blogs/${note.slug}`,
-      datePublished: note.published_at || note.created_at,
-      dateModified: note.updated_at || note.published_at || note.created_at,
-    })),
+    blogPost: notes.map((note) => {
+      const seoTitle = note.title_en || note.title;
+      const seoContent = note.content_en || note.content;
+
+      return {
+        "@type": "BlogPosting",
+        headline: seoTitle,
+        description: note.excerpt || (seoContent || "").substring(0, 150).replace(/<[^>]*>?/gm, ""),
+        url: `https://abdian.vercel.app/blogs/${note.slug}`,
+        datePublished: note.published_at || note.created_at,
+        dateModified: note.updated_at || note.published_at || note.created_at,
+      };
+    }),
   };
 
   return (

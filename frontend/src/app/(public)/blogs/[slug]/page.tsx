@@ -18,16 +18,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const plainTextContent = (blog.content || "").replace(/<[^>]*>?/gm, "").substring(0, 160);
+  const seoTitle = blog.title_en || blog.title;
+  const seoContent = blog.content_en || blog.content;
+  const plainTextContent = (seoContent || "").replace(/<[^>]*>?/gm, "").substring(0, 160);
 
   return {
-    title: blog.title,
+    title: seoTitle,
     description: blog.excerpt || plainTextContent,
     alternates: {
       canonical: `https://abdian.vercel.app/blogs/${blog.slug}`,
     },
     openGraph: {
-      title: blog.title,
+      title: seoTitle,
       description: blog.excerpt || plainTextContent,
       url: `https://abdian.vercel.app/blogs/${blog.slug}`,
       type: "article",
@@ -42,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: blog.title,
+      title: seoTitle,
       description: blog.excerpt || plainTextContent,
       images: [blog.cover_image_url || "https://abdian.vercel.app/hide-tokyo-ghoul.png"],
     },
@@ -64,11 +66,14 @@ export default async function SingleBlogPage({ params }: Props) {
   const cookieStore = await cookies();
   const initialLang = cookieStore.get("blogLang")?.value || "id";
 
+  const seoTitle = blog.title_en || blog.title;
+  const seoContent = blog.content_en || blog.content;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: blog.title,
-    description: blog.excerpt || (blog.content || "").replace(/<[^>]*>?/gm, "").substring(0, 160),
+    headline: seoTitle,
+    description: blog.excerpt || (seoContent || "").replace(/<[^>]*>?/gm, "").substring(0, 160),
     image: blog.cover_image_url || "https://abdian.vercel.app/hide-tokyo-ghoul.png",
     author: {
       "@type": "Person",
@@ -89,7 +94,7 @@ export default async function SingleBlogPage({ params }: Props) {
       "@type": "WebPage",
       "@id": `https://abdian.vercel.app/blogs/${blog.slug}`,
     },
-    articleBody: (blog.content || "").replace(/<[^>]*>?/gm, ""), // Strip HTML
+    articleBody: (seoContent || "").replace(/<[^>]*>?/gm, ""), // Strip HTML
   };
 
   return (
