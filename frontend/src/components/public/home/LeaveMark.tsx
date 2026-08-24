@@ -27,7 +27,7 @@ const Tooltip = ({ id, onRemove }: { id: number; onRemove: (id: number) => void 
 
   return (
     <div
-      className={`fixed bottom-4 right-4 bg-black text-white dark:bg-white dark:text-black px-3 py-1.5 rounded-lg shadow-lg text-xs font-medium tracking-wide font-[Inter] flex items-center gap-1.5 border border-white/10 dark:border-black/10 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-50 ${
+      className={`fixed bottom-4 right-4 bg-black text-white dark:bg-white dark:text-black px-3 py-1.5 rounded-lg shadow-lg text-xs font-medium tracking-wide flex items-center gap-1.5 border border-white/10 dark:border-black/10 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] z-50 ${
         isLeaving ? "opacity-0 translate-y-4" : "animate-in fade-in slide-in-from-bottom-4"
       }`}>
       <span>Thank you!</span>
@@ -137,7 +137,7 @@ export default function LeaveMark() {
   const isNumberVisible = (alreadyMarked && isHovered) || showNumberTemporary;
 
   return (
-    <div className="relative w-full flex justify-start py-2 font-[Inter] z-20">
+    <div className="relative w-full flex justify-start py-2 z-20">
       <button
         onClick={handleLeaveMark}
         onMouseEnter={() => setIsHovered(true)}

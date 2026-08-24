@@ -42,7 +42,7 @@ export function formatGithubLinks(container: HTMLElement) {
 
           // Modify classes to look like a pill badge
           link.className =
-            "inline-flex font-[Inter] items-center gap-2 pr-3 py-0 pl-0 rounded-full bg-neutral-200 dark:bg-neutral-900 text-sm !font-semibold !text-neutral-500 dark:!text-neutral-500 !no-underline hover:bg-neutral-300 dark:hover:bg-neutral-800 transition-colors mx-1 align-middle whitespace-nowrap overflow-hidden";
+            "inline-flex items-center gap-2 pr-3 py-0 pl-0 rounded-full bg-neutral-200 dark:bg-neutral-900 text-sm !font-semibold !text-neutral-500 dark:!text-neutral-500 !no-underline hover:bg-neutral-300 dark:hover:bg-neutral-800 transition-colors mx-1 align-middle whitespace-nowrap overflow-hidden";
 
           link.innerHTML = `
             <img

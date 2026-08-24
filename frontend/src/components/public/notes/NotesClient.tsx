@@ -66,7 +66,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
   };
 
   return (
-    <div className="pt-24 md:pt-40 pb-16 min-h-screen flex flex-col items-center font-[Inter]">
+    <div className="pt-24 md:pt-40 pb-16 min-h-screen flex flex-col items-center">
       <div className="w-full max-w-3xl px-4 md:px-8">
         <h1 className="text-3xl font-bold tracking-wide text-black dark:text-white block md:hidden mb-10 -mt-6 text-center">
           Notes
@@ -172,7 +172,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
 
                     {/* Note Content */}
                     <div
-                      className="flex-grow min-w-0 w-full prose prose-neutral dark:prose-invert prose-lg max-w-none font-[Inter] prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
+                      className="flex-grow min-w-0 w-full prose prose-neutral dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
                       dangerouslySetInnerHTML={{ __html: content }}
                       onClick={handleContentClick}
                     />

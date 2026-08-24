@@ -70,7 +70,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
   };
 
   return (
-    <div className="pt-24 md:pt-40 pb-16 min-h-screen flex flex-col items-center font-[Inter]">
+    <div className="pt-24 md:pt-40 pb-16 min-h-screen flex flex-col items-center">
       <style>{`
       .prose div.callout p { color: #a3a3a3 !important; }
       .dark .prose div.callout p { color: #737373 !important; }

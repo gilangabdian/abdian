@@ -144,7 +144,7 @@ export default function Navbar() {
           <Link
             key={link.name}
             href={link.href}
-            className={`text-md font-[Inter] tracking-tight transition-colors duration-200 ${
+            className={`text-md tracking-tight transition-colors duration-200 ${
               isActive(link.href)
                 ? "text-black dark:text-white"
                 : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"

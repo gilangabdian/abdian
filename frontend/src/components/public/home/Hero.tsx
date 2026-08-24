@@ -241,24 +241,27 @@ export default function Hero({ profile }: HeroProps) {
       if (!profile || !profile.about) return;
       const tl = gsap.timeline();
 
-      tl.from(".hero-badge", {
-        scale: 0,
-        rotation: -20,
-        opacity: 0,
-        duration: 0.6,
-        ease: "back.out(1.7)",
-      })
-        .from(
-          ".hero-text",
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "power2.out",
-          },
-          "-=0.4",
-        )
+      if (profile.about.is_available_for_work) {
+        tl.from(".hero-badge", {
+          scale: 0,
+          rotation: -20,
+          opacity: 0,
+          duration: 0.6,
+          ease: "back.out(1.7)",
+        });
+      }
+
+      tl.from(
+        ".hero-text",
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.2,
+          ease: "power2.out",
+        },
+        profile.about.is_available_for_work ? "-=0.4" : 0,
+      )
         .from(
           ".hero-content",
           {
@@ -292,7 +295,7 @@ export default function Hero({ profile }: HeroProps) {
   return (
     <div
       ref={heroRef}
-      className="container mx-auto px-6 pt-26 pb-6 md:pt-8 md:pb-0 min-h-screen flex items-center justify-center font-[Inter] overflow-hidden">
+      className="container mx-auto px-6 pt-26 pb-6 md:pt-8 md:pb-0 min-h-screen flex items-center justify-center overflow-hidden">
       <div className="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-2 mt-8">
         {/* Left Content */}
         <div className="flex-1 flex flex-col items-start space-y-3 md:space-y-3 mt-4">
@@ -303,14 +306,14 @@ export default function Hero({ profile }: HeroProps) {
           )}
 
           <div className="space-y-0.5">
-            <h1 className="hero-text text-4xl md:text-5xl font-bold leading-tight font-[Inter] tracking-tight">
+            <h1 className="hero-text text-4xl md:text-5xl font-bold leading-tight tracking-tight">
               Hi, I&apos;m{" "}
               <span className="underline decoration-4 underline-offset-4 decoration-black dark:decoration-white">
                 {profile.about.name}
               </span>
             </h1>
 
-            <h2 className="hero-text text-xl md:text-2xl lg:text-3xl font-[Inter] font-medium text-gray-800 dark:text-gray-200 pt-1 min-h-[1.5em] flex items-center">
+            <h2 className="hero-text text-xl md:text-2xl lg:text-3xl font-medium text-gray-800 dark:text-gray-200 pt-1 min-h-[1.5em] flex items-center">
               <span>{displayedJob}</span>
               <span
                 className={`inline-block w-[2px] h-[24px] md:h-[32px] bg-black dark:bg-white ml-1 align-middle transition-opacity duration-100 ${
@@ -319,7 +322,7 @@ export default function Hero({ profile }: HeroProps) {
             </h2>
           </div>
 
-          <p className="hero-content text-sm text-justify leading-relaxed max-w-lg font-[Inter] text-gray-700 dark:text-gray-300">
+          <p className="hero-content text-sm text-justify leading-relaxed max-w-lg text-gray-700 dark:text-gray-300">
             {profile.about.about_description}
           </p>
 

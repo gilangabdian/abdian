@@ -155,7 +155,7 @@ export default function Tech({ skills = [], profile = null }: TechProps) {
         
         {/* HEADER */}
         <div className="header-section text-center mb-10 max-w-3xl mx-auto">
-          <h2 className="header-animate text-4xl font-black text-black dark:text-white mb-6 font-[Inter] tracking-wider inline-block relative border-b border-black/20 dark:border-white/20 pb-2">
+          <h2 className="header-animate text-4xl font-black text-black dark:text-white mb-6 tracking-wider inline-block relative border-b border-black/20 dark:border-white/20 pb-2">
             <span className="relative z-10">Tech Stack</span>
           </h2>
         </div>
