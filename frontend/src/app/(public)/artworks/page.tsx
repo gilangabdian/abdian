@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Script from "next/script";
 import { getAllArtworks } from "@/lib/api/artwork";
 import AllArtworksClient from "@/components/public/artwork/AllArtworksClient";
 
@@ -29,7 +30,8 @@ export default async function ArtworksPage() {
 
   return (
     <>
-      <script
+      <Script
+        id="json-ld-artworks"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />

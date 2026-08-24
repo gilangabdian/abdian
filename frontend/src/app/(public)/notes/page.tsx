@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Script from "next/script";
 import { getAllBlogs } from "@/lib/api/blog";
 import NotesClient from "@/components/public/notes/NotesClient";
 
@@ -19,7 +20,7 @@ export default async function NotesPage() {
     blogPost: notes.map((note) => ({
       "@type": "BlogPosting",
       headline: note.title,
-      description: note.excerpt || note.content.substring(0, 150).replace(/<[^>]*>?/gm, ""),
+      description: note.excerpt || (note.content || "").substring(0, 150).replace(/<[^>]*>?/gm, ""),
       url: `https://abdian.vercel.app/blogs/${note.slug}`,
       datePublished: note.published_at || note.created_at,
       dateModified: note.updated_at || note.published_at || note.created_at,
@@ -28,7 +29,8 @@ export default async function NotesPage() {
 
   return (
     <>
-      <script
+      <Script
+        id="json-ld-notes"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />

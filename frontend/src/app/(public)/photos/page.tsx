@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Script from "next/script";
 import { getAllPhotos } from "@/lib/api/photo";
 import AllPhotosClient from "@/components/public/photo/AllPhotosClient";
 
@@ -29,7 +30,8 @@ export default async function PhotosPage() {
 
   return (
     <>
-      <script
+      <Script
+        id="json-ld-photos"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />

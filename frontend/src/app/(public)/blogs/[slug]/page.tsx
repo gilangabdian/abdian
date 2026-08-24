@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Script from "next/script";
 import { cookies } from "next/headers";
 import { getBlogBySlug } from "@/lib/api/blog";
 import { notFound } from "next/navigation";
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const plainTextContent = blog.content.replace(/<[^>]*>?/gm, "").substring(0, 160);
+  const plainTextContent = (blog.content || "").replace(/<[^>]*>?/gm, "").substring(0, 160);
 
   return {
     title: blog.title,
@@ -67,7 +68,7 @@ export default async function SingleBlogPage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: blog.title,
-    description: blog.excerpt || blog.content.replace(/<[^>]*>?/gm, "").substring(0, 160),
+    description: blog.excerpt || (blog.content || "").replace(/<[^>]*>?/gm, "").substring(0, 160),
     image: blog.cover_image_url || "https://abdian.vercel.app/hide-tokyo-ghoul.png",
     author: {
       "@type": "Person",
@@ -88,12 +89,13 @@ export default async function SingleBlogPage({ params }: Props) {
       "@type": "WebPage",
       "@id": `https://abdian.vercel.app/blogs/${blog.slug}`,
     },
-    articleBody: blog.content.replace(/<[^>]*>?/gm, ""), // Strip HTML
+    articleBody: (blog.content || "").replace(/<[^>]*>?/gm, ""), // Strip HTML
   };
 
   return (
     <>
-      <script
+      <Script
+        id={`json-ld-blog-${blog.slug}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />

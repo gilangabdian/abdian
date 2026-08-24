@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Script from "next/script";
 import { getAllBlogs } from "@/lib/api/blog";
 import AllBlogsClient from "@/components/public/blog/AllBlogsClient";
 
@@ -19,7 +20,7 @@ export default async function BlogPage() {
     blogPost: blogs.map((blog) => ({
       "@type": "BlogPosting",
       headline: blog.title,
-      description: blog.excerpt || blog.content.substring(0, 150).replace(/<[^>]*>?/gm, ""),
+      description: blog.excerpt || (blog.content || "").substring(0, 150).replace(/<[^>]*>?/gm, ""),
       url: `https://abdian.vercel.app/blogs/${blog.slug}`,
       datePublished: blog.published_at || blog.created_at,
       dateModified: blog.updated_at || blog.published_at || blog.created_at,
@@ -28,7 +29,8 @@ export default async function BlogPage() {
 
   return (
     <>
-      <script
+      <Script
+        id="json-ld-blogs"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />

@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Script from "next/script";
 import { getAllProjects } from "@/lib/api/project";
 import AllProjectsClient from "@/components/public/project/AllProjectsClient";
 
@@ -30,7 +31,8 @@ export default async function ProjectsPage() {
 
   return (
     <>
-      <script
+      <Script
+        id="json-ld-projects"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />

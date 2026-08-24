@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Script from "next/script";
 import { getProfile } from "@/lib/api/profile";
 import { getAboutPage } from "@/lib/api/about";
 import AboutClient from "@/components/public/about/AboutClient";
@@ -40,7 +41,8 @@ export default async function AboutPage() {
 
   return (
     <>
-      <script
+      <Script
+        id="json-ld-about"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
