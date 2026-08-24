@@ -24,5 +24,27 @@ export default async function AboutPage() {
     // Silently fail, fallback to hardcoded
   }
 
-  return <AboutClient initialProfile={profile} aboutContent={aboutContent} aboutUpdatedAt={aboutUpdatedAt} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    dateModified: aboutUpdatedAt ? new Date(aboutUpdatedAt).toISOString() : undefined,
+    mainEntity: {
+      "@type": "Person",
+      name: profile?.about?.name || "Gilang Abdian",
+      jobTitle: profile?.about?.job_title || "Software Engineer",
+      description: aboutContent ? aboutContent.substring(0, 150).replace(/<[^>]*>?/gm, "") : "About Gilang Abdian",
+      image: "https://abdian.vercel.app/hide-tokyo-ghoul.png",
+      url: "https://abdian.vercel.app/about",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <AboutClient initialProfile={profile} aboutContent={aboutContent} aboutUpdatedAt={aboutUpdatedAt} />
+    </>
+  );
 }

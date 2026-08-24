@@ -17,9 +17,34 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const plainTextContent = blog.content.replace(/<[^>]*>?/gm, "").substring(0, 160);
+
   return {
-    title: `${blog.title} - Abdian`,
-    description: blog.content.substring(0, 160).replace(/<[^>]*>?/gm, ""), // Strip HTML
+    title: blog.title,
+    description: blog.excerpt || plainTextContent,
+    alternates: {
+      canonical: `https://abdian.vercel.app/blogs/${blog.slug}`,
+    },
+    openGraph: {
+      title: blog.title,
+      description: blog.excerpt || plainTextContent,
+      url: `https://abdian.vercel.app/blogs/${blog.slug}`,
+      type: "article",
+      publishedTime: blog.published_at || blog.created_at,
+      authors: ["Gilang Abdian"],
+      images: [
+        {
+          url: blog.cover_image_url || "https://abdian.vercel.app/hide-tokyo-ghoul.png",
+          alt: blog.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.title,
+      description: blog.excerpt || plainTextContent,
+      images: [blog.cover_image_url || "https://abdian.vercel.app/hide-tokyo-ghoul.png"],
+    },
   };
 }
 
@@ -38,5 +63,41 @@ export default async function SingleBlogPage({ params }: Props) {
   const cookieStore = await cookies();
   const initialLang = cookieStore.get("blogLang")?.value || "id";
 
-  return <SingleBlogClient initialBlog={blog} initialLang={initialLang} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: blog.title,
+    description: blog.excerpt || blog.content.replace(/<[^>]*>?/gm, "").substring(0, 160),
+    image: blog.cover_image_url || "https://abdian.vercel.app/hide-tokyo-ghoul.png",
+    author: {
+      "@type": "Person",
+      name: "Gilang Abdian",
+      url: "https://abdian.vercel.app/",
+    },
+    publisher: {
+      "@type": "Person",
+      name: "Gilang Abdian",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://abdian.vercel.app/icon.svg",
+      },
+    },
+    datePublished: blog.published_at || blog.created_at,
+    dateModified: blog.updated_at || blog.published_at || blog.created_at,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://abdian.vercel.app/blogs/${blog.slug}`,
+    },
+    articleBody: blog.content.replace(/<[^>]*>?/gm, ""), // Strip HTML
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <SingleBlogClient initialBlog={blog} initialLang={initialLang} />
+    </>
+  );
 }

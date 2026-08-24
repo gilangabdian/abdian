@@ -10,5 +10,30 @@ export const metadata: Metadata = {
 export default async function PhotosPage() {
   const photos = await getAllPhotos();
 
-  return <AllPhotosClient initialPhotos={photos} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Photos",
+    description: "My personal photos collection.",
+    url: "https://abdian.vercel.app/photos",
+    mainEntity: {
+      "@type": "ImageGallery",
+      image: photos.map((photo) => ({
+        "@type": "ImageObject",
+        url: photo.image_url,
+        caption: photo.title,
+        description: photo.description || photo.title,
+      })),
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <AllPhotosClient initialPhotos={photos} />
+    </>
+  );
 }
