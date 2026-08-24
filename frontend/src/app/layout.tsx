@@ -8,9 +8,13 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Gilang Abdian",
+  title: {
+    template: "%s | Gilang Abdian",
+    default: "Gilang Abdian",
+  },
   description:
     "Hello World from Gilang Abdian. He is an independent software engineer who loves to experiment. In his free time, he enjoys contributing to open-source libraries.",
+  metadataBase: new URL("https://abdian.vercel.app"),
   keywords:
     "Gilang Abdian, Software Engineer, Gilang, Abdian, gilangabdian, gilang, abdian, personal website, Personal Website, gilang abdian, software engineer, Portfolio",
   authors: [{ name: "Gilang Abdian" }],
@@ -31,9 +35,6 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "FnSR5V_A9QHTGt_cKUdziQtpTBvFqG4_aBz5-m-iHGc",
-  },
-  icons: {
-    icon: [{ url: "/abdian.svg", type: "image/svg+xml" }],
   },
 };
 

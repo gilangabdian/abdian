@@ -3,7 +3,7 @@ import { getAllPhotos } from "@/lib/api/photo";
 import AllPhotosClient from "@/components/public/photo/AllPhotosClient";
 
 export const metadata: Metadata = {
-  title: "Photos - Gilang Abdian",
+  title: "Photos",
   description: "My personal photos collection.",
 };
 

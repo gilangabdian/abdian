@@ -3,7 +3,7 @@ import { getAllBlogs } from "@/lib/api/blog";
 import NotesClient from "@/components/public/notes/NotesClient";
 
 export const metadata: Metadata = {
-  title: "Notes - Gilang Abdian",
+  title: "Notes",
   description: "A collection of random thoughts, snippets, and learnings.",
 };
 

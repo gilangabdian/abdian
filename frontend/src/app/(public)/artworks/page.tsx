@@ -3,7 +3,7 @@ import { getAllArtworks } from "@/lib/api/artwork";
 import AllArtworksClient from "@/components/public/artwork/AllArtworksClient";
 
 export const metadata: Metadata = {
-  title: "Artworks - Gilang Abdian",
+  title: "Artworks",
   description: "My side hobby.",
 };
 

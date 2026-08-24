@@ -4,7 +4,7 @@ import { getAboutPage } from "@/lib/api/about";
 import AboutClient from "@/components/public/about/AboutClient";
 
 export const metadata: Metadata = {
-  title: "About - Gilang Abdian",
+  title: "About",
   description: "About Gilang Abdian.",
 };
 
@@ -24,11 +24,5 @@ export default async function AboutPage() {
     // Silently fail, fallback to hardcoded
   }
 
-  return (
-    <AboutClient
-      initialProfile={profile}
-      aboutContent={aboutContent}
-      aboutUpdatedAt={aboutUpdatedAt}
-    />
-  );
+  return <AboutClient initialProfile={profile} aboutContent={aboutContent} aboutUpdatedAt={aboutUpdatedAt} />;
 }
