@@ -51,9 +51,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  return [{ slug: '1' }];
-}
+// export async function generateStaticParams() {
+//   return [{ slug: '1' }];
+// }
 
 export default async function SingleBlogPage({ params }: Props) {
   const { slug } = await params;
