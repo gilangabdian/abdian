@@ -5,7 +5,7 @@ import Provider from "./provider";
 import Script from "next/script";
 import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap", preload: false });
 export const metadata: Metadata = {
   title: {
     template: "%s | Gilang Abdian",
