@@ -46,6 +46,10 @@ class ProfileApiTest extends TestCase
                 'show_featured_certificates_on_home' => false,
                 'show_experiences_on_home' => false,
                 'show_tech_on_home' => false,
+                'is_about_page_active' => false,
+                'is_certificates_page_active' => false,
+                'is_contacts_page_active' => false,
+                'show_resume_button' => false,
             ]);
 
         $response->assertStatus(200)
@@ -63,6 +67,10 @@ class ProfileApiTest extends TestCase
         $this->assertFalse($profile->show_featured_certificates_on_home);
         $this->assertFalse($profile->show_experiences_on_home);
         $this->assertFalse($profile->show_tech_on_home);
+        $this->assertFalse($profile->is_about_page_active);
+        $this->assertFalse($profile->is_certificates_page_active);
+        $this->assertFalse($profile->is_contacts_page_active);
+        $this->assertFalse($profile->show_resume_button);
     }
 
     public function test_admin_can_upload_photo_secondary_image_and_cv()

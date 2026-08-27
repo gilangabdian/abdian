@@ -349,16 +349,18 @@ export default function Hero({ profile }: HeroProps) {
               </a>
             )}
 
-            <a
-              href={profile.about.cv_url}
-              target="_blank"
-              rel="noreferrer"
-              className={`${
-                profile.about.is_available_for_work ? "flex-1 md:flex-none px-0 md:px-5" : "flex-none px-6"
-              } flex items-center justify-center gap-2 bg-white text-black dark:bg-dark-bg dark:text-white py-2 rounded-xl border border-black/20 dark:border-white/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] dark:shadow-[0_4px_14px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all`}>
-              <Icon icon="mdi:file-download-outline" className="w-4 h-4 md:w-5 md:h-5" />
-              <span>View Resume</span>
-            </a>
+            {profile.about.show_resume_button !== false && (
+              <a
+                href={profile.about.cv_url}
+                target="_blank"
+                rel="noreferrer"
+                className={`${
+                  profile.about.is_available_for_work ? "flex-1 md:flex-none px-0 md:px-5" : "flex-none px-6"
+                } flex items-center justify-center gap-2 bg-white text-black dark:bg-dark-bg dark:text-white py-2 rounded-xl border border-black/20 dark:border-white/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] dark:shadow-[0_4px_14px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all`}>
+                <Icon icon="mdi:file-download-outline" className="w-4 h-4 md:w-5 md:h-5" />
+                <span>View Resume</span>
+              </a>
+            )}
           </div>
 
           <hr className="hero-content w-full border-t border-black/20 dark:border-white/20" />

@@ -4,8 +4,9 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Profile } from "@/types";
 
-export default function Navbar() {
+export default function Navbar({ profile }: { profile?: Profile | null }) {
   const pathname = usePathname();
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -23,20 +24,20 @@ export default function Navbar() {
 
   // Desktop nav items — text only
   const textLinks = [
-    { name: "About", href: "/about" },
+    ...(profile?.about?.is_about_page_active !== false ? [{ name: "About", href: "/about" }] : []),
     { name: "Blog", href: "/blogs" },
     { name: "Notes", href: "/notes" },
     { name: "Projects", href: "/projects" },
-    // { name: "Certificates", href: "/certificates" },
+    ...(profile?.about?.is_certificates_page_active !== false ? [{ name: "Certificates", href: "/certificates" }] : []),
   ];
 
   // Mobile nav items — icon only
   const mobileIconLinks = [
-    { name: "About", href: "/about", icon: "mdi:card-account-details-outline" },
+    ...(profile?.about?.is_about_page_active !== false ? [{ name: "About", href: "/about", icon: "mdi:card-account-details-outline" }] : []),
     { name: "Blog", href: "/blogs", icon: "material-symbols-light:post-outline" },
     { name: "Notes", href: "/notes", icon: "mdi:note-outline" },
     { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
-    // { name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" },
+    ...(profile?.about?.is_certificates_page_active !== false ? [{ name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" }] : []),
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
     // { name: "Github", href: "https://github.com/gilangabdian", icon: "mingcute:github-line" },

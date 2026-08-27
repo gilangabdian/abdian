@@ -123,6 +123,10 @@ export interface ProfileAbout {
   show_featured_certificates_on_home?: boolean;
   show_experiences_on_home?: boolean;
   show_tech_on_home?: boolean;
+  is_about_page_active?: boolean;
+  is_certificates_page_active?: boolean;
+  is_contacts_page_active?: boolean;
+  show_resume_button?: boolean;
   created_at?: string;
   updated_at?: string;
   cv_url?: string;

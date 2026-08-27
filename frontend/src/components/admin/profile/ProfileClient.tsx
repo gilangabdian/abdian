@@ -19,6 +19,10 @@ export default function ProfileClient() {
     show_featured_certificates_on_home: true,
     show_experiences_on_home: true,
     show_tech_on_home: true,
+    is_about_page_active: true,
+    is_certificates_page_active: true,
+    is_contacts_page_active: true,
+    show_resume_button: true,
   });
 
   const [originalForm, setOriginalForm] = useState({
@@ -30,6 +34,10 @@ export default function ProfileClient() {
     show_featured_certificates_on_home: true,
     show_experiences_on_home: true,
     show_tech_on_home: true,
+    is_about_page_active: true,
+    is_certificates_page_active: true,
+    is_contacts_page_active: true,
+    show_resume_button: true,
   });
 
   type HeroPhoto = { id: string; file?: File; preview: string; isExisting?: boolean; originalUrl?: string };
@@ -66,7 +74,11 @@ export default function ProfileClient() {
       form.show_featured_projects_on_home !== originalForm.show_featured_projects_on_home ||
       form.show_featured_certificates_on_home !== originalForm.show_featured_certificates_on_home ||
       form.show_experiences_on_home !== originalForm.show_experiences_on_home ||
-      form.show_tech_on_home !== originalForm.show_tech_on_home;
+      form.show_tech_on_home !== originalForm.show_tech_on_home ||
+      form.is_about_page_active !== originalForm.is_about_page_active ||
+      form.is_certificates_page_active !== originalForm.is_certificates_page_active ||
+      form.is_contacts_page_active !== originalForm.is_contacts_page_active ||
+      form.show_resume_button !== originalForm.show_resume_button;
 
     return hasNewFiles || hasTextChanges || heroPhotosChanged;
   }, [form, originalForm, heroPhotos, originalHeroPhotos, cvFile]);
@@ -86,6 +98,10 @@ export default function ProfileClient() {
           show_featured_certificates_on_home: result.about.show_featured_certificates_on_home ?? true,
           show_experiences_on_home: result.about.show_experiences_on_home ?? true,
           show_tech_on_home: result.about.show_tech_on_home ?? true,
+          is_about_page_active: result.about.is_about_page_active ?? true,
+          is_certificates_page_active: result.about.is_certificates_page_active ?? true,
+          is_contacts_page_active: result.about.is_contacts_page_active ?? true,
+          show_resume_button: result.about.show_resume_button ?? true,
         });
 
         setOriginalForm({
@@ -97,6 +113,10 @@ export default function ProfileClient() {
           show_featured_certificates_on_home: result.about.show_featured_certificates_on_home ?? true,
           show_experiences_on_home: result.about.show_experiences_on_home ?? true,
           show_tech_on_home: result.about.show_tech_on_home ?? true,
+          is_about_page_active: result.about.is_about_page_active ?? true,
+          is_certificates_page_active: result.about.is_certificates_page_active ?? true,
+          is_contacts_page_active: result.about.is_contacts_page_active ?? true,
+          show_resume_button: result.about.show_resume_button ?? true,
         });
 
         if (result.about.hero_photo_urls && Array.isArray(result.about.hero_photo_urls)) {
@@ -180,6 +200,11 @@ export default function ProfileClient() {
       formData.append("show_featured_certificates_on_home", form.show_featured_certificates_on_home ? "1" : "0");
       formData.append("show_experiences_on_home", form.show_experiences_on_home ? "1" : "0");
       formData.append("show_tech_on_home", form.show_tech_on_home ? "1" : "0");
+      
+      formData.append("is_about_page_active", form.is_about_page_active ? "1" : "0");
+      formData.append("is_certificates_page_active", form.is_certificates_page_active ? "1" : "0");
+      formData.append("is_contacts_page_active", form.is_contacts_page_active ? "1" : "0");
+      formData.append("show_resume_button", form.show_resume_button ? "1" : "0");
 
       heroPhotos.forEach((hp) => {
         if (hp.isExisting && hp.originalUrl) {
@@ -449,6 +474,92 @@ export default function ProfileClient() {
                     </div>
                     <span className="font-bold font-mono text-sm text-gray-700">
                       {form.show_experiences_on_home ? 'Visible' : 'Hidden'}
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <hr className="border-4 border-black border-dashed my-8" />
+
+            <div className="mb-6">
+              <h2 className="text-2xl font-black uppercase mb-6 flex items-center gap-2">
+                <Icon icon="mdi:eye-settings-outline" className="text-3xl" />
+                Global Pages & Features Visibility
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-yellow-50 p-6 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold uppercase text-sm">About Page (/about)</label>
+                  <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={form.is_about_page_active} 
+                        onChange={(e) => setForm({ ...form, is_about_page_active: e.target.checked })} 
+                        className="sr-only" 
+                      />
+                      <div className={`block w-14 h-8 transition-colors border-2 border-black ${form.is_about_page_active ? 'bg-black' : 'bg-gray-300'}`}></div>
+                      <div className={`absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black ${form.is_about_page_active ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    </div>
+                    <span className="font-bold font-mono text-sm text-gray-700">
+                      {form.is_about_page_active ? 'Active' : 'Disabled (404)'}
+                    </span>
+                  </label>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold uppercase text-sm">Certificates Page (/certificates)</label>
+                  <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={form.is_certificates_page_active} 
+                        onChange={(e) => setForm({ ...form, is_certificates_page_active: e.target.checked })} 
+                        className="sr-only" 
+                      />
+                      <div className={`block w-14 h-8 transition-colors border-2 border-black ${form.is_certificates_page_active ? 'bg-black' : 'bg-gray-300'}`}></div>
+                      <div className={`absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black ${form.is_certificates_page_active ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    </div>
+                    <span className="font-bold font-mono text-sm text-gray-700">
+                      {form.is_certificates_page_active ? 'Active' : 'Disabled (404)'}
+                    </span>
+                  </label>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold uppercase text-sm">Contacts Page (/contacts)</label>
+                  <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={form.is_contacts_page_active} 
+                        onChange={(e) => setForm({ ...form, is_contacts_page_active: e.target.checked })} 
+                        className="sr-only" 
+                      />
+                      <div className={`block w-14 h-8 transition-colors border-2 border-black ${form.is_contacts_page_active ? 'bg-black' : 'bg-gray-300'}`}></div>
+                      <div className={`absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black ${form.is_contacts_page_active ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    </div>
+                    <span className="font-bold font-mono text-sm text-gray-700">
+                      {form.is_contacts_page_active ? 'Active' : 'Disabled (404)'}
+                    </span>
+                  </label>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold uppercase text-sm">"View Resume" Button (Hero)</label>
+                  <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={form.show_resume_button} 
+                        onChange={(e) => setForm({ ...form, show_resume_button: e.target.checked })} 
+                        className="sr-only" 
+                      />
+                      <div className={`block w-14 h-8 transition-colors border-2 border-black ${form.show_resume_button ? 'bg-black' : 'bg-gray-300'}`}></div>
+                      <div className={`absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black ${form.show_resume_button ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    </div>
+                    <span className="font-bold font-mono text-sm text-gray-700">
+                      {form.show_resume_button ? 'Visible' : 'Hidden'}
                     </span>
                   </label>
                 </div>

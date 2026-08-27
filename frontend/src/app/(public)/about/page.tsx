@@ -9,8 +9,15 @@ export const metadata: Metadata = {
   description: "About Gilang Abdian.",
 };
 
+import { notFound } from "next/navigation";
+
 export default async function AboutPage() {
   const profile = await getProfile();
+
+  if (profile?.about?.is_about_page_active === false) {
+    notFound();
+  }
+
   let aboutContent: string | null = null;
   let aboutUpdatedAt: string | null = null;
 
