@@ -57,13 +57,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${inter.variable} antialiased h-full`}>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-        {/* <Script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" strategy="beforeInteractive" /> */}
-        <Script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.0/dist/iconify-icon.min.js"></Script>
       </head>
 
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <Provider>{children}</Provider>
       </body>
+      {/* <Script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" strategy="beforeInteractive" /> */}
+      <Script src="https://cdn.jsdelivr.net/npm/iconify-icon@3.0.0/dist/iconify-icon.min.js"></Script>
     </html>
   );
 }
