@@ -5,7 +5,7 @@ import Provider from "./provider";
 import Script from "next/script";
 import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 export const metadata: Metadata = {
   title: {
     template: "%s | Gilang Abdian",
@@ -54,7 +54,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.className} antialiased h-full`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} antialiased h-full`}>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         {/* <Script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" strategy="beforeInteractive" /> */}
