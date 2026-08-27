@@ -28,24 +28,26 @@ export default function Provider({ children, ...props }: ThemeProviderProps) {
   }, []);
 
   return (
-    <NextThemesProvider attribute="class" defaultTheme="dark" disableTransitionOnChange {...props}>
-      <React.Suspense fallback={null}>
-        <NextTopLoader
-          color="#9ca3af"
-          initialPosition={0.08}
-          crawlSpeed={200}
-          height={3}
-          crawl={true}
-          showSpinner={false}
-          easing="ease"
-          speed={200}
-          shadow="0 0 10px #9ca3af,0 0 5px #9ca3af"
-          zIndex={10000}
-          showAtBottom={false}
-        />
-      </React.Suspense>
-      <InitialProgress />
-      {children}
-    </NextThemesProvider>
+    <>
+      <NextThemesProvider attribute="class" defaultTheme="dark" disableTransitionOnChange {...props}>
+        <React.Suspense fallback={null}>
+          <NextTopLoader
+            color="#9ca3af"
+            initialPosition={0.08}
+            crawlSpeed={200}
+            height={3}
+            crawl={true}
+            showSpinner={false}
+            easing="ease"
+            speed={200}
+            shadow="0 0 10px #9ca3af,0 0 5px #9ca3af"
+            zIndex={10000}
+            showAtBottom={false}
+          />
+        </React.Suspense>
+        <InitialProgress />
+        {children}
+      </NextThemesProvider>
+    </>
   );
 }
