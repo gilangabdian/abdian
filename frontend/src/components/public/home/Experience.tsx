@@ -102,8 +102,9 @@ export default function Experience({ experiences = [] }: ExperienceProps) {
   );
 
   return (
-    <section ref={sectionRef} className="py-20 bg-white dark:bg-black overflow-hidden relative z-0">
-      <div className="max-w-4xl mx-auto px-4 md:px-8">
+    <section ref={sectionRef} className="py-20 overflow-hidden relative z-0">
+      <div className="container mx-auto px-6 flex justify-center">
+        <div className="w-full max-w-4xl">
         <div className="mb-14 journey-header text-left">
           <h2 className="text-3xl md:text-4xl text-black font-bold dark:text-white tracking-tight">Work Experience</h2>
         </div>
@@ -113,7 +114,18 @@ export default function Experience({ experiences = [] }: ExperienceProps) {
             <div key={exp.id} className="experience-item flex flex-col group relative">
               <div className="mb-1">
                 <h3 className="text-xl md:text-2xl leading-snug">
-                  <span className="text-black font-semibold dark:text-white mr-2">{exp.company_name}</span>
+                  {exp.company_url ? (
+                    <a
+                      href={exp.company_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-black font-semibold dark:text-white mr-2 underline decoration-neutral-300 dark:decoration-neutral-600 decoration-1 hover:decoration-black dark:hover:decoration-white hover:decoration-2 underline-offset-4 transition-all duration-300"
+                    >
+                      {exp.company_name}
+                    </a>
+                  ) : (
+                    <span className="text-black font-semibold dark:text-white mr-2">{exp.company_name}</span>
+                  )}
                   <span className="block md:inline font-normal text-neutral-500 dark:text-neutral-400 text-base md:text-lg mt-1 md:mt-0">
                     {exp.role}
                   </span>
@@ -142,6 +154,7 @@ export default function Experience({ experiences = [] }: ExperienceProps) {
               />
             </div>
           ))}
+        </div>
         </div>
       </div>
     </section>

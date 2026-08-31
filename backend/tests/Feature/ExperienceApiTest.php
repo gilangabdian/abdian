@@ -15,6 +15,7 @@ class ExperienceApiTest extends TestCase
     {
         $experience = Experience::create([
             'company_name' => 'Google',
+            'company_url' => 'https://google.com',
             'role' => 'Software Engineer',
             'status' => 'Full-time',
             'location' => 'Mountain View, CA', // Tambahkan location
@@ -40,6 +41,7 @@ class ExperienceApiTest extends TestCase
     {
         Experience::create([
             'company_name' => 'Google',
+            'company_url' => 'https://google.com',
             'role' => 'Dev',
             'status' => 'Full-time',
             'location' => 'Remote',
@@ -50,6 +52,7 @@ class ExperienceApiTest extends TestCase
         
         Experience::create([
             'company_name' => 'Facebook',
+            'company_url' => 'https://facebook.com',
             'role' => 'Dev',
             'status' => 'Full-time',
             'location' => 'Remote',
@@ -75,6 +78,7 @@ class ExperienceApiTest extends TestCase
 
         $response = $this->actingAs($user)->postJson('/api/experiences', [
             'company_name' => 'Facebook',
+            'company_url' => 'https://facebook.com',
             'role' => 'Senior Dev',
             'status' => 'Full-time',
             'location' => 'Remote', // Tambahkan location

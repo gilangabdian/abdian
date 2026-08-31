@@ -23,6 +23,7 @@ class UpdateExperienceRequest extends FormRequest
     {
         return [
             'company_name' => 'sometimes|required|string|max:255',
+            'company_url' => 'nullable|url|max:255',
             'role' => 'sometimes|required|string|max:255',
             'status' => 'sometimes|required|string|in:Full-time,Part-time,Freelance,Internship,Contract,Education',
             'location' => 'required|string|max:255',

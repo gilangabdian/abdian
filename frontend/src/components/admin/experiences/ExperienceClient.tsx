@@ -30,6 +30,7 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
 
   const [form, setForm] = useState({
     company_name: "",
+    company_url: "",
     role: "",
     status: "Full-time",
     location: "",
@@ -95,6 +96,7 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
   const resetForm = () => {
     setForm({
       company_name: "",
+      company_url: "",
       role: "",
       status: "Full-time",
       location: "",
@@ -115,6 +117,7 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
 
     setForm({
       company_name: item.company_name || "",
+      company_url: item.company_url || "",
       role: item.role || "",
       status: item.status || "Full-time",
       location: item.location || "",
@@ -154,6 +157,7 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
     try {
       const payload = {
         company_name: form.company_name,
+        company_url: form.company_url || null,
         role: form.role,
         status: form.status,
         location: form.location,
@@ -256,6 +260,18 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
                 onChange={(e) => setForm({ ...form, company_name: e.target.value })}
                 type="text"
                 placeholder="e.g. Stark Industries"
+                className="w-full p-3 border-2 border-black font-mono focus:bg-gray-50 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-gray-400"
+              />
+            </div>
+            <div>
+              <label className="block font-bold mb-2 text-sm uppercase">
+                Company URL <span className="text-gray-400 text-xs normal-case">(Opsional)</span>
+              </label>
+              <input
+                value={form.company_url}
+                onChange={(e) => setForm({ ...form, company_url: e.target.value })}
+                type="url"
+                placeholder="e.g. https://stark.com"
                 className="w-full p-3 border-2 border-black font-mono focus:bg-gray-50 focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-gray-400"
               />
             </div>
