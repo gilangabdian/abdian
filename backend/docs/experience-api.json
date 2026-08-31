@@ -22,7 +22,7 @@
     "paths": {
         "/api/experiences": {
             "get": {
-                "summary": "List Experiences (\ud83c\udf0d Global/Public)",
+                "summary": "List Experiences (🌍 Global/Public)",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -44,7 +44,8 @@
                                         "end_date": "2024-01-01",
                                         "description": "Developing scalable web applications using Go and React.",
                                         "is_active": true,
-                                        "created_at": "2024-01-01T10:00:00.000000Z"
+                                        "created_at": "2024-01-01T10:00:00.000000Z",
+                                        "company_url": "https://google.com"
                                     },
                                     {
                                         "id": 2,
@@ -55,7 +56,8 @@
                                         "end_date": null,
                                         "description": "Building landing pages for various clients.",
                                         "is_active": true,
-                                        "created_at": "2024-01-02T10:00:00.000000Z"
+                                        "created_at": "2024-01-02T10:00:00.000000Z",
+                                        "company_url": null
                                     }
                                 ]
                             }
@@ -64,7 +66,7 @@
                 }
             },
             "post": {
-                "summary": "Create Experience (\ud83d\udd12 Admin Only)",
+                "summary": "Create Experience (🔒 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -121,6 +123,11 @@
                                     "is_active": {
                                         "type": "boolean",
                                         "example": true
+                                    },
+                                    "company_url": {
+                                        "type": "string",
+                                        "example": "https://tokopedia.com",
+                                        "nullable": true
                                     }
                                 }
                             }
@@ -142,8 +149,19 @@
                                         "start_date": "2024-01-01",
                                         "end_date": null,
                                         "description": "Responsible for API development and maintenance.",
-                                        "is_active": true
+                                        "is_active": true,
+                                        "company_url": "https://tokopedia.com"
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Unauthenticated."
                                 }
                             }
                         }
@@ -162,23 +180,13 @@
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "Unauthenticated."
-                                }
-                            }
-                        }
                     }
                 }
             }
         },
         "/api/experiences/{id}": {
             "get": {
-                "summary": "Get Single Experience (\ud83c\udf0d Global/Public)",
+                "summary": "Get Single Experience (🌍 Global/Public)",
                 "parameters": [
                     {
                         "name": "id",
@@ -220,7 +228,7 @@
                 }
             },
             "put": {
-                "summary": "Update Experience (\ud83d\udd12 Admin Only)",
+                "summary": "Update Experience (🔒 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []
@@ -286,6 +294,11 @@
                                     "is_active": {
                                         "type": "boolean",
                                         "example": false
+                                    },
+                                    "company_url": {
+                                        "type": "string",
+                                        "example": "https://tokopedia.com",
+                                        "nullable": true
                                     }
                                 }
                             }
@@ -305,8 +318,19 @@
                                         "role": "Senior Backend Engineer",
                                         "status": "Full-time",
                                         "end_date": "2025-01-01",
-                                        "is_active": false
+                                        "is_active": false,
+                                        "company_url": "https://tokopedia.com"
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "No query results for model [App\\Models\\Experience] 99"
                                 }
                             }
                         }
@@ -325,21 +349,11 @@
                                 }
                             }
                         }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "example": {
-                                    "message": "No query results for model [App\\Models\\Experience] 99"
-                                }
-                            }
-                        }
                     }
                 }
             },
             "delete": {
-                "summary": "Delete Experience (\ud83d\udd12 Admin Only)",
+                "summary": "Delete Experience (🔒 Admin Only)",
                 "security": [
                     {
                         "bearerAuth": []

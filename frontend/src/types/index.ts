@@ -71,6 +71,7 @@ export interface Experience {
   title: string;
   role?: string;
   company_name: string;
+  company_url?: string;
   location?: string;
   employment_type?: string;
   status?: string;

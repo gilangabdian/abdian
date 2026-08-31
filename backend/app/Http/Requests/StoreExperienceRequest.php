@@ -23,6 +23,7 @@ class StoreExperienceRequest extends FormRequest
     {
         return [
             'company_name' => 'required|string|max:255',
+            'company_url' => 'nullable|url|max:255',
             'role' => 'required|string|max:255',
             'status' => 'required|string|in:Full-time,Part-time,Freelance,Internship,Contract,Education',
             'location' => 'required|string|max:255',
