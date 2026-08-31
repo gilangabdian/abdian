@@ -17,6 +17,33 @@ interface ExperienceClientProps {
   initialExperiences: Experience[];
 }
 
+function formatDatePublic(dateString?: string | null) {
+  if (!dateString) return "Present";
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric" }).format(date);
+}
+
+function getDuration(start?: string | null, end?: string | null) {
+  if (!start) return "";
+  const startDate = new Date(start);
+  const endDate = end ? new Date(end) : new Date();
+
+  const totalMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+  const monthDiff = endDate.getMonth() - startDate.getMonth();
+  let total = totalMonths + monthDiff;
+
+  if (total < 0) total = 0;
+
+  const years = Math.floor(total / 12);
+  const months = total % 12;
+
+  const result = [];
+  if (years > 0) result.push(`${years} ${years > 1 ? "yrs" : "yr"}`);
+  if (months > 0) result.push(`${months} ${months > 1 ? "mos" : "mo"}`);
+
+  return result.length > 0 ? result.join(" ") : "Less than a month";
+}
+
 export default function ExperienceClient({ initialExperiences }: ExperienceClientProps) {
   const [experiences, setExperiences] = useState<Experience[]>(initialExperiences);
   const [isLoading, setIsLoading] = useState(false);
@@ -475,87 +502,76 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
             </div>
           </div>
         ) : (
-          <div className="space-y-8 relative">
-            <div className="hidden lg:block absolute left-[150px] top-4 bottom-4 w-1 bg-black border-x border-black bg-opacity-20 z-0"></div>
-
+          <div className="space-y-12 md:space-y-14 bg-white p-6 md:p-10 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             {experiences.map((exp) => (
-              <div key={exp.id} className="relative z-10 flex flex-col lg:flex-row gap-6 items-stretch group">
-                <div className="hidden lg:flex w-[150px] flex-col items-end pt-5 pr-6 flex-shrink-0 text-right">
-                  <span className="font-black text-xl leading-none">
-                    {formatDate(exp.start_date || null).split(" ")[1]}
-                  </span>
-                  <span className="font-mono text-sm font-bold text-gray-500">
-                    {formatDate(exp.start_date || null).split(" ")[0]}
-                  </span>
-                  <div className="h-8 w-[2px] bg-black my-2"></div>
-                  <span className={`font-black text-lg leading-none ${!exp.end_date ? "text-black" : ""}`}>
-                    {exp.end_date ? formatDate(exp.end_date).split(" ")[1] : "NOW"}
-                  </span>
-                  {exp.end_date && (
-                    <span className="font-mono text-sm font-bold text-gray-500">
-                      {formatDate(exp.end_date).split(" ")[0]}
+              <div key={exp.id} className="experience-item flex flex-col group relative border-b-2 border-gray-100 last:border-b-0 pb-10 last:pb-0">
+                
+                {/* Admin Badges */}
+                <div className="absolute top-0 right-0 flex items-center gap-2">
+                  {!exp.is_active && (
+                    <span className="bg-red-500 text-white px-2 py-0.5 font-mono text-xs font-bold shadow-[2px_2px_0px_0px_rgba(100,100,100,1)] animate-pulse">
+                      HIDDEN
                     </span>
                   )}
                 </div>
 
-                <div className="hidden lg:block absolute left-[142px] top-6 w-5 h-5 bg-white border-4 border-black rounded-full z-20 group-hover:scale-125 group-hover:bg-white transition-transform"></div>
-
-                <div className="flex-1 border-4 border-black bg-white p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] group-hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] group-hover:-translate-y-1 transition-all duration-300">
-                  <div className="flex flex-wrap items-center gap-2 mb-3">
-                    <span className="bg-black text-white px-2 py-0.5 font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_0px_rgba(100,100,100,1)]">
-                      {exp.status}
+                <div className="mb-1 pr-20">
+                  <h3 className="text-xl md:text-2xl leading-snug">
+                    {exp.company_url ? (
+                      <a
+                        href={exp.company_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-black font-semibold mr-2 underline decoration-neutral-300 decoration-1 hover:decoration-black hover:decoration-2 underline-offset-4 transition-all duration-300"
+                      >
+                        {exp.company_name}
+                      </a>
+                    ) : (
+                      <span className="text-black font-semibold mr-2">{exp.company_name}</span>
+                    )}
+                    <span className="block md:inline font-normal text-neutral-500 text-base md:text-lg mt-1 md:mt-0">
+                      {exp.role}
                     </span>
-                    {!exp.is_active && (
-                      <span className="bg-red-500 text-white px-2 py-0.5 font-mono text-xs font-bold uppercase shadow-[2px_2px_0px_0px_rgba(100,100,100,1)] animate-pulse">
-                        HIDDEN FROM PUBLIC
-                      </span>
-                    )}
-                    <span className="lg:hidden font-mono text-xs font-bold border-2 border-black px-2 py-0.5 bg-gray-100">
-                      {formatDate(exp.start_date || null)} - {formatDate(exp.end_date || null)}
-                    </span>
-                    {!exp.end_date && (
-                      <span className="bg-black text-white hover:text-black hover:bg-gray-100 border-2 border-black px-2 py-0.5 font-black text-[10px] uppercase animate-pulse">
-                        {exp.status === "Education" ? "Ongoing / Active" : "Current Job"}
-                      </span>
-                    )}
-                  </div>
+                  </h3>
+                </div>
 
-                  <div className="border-b-2 border-black border-dashed pb-3 mb-3">
-                    <h3 className="text-2xl font-black uppercase italic leading-tight">{exp.role}</h3>
-                    <div className="flex items-center gap-2 text-black underline font-bold mt-1">
-                      <Icon icon={exp.status === "Education" ? "lucide:graduation-cap" : "lucide:building-2"} />
-                      {exp.company_name}
-                    </div>
+                <div className="flex flex-wrap items-center text-[13px] text-neutral-500 mb-2 gap-x-2 gap-y-1 font-normal">
+                  <span>
+                    {formatDatePublic(exp.start_date || null)} — {exp.end_date ? formatDatePublic(exp.end_date) : "Present"}
+                    <span className="ml-1">({getDuration(exp.start_date || null, exp.end_date || null)})</span>
+                  </span>
 
-                    {exp.location && (
-                      <div className="flex items-center gap-2 text-gray-500 font-bold text-sm mt-1">
-                        <Icon icon="lucide:map-pin" className="text-black" />
-                        {exp.location}
-                      </div>
-                    )}
-                  </div>
+                  {(exp.location || exp.status) && (
+                    <span className="text-neutral-300 hidden md:inline">|</span>
+                  )}
 
-                  <div
-                    dangerouslySetInnerHTML={renderMarkdown(exp.description || "")}
-                    className="font-mono text-sm text-gray-700 whitespace-pre-line leading-relaxed mb-6 prose prose-sm max-w-none markdown-preview"
-                  ></div>
+                  <span className="flex items-center gap-1">
+                    {exp.location && <span>{exp.location}</span>}
+                    {exp.status && <span className="opacity-80">({exp.status})</span>}
+                  </span>
+                </div>
 
-                  <div className="flex gap-3 justify-end">
-                    <button
-                      onClick={() => startEdit(exp)}
-                      className="flex items-center gap-2 px-4 py-2 bg-gray-200 border-2 border-black font-bold text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-white hover:scale-105 transition-transform uppercase"
-                    >
-                      <Icon icon="lucide:pencil" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(exp.id)}
-                      className="bg-red-500 text-white hover:bg-red-600 flex items-center gap-2 px-4 py-2 border-2 border-black font-bold text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:scale-105 transition-transform uppercase"
-                    >
-                      <Icon icon="lucide:trash-2" />
-                      Delete
-                    </button>
-                  </div>
+                <div
+                  dangerouslySetInnerHTML={renderMarkdown(exp.description || "")}
+                  className="prose prose-sm md:prose-base max-w-none text-neutral-700 prose-p:my-2 prose-ul:my-2 prose-li:my-0 mb-4"
+                />
+
+                {/* Admin Actions */}
+                <div className="flex gap-3 justify-start mt-4">
+                  <button
+                    onClick={() => startEdit(exp)}
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-200 border-2 border-black font-bold text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-white hover:scale-105 transition-transform uppercase"
+                  >
+                    <Icon icon="lucide:pencil" />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(exp.id)}
+                    className="bg-red-500 text-white hover:bg-red-600 flex items-center gap-2 px-4 py-2 border-2 border-black font-bold text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:scale-105 transition-transform uppercase"
+                  >
+                    <Icon icon="lucide:trash-2" />
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
