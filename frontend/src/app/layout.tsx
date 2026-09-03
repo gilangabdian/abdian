@@ -11,6 +11,9 @@ export const metadata: Metadata = {
     template: "%s | Gilang Abdian",
     default: "Gilang Abdian",
   },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml", sizes: "any" }],
+  },
   description:
     "Hello World from Gilang Abdian. He is a software engineer who loves to experiment. In his free time, he enjoys contributing to open-source libraries.",
   metadataBase: new URL("https://abdian.vercel.app"),
