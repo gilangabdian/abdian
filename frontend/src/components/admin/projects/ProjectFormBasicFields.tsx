@@ -37,6 +37,7 @@ const typeOptions = [
   { value: "mobile_development", label: "Mobile Development" },
   { value: "desktop_application", label: "Desktop Application" },
   { value: "game_development", label: "Game Development" },
+  { value: "open_source_project", label: "Open Source Project" },
 ];
 
 export default function ProjectFormBasicFields({ form, onChange }: ProjectFormBasicFieldsProps) {

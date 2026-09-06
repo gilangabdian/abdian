@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 class Project extends Model
 {
     const STATUSES = ['completed', 'in_development', 'on_hold', 'cancelled'];
-    const TYPES = ['web_development', 'mobile_development', 'desktop_application', 'game_development'];
+    const TYPES = ['web_development', 'mobile_development', 'desktop_application', 'game_development', 'open_source_project'];
 
     protected $fillable = ['title', 'description', 'is_featured', 'start_date', 'end_date', 'status', 'type', 'thumbnail_path', 'media_type', 'youtube_url', 'twitter_url', 'live_demo_link', 'repository_link', 'team_size', 'role', 'custom_tech_stacks', 'sort_order'];
 
