@@ -106,7 +106,7 @@ const AboutContent = React.memo(
       <div
         ref={contentRef}
         suppressHydrationWarning={true}
-        className="prose prose-neutral dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic [&_p:empty]:min-h-[1.5em] [&_p:empty]:block"
+        className="prose prose-neutral dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
         dangerouslySetInnerHTML={{
           __html: processedHtml,
         }}
@@ -159,9 +159,11 @@ export default function AboutClient({ aboutContent, aboutUpdatedAt }: AboutClien
   return (
     <div className="min-h-screen">
       <style>{`
-        div.callout {
+      div.callout {
           position: relative !important;
         }
+      .prose div.callout p { color: #a3a3a3 !important; }
+      .dark .prose div.callout p { color: #737373 !important; }
         div.callout::before {
           content: '';
           position: absolute;
@@ -194,12 +196,28 @@ export default function AboutClient({ aboutContent, aboutUpdatedAt }: AboutClien
         .dark .prose blockquote::before {
           background: #404040;
         }
-               /* Links: sama persis seperti di blog (menyala & standby underline) */
+        /* Links: underline only on hover */
+        .prose a {
+          text-decoration: none !important;
+        }
+        .prose a:hover {
+          text-decoration: underline !important;
+          text-decoration-color: inherit !important;
+        }
+        .prose p:empty::before { content: "\\00a0"; display: inline-block; }
+        .prose p { color: #404040  !important; font-size: 16px; line-height: 28px }
+        .dark .prose p { color: #a3a3a3  !important; }
         .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
         .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
         .prose a:hover { text-decoration-color: #171717 !important; }
         .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
-
+        .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; }
+        .prose h2, .prose h3 { position: relative;  font-weight:normal; }
+        .prose h2::before, .prose h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
+        .prose h2:hover::before, .prose h3:hover::before { opacity: 1; }
+        .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
+        .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
+        .prose li { margin-bottom: 0.5em; }
       `}</style>
 
       {/* Image Zoom Modal */}
