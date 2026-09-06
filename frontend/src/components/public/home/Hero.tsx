@@ -1,11 +1,42 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Profile } from "@/types";
 import { Icon } from "@iconify/react";
 import LeaveMark from "./LeaveMark";
+import hljs from "highlight.js";
+import "highlight.js/styles/night-owl.css";
+
+// Memoized component to prevent dangerouslySetInnerHTML overwrite on every re-render
+// (Hero re-renders every 500ms from cursorVisible blink, which would wipe hljs highlights)
+// This is the same pattern used in SingleBlogClient.tsx -> BlogContent
+const HeroDescriptionContent = React.memo(({ html }: { html: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (ref.current) {
+        ref.current.querySelectorAll("pre code").forEach((block) => {
+          block.removeAttribute("data-highlighted");
+          hljs.highlightElement(block as HTMLElement);
+        });
+      }
+    }, 10);
+    return () => clearTimeout(t);
+  }, [html]);
+
+  return (
+    <div
+      ref={ref}
+      suppressHydrationWarning={true}
+      className="prose prose-neutral dark:prose-invert prose-sm md:prose-base max-w-none text-justify prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-4 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-4 [&_div.callout]:py-1 [&_div.callout]:text-xs [&_div.callout]:md:text-sm [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+});
+HeroDescriptionContent.displayName = "HeroDescriptionContent";
 
 type Decoration = {
   src: string;
@@ -322,14 +353,67 @@ export default function Hero({ profile }: HeroProps) {
             </h2>
           </div>
 
-          <p className="hero-content text-sm text-justify leading-relaxed max-w-lg text-gray-700 dark:text-gray-300">
-            {profile.about.about_description}
-          </p>
+          <div className="hero-content">
+            <style>{`
+            div.callout {
+                position: relative !important;
+              }
+            .prose div.callout p { color: #a3a3a3 !important; }
+            .dark .prose div.callout p { color: #737373 !important; }
+              div.callout::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top:1.5em;
+                bottom: 1.5em;
+                width: 4px;
+                background: #d4d4d8;
+                border-radius: 2px;
+              }
+              .dark div.callout::before {
+                background: #404040;
+              }
+              /* Custom blockquote styling to match callout border */
+              .prose blockquote {
+                position: relative !important;
+                border-left: none !important;
+                padding-left: 1.5rem !important;
+              }
+              .prose blockquote::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0.5em;
+                bottom: 0.5em;
+                width: 4px;
+                background: #d4d4d8;
+                border-radius: 2px;
+              }
+              .dark .prose blockquote::before {
+                background: #404040;
+              }
+              .prose p:empty::before { content: "\\00a0"; display: inline-block; }
+              .prose p { color: #404040  !important; font-size: 14px; line-height: 24px }
+              .dark .prose p { color: #a3a3a3  !important; }
+              .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
+              .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
+              .prose a:hover { text-decoration-color: #171717 !important; }
+              .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
+              .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; }
+              .prose h2, .prose h3 { position: relative; font-weight:normal; }
+              .prose h2::before, .prose h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
+              .prose h2:hover::before, .prose h3:hover::before { opacity: 1; }
+              .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
+              .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
+              .prose li { margin-bottom: 0.5em; }
+            `}</style>
+            <HeroDescriptionContent html={profile.about.about_description} />
+          </div>
 
           <div className="hero-content flex flex-wrap gap-2 font-medium text-xs">
             <div className="flex items-center gap-1.5 py-1">
-              <Icon icon="mdi:map-marker" />
-              <span>Based in Indonesia</span>
+              <Icon icon="mdi:map-marker" className="text-[#404040] dark:text-[#a3a3a3]" />
+              <span className="text-[#404040] dark:text-[#a3a3a3]">Based in Indonesia</span>
             </div>
             {profile.about.is_available_for_work && (
               <div className="flex items-center gap-1.5 px-2.5 py-1 text-black dark:text-white">
@@ -366,7 +450,7 @@ export default function Hero({ profile }: HeroProps) {
           <hr className="hero-content w-full border-t border-black/20 dark:border-white/20" />
 
           <div className="hero-content flex flex-col md:flex-row items-start md:items-center gap-2 text-xs font-bold">
-            <span className="whitespace-nowrap">Find me on:</span>
+            <span className="whitespace-nowrap text-[#404040] dark:text-[#a3a3a3]">Find me on:</span>
             <div className="flex flex-wrap gap-2">
               {profile.social_media?.map((social: any, index) => (
                 <a
@@ -397,7 +481,6 @@ export default function Hero({ profile }: HeroProps) {
               <div
                 className={`absolute inset-0 z-20 pointer-events-none transition-bounce-hover ${isAnimating ? "blur-md opacity-50" : "blur-0 opacity-100"}`}>
                 {currentDecorations.static.map((deco, idx) => (
-                   
                   <img
                     key={`static-${currentIndex}-${idx}`}
                     src={deco.src}
@@ -406,7 +489,6 @@ export default function Hero({ profile }: HeroProps) {
                   />
                 ))}
                 {currentDecorations.hoverOnly.map((deco, idx) => (
-                   
                   <img
                     key={`hover-${currentIndex}-${idx}`}
                     src={deco.src}
@@ -416,7 +498,7 @@ export default function Hero({ profile }: HeroProps) {
                 ))}
               </div>
 
-              { }
+              {}
               <img
                 loading="lazy"
                 src={heroPhotos[currentIndex]}

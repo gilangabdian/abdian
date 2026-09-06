@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { getProfile, saveProfile } from "@/lib/api/profile";
 import { alertSuccess, alertError } from "@/lib/alert";
 import { getToken } from "@/utils/auth";
+import ProfileRichTextEditor from "./ProfileRichTextEditor";
 
 export default function ProfileClient() {
   const [isLoading, setIsLoading] = useState(true);
@@ -359,13 +360,9 @@ export default function ProfileClient() {
                 </div>
                 <div>
                   <label className="block font-bold uppercase mb-2">About Description <span className="text-red-500">*</span></label>
-                  <textarea
-                    value={form.about_description}
-                    onChange={(e) => setForm({ ...form, about_description: e.target.value })}
-                    rows={5}
-                    required
-                    className="w-full border-2 border-black p-3 font-mono focus:outline-none focus:bg-gray-50 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-gray-400 resize-none"
-                    placeholder="Tell the world who you are..."
+                  <ProfileRichTextEditor
+                    content={form.about_description}
+                    onChange={(html) => setForm({ ...form, about_description: html })}
                   />
                 </div>
                 <div className="bg-gray-50 border-2 border-black p-4 border-dashed">
