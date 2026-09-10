@@ -23,7 +23,7 @@ interface AboutClientProps {
 function injectDateAfterFirstH2(html: string, formattedDate: string): string {
   if (!html) return html;
 
-  const dateHtml = `<span class="about-last-updated block text-sm text-neutral-500 dark:text-neutral-500 -mt-6 mb-4">Last updated on ${formattedDate}</span>`;
+  const dateHtml = `<span class="about-last-updated block text-sm text-neutral-500 dark:text-neutral-500 -mt-6 mb-12">Last updated on ${formattedDate}</span>`;
 
   // Find the first closing heading tag (h1-h3) and inject date after it
   const headingMatch = html.match(/<\/(h[1-3])>/i);
