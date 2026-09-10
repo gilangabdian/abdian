@@ -23,7 +23,7 @@ interface AboutClientProps {
 function injectDateAfterFirstH2(html: string, formattedDate: string): string {
   if (!html) return html;
 
-  const dateHtml = `<span class="about-last-updated block text-sm md:text-base text-neutral-500 dark:text-neutral-500 -mt-4 mb-4">Last updated on ${formattedDate}</span>`;
+  const dateHtml = `<span class="about-last-updated block text-sm text-neutral-500 dark:text-neutral-500 -mt-6 mb-4">Last updated on ${formattedDate}</span>`;
 
   // Find the first closing heading tag (h1-h3) and inject date after it
   const headingMatch = html.match(/<\/(h[1-3])>/i);
@@ -118,7 +118,6 @@ const AboutContent = React.memo(
 AboutContent.displayName = "AboutContent";
 
 export default function AboutClient({ aboutContent, aboutUpdatedAt }: AboutClientProps) {
-
   const [imageZoom, setImageZoom] = useState<string | null>(null);
   const [showToc, setShowToc] = useState(false);
   const [toc, setToc] = useState<{ id: string; text: string; level: string }[]>([]);
