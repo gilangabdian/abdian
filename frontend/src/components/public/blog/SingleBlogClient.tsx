@@ -124,7 +124,6 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
     }
   }, []);
 
-
   const closeModal = () => setSelectedImage(null);
 
   const onMouseEnter = () => {
@@ -203,12 +202,35 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
         .prose a:hover { text-decoration-color: #171717 !important; }
         .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
         .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; }
-        .prose h2, .prose h3 { position: relative;  font-weight:normal; }
+        .prose h2 { position: relative;  font-weight:normal; font-size: 24px; margin-bottom: 0.5em !important;  }
+        .prose h3 { position: relative;  font-weight:normal; font-size: 20px; margin-bottom: 0.4em !important; }
         .prose h2::before, .prose h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
         .prose h2:hover::before, .prose h3:hover::before { opacity: 1; }
-        .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
-        .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
-        .prose li { margin-bottom: 0.5em; }
+        .prose h2 + p,
+        .prose h3 + p {
+          margin-top: 0px !important;
+        }
+        .prose ul {
+          list-style-type: disc;
+          padding-left: 1.5em;
+          margin-top: 0.5em !important;
+          margin-bottom: 0.5em !important;
+        }
+        .prose ol {
+          list-style-type: decimal;
+          padding-left: 1.5em;
+          margin-top: 0.5em !important;
+          margin-bottom: 0.5em !important;
+        }
+        .prose li {
+          margin-top: 0.25em !important;
+          margin-bottom: 0.25em !important;
+        }
+        .prose li p {
+          margin-top: 0px !important;
+          margin-bottom: 0px !important;
+        }
+
       `}</style>
 
       {/* Desktop ToC Sidebar */}
@@ -224,7 +246,7 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
         <article ref={articleRef} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="relative mt-8">
           {/* Header */}
           <header className="mb-12">
-            <h1 className="text-3xl md:text-5xl font-medium leading-none mb-3 text-black dark:text-white">
+            <h1 className="text-4xl font-medium leading-none mb-3 text-black dark:text-white">
               {currentLang === "en" ? blog.title_en || blog.title : blog.title}
             </h1>
 
