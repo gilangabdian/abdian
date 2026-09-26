@@ -84,7 +84,7 @@ export default function AllArtworksClient({ initialArtworks }: AllArtworksClient
 
         {artworks.length > 0 && (
           <div
-            className="thank-you-msg mt-16 text-center text-neutral-500 dark:text-neutral-400 font-sans text-sm tracking-wide"
+            className="thank-you-msg max-w-[650px] mx-auto mt-16 text-center text-neutral-500 dark:text-neutral-400 font-sans text-sm tracking-wide"
             style={{ opacity: 0, visibility: "hidden" }}>
             Thank you for your interest in my art, but I've decided to stop pursuing it (for who knows how long) because
             I no longer feel like I'm finding joy in it.
@@ -92,14 +92,15 @@ export default function AllArtworksClient({ initialArtworks }: AllArtworksClient
         )}
       </div>
 
-      {selectedImage && createPortal(
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
-          onClick={closeModal}>
-          <img src={selectedImage} className="w-full h-full object-contain" alt="Enlarged Artwork" />
-        </div>,
-        document.body
-      )}
+      {selectedImage &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+            onClick={closeModal}>
+            <img src={selectedImage} className="w-full h-full object-contain" alt="Enlarged Artwork" />
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

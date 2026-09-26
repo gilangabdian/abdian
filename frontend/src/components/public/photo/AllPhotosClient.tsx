@@ -82,7 +82,7 @@ export default function AllPhotosClient({ initialPhotos }: AllPhotosClientProps)
 
         {photos.length > 0 && (
           <div
-            className="thank-you-msg mt-16 text-center text-neutral-500 dark:text-neutral-400 font-sans text-sm tracking-wide"
+            className="thank-you-msg max-w-[650px] mx-auto mt-16 text-center text-neutral-500 dark:text-neutral-400 font-sans text-sm tracking-wide"
             style={{ opacity: 0, visibility: "hidden" }}>
             thank you
           </div>
