@@ -15,7 +15,8 @@ export default function ProfileClient() {
     name: "",
     job_title: "",
     about_description: "",
-    is_available_for_work: true,
+    status_message: "",
+    location_timezone: "Asia/Jakarta",
     show_featured_projects_on_home: true,
     show_featured_certificates_on_home: true,
     show_experiences_on_home: true,
@@ -30,7 +31,8 @@ export default function ProfileClient() {
     name: "",
     job_title: "",
     about_description: "",
-    is_available_for_work: true,
+    status_message: "",
+    location_timezone: "Asia/Jakarta",
     show_featured_projects_on_home: true,
     show_featured_certificates_on_home: true,
     show_experiences_on_home: true,
@@ -71,7 +73,8 @@ export default function ProfileClient() {
       form.name !== originalForm.name ||
       form.job_title !== originalForm.job_title ||
       form.about_description !== originalForm.about_description ||
-      form.is_available_for_work !== originalForm.is_available_for_work ||
+      form.status_message !== originalForm.status_message ||
+      form.location_timezone !== originalForm.location_timezone ||
       form.show_featured_projects_on_home !== originalForm.show_featured_projects_on_home ||
       form.show_featured_certificates_on_home !== originalForm.show_featured_certificates_on_home ||
       form.show_experiences_on_home !== originalForm.show_experiences_on_home ||
@@ -94,7 +97,8 @@ export default function ProfileClient() {
           name: result.about.name || "",
           job_title: result.about.job_title || "",
           about_description: result.about.about_description || "",
-          is_available_for_work: result.about.is_available_for_work ?? true,
+          status_message: result.about.status_message || "",
+          location_timezone: result.about.location_timezone || "Asia/Jakarta",
           show_featured_projects_on_home: result.about.show_featured_projects_on_home ?? true,
           show_featured_certificates_on_home: result.about.show_featured_certificates_on_home ?? true,
           show_experiences_on_home: result.about.show_experiences_on_home ?? true,
@@ -109,7 +113,8 @@ export default function ProfileClient() {
           name: result.about.name || "",
           job_title: result.about.job_title || "",
           about_description: result.about.about_description || "",
-          is_available_for_work: result.about.is_available_for_work ?? true,
+          status_message: result.about.status_message || "",
+          location_timezone: result.about.location_timezone || "Asia/Jakarta",
           show_featured_projects_on_home: result.about.show_featured_projects_on_home ?? true,
           show_featured_certificates_on_home: result.about.show_featured_certificates_on_home ?? true,
           show_experiences_on_home: result.about.show_experiences_on_home ?? true,
@@ -196,7 +201,8 @@ export default function ProfileClient() {
       formData.append("name", form.name);
       formData.append("job_title", form.job_title);
       formData.append("about_description", form.about_description);
-      formData.append("is_available_for_work", form.is_available_for_work ? "1" : "0");
+      formData.append("status_message", form.status_message);
+      formData.append("location_timezone", form.location_timezone);
       formData.append("show_featured_projects_on_home", form.show_featured_projects_on_home ? "1" : "0");
       formData.append("show_featured_certificates_on_home", form.show_featured_certificates_on_home ? "1" : "0");
       formData.append("show_experiences_on_home", form.show_experiences_on_home ? "1" : "0");
@@ -340,23 +346,28 @@ export default function ProfileClient() {
                   />
                 </div>
                 
-                <div className="bg-blue-50 border-2 border-blue-200 p-4 rounded">
-                  <label className="block font-bold uppercase mb-3">Available for Work</label>
-                  <label className="flex items-center gap-3 cursor-pointer select-none">
-                    <div className="relative">
-                      <input 
-                        type="checkbox" 
-                        checked={form.is_available_for_work} 
-                        onChange={(e) => setForm({ ...form, is_available_for_work: e.target.checked })} 
-                        className="sr-only" 
-                      />
-                      <div className={`block w-14 h-8 transition-colors border-2 border-black ${form.is_available_for_work ? 'bg-black' : 'bg-gray-300'}`}></div>
-                      <div className={`absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black ${form.is_available_for_work ? 'translate-x-6' : 'translate-x-0'}`}></div>
-                    </div>
-                    <span className="font-bold font-mono text-sm text-gray-700">
-                      {form.is_available_for_work ? 'Yes, show "Hire Me" button' : 'No, hide "Hire Me" button'}
-                    </span>
-                  </label>
+                <div className="bg-blue-50 border-2 border-blue-200 p-4 rounded space-y-4">
+                  <div>
+                    <label className="block font-bold uppercase mb-2">Status Message (Live Status)</label>
+                    <input
+                      value={form.status_message}
+                      onChange={(e) => setForm({ ...form, status_message: e.target.value })}
+                      type="text"
+                      className="w-full border-2 border-black p-3 font-mono focus:outline-none focus:bg-gray-50 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-gray-400"
+                      placeholder="Ex: I'm resting (Leave empty to hide Live Status)"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-bold uppercase mb-2">Location Timezone</label>
+                    <input
+                      value={form.location_timezone}
+                      onChange={(e) => setForm({ ...form, location_timezone: e.target.value })}
+                      type="text"
+                      disabled
+                      className="w-full border-2 border-black p-3 font-mono bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none placeholder:text-gray-400"
+                      placeholder="Ex: Asia/Jakarta"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="block font-bold uppercase mb-2">About Description <span className="text-red-500">*</span></label>

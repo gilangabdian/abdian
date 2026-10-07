@@ -112,7 +112,9 @@ export interface ProfileAbout {
   name: string;
   job_title: string;
   about_description: string;
-  is_available_for_work: boolean;
+  status_message?: string;
+  status_last_updated_at?: string;
+  location_timezone?: string;
   hero_photos?: string[];
   hero_photo_urls?: string[];
   cv_path?: string;

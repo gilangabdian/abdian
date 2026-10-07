@@ -82,7 +82,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
           background-clip: text;
         }
         .dark .year-watermark {
-          -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+          -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
           background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.06) 0px, rgba(255, 255, 255, 0.06) 2px, transparent 2px, transparent 8px);
         }
       `}</style>

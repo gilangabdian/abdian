@@ -37,7 +37,8 @@ class UpdateProfileRequest extends FormRequest
                 },
             ],
             'cv' => 'nullable|mimes:pdf|max:10240', // Max 10MB
-            'is_available_for_work' => 'nullable|boolean',
+            'status_message' => 'nullable|string|max:255',
+            'location_timezone' => 'nullable|string|max:255',
             'hidden_skill_categories' => 'nullable|array',
             'hidden_skill_categories.*' => 'nullable|string',
             'default_skill_category' => 'nullable|string',

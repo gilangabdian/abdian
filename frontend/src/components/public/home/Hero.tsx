@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { Profile } from "@/types";
 import { Icon } from "@iconify/react";
 import LeaveMark from "./LeaveMark";
+import LiveStatus from "./LiveStatus";
 import hljs from "highlight.js";
 import "highlight.js/styles/night-owl.css";
 
@@ -272,27 +273,13 @@ export default function Hero({ profile }: HeroProps) {
       if (!profile || !profile.about) return;
       const tl = gsap.timeline();
 
-      if (profile.about.is_available_for_work) {
-        tl.from(".hero-badge", {
-          scale: 0,
-          rotation: -20,
-          opacity: 0,
-          duration: 0.6,
-          ease: "back.out(1.7)",
-        });
-      }
-
-      tl.from(
-        ".hero-text",
-        {
-          y: 20,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: "power2.out",
-        },
-        profile.about.is_available_for_work ? "-=0.4" : 0,
-      )
+      tl.from(".hero-text", {
+        y: 20,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power2.out",
+      })
         .from(
           ".hero-content",
           {
@@ -330,12 +317,6 @@ export default function Hero({ profile }: HeroProps) {
       <div className="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-2 mt-8">
         {/* Left Content */}
         <div className="flex-1 flex flex-col items-start space-y-3 md:space-y-3 mt-4">
-          {profile.about.is_available_for_work && (
-            <div className="hero-badge inline-block bg-[#f8f8f8] dark:bg-white/5 border border-black/20 dark:border-white/10 px-3 py-1 rounded-lg shadow-sm transform -rotate-1 origin-bottom-left">
-              <h5 className="font-bold text-[10px] md:text-xs tracking-wide uppercase">Available for Work</h5>
-            </div>
-          )}
-
           <div className="space-y-0.5">
             <h1 className="hero-text text-4xl md:text-5xl font-bold leading-tight tracking-tight">
               Hi, I&apos;m{" "}
@@ -415,32 +396,22 @@ export default function Hero({ profile }: HeroProps) {
               <Icon icon="mdi:map-marker" className="text-[#404040] dark:text-[#a3a3a3]" />
               <span className="text-[#404040] dark:text-[#a3a3a3]">Based in Indonesia</span>
             </div>
-            {profile.about.is_available_for_work && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 text-black dark:text-white">
-                <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-pulse"></div>
-                <span>Available Now</span>
-              </div>
+            {profile.about.status_message && (
+              <LiveStatus
+                statusMessage={profile.about.status_message}
+                lastUpdatedAt={profile.about.status_last_updated_at}
+                locationTimezone={profile.about.location_timezone}
+              />
             )}
           </div>
 
           <div className="hero-content flex gap-3 pt-1 w-full md:w-auto">
-            {profile.about.is_available_for_work && (
-              <a
-                href="mailto:qbdian@gmail.com?subject=Hi Gilang Abdian Anggara, I want to hire you!"
-                className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black px-0 md:px-5 py-2 rounded-xl border border-transparent font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.39)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.23)] hover:bg-black/90 dark:hover:bg-gray-200 active:scale-95 transition-all">
-                <Icon icon="mdi:handshake-outline" className="w-4 h-4 md:w-5 md:h-5" />
-                <span>Hire Me</span>
-              </a>
-            )}
-
             {profile.about.show_resume_button !== false && (
               <a
                 href={profile.about.cv_url}
                 target="_blank"
                 rel="noreferrer"
-                className={`${
-                  profile.about.is_available_for_work ? "flex-1 md:flex-none px-0 md:px-5" : "flex-none px-6"
-                } flex items-center justify-center gap-2 bg-white text-black dark:bg-dark-bg dark:text-white py-2 rounded-xl border border-black/20 dark:border-white/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] dark:shadow-[0_4px_14px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all`}>
+                className="flex-none px-6 flex items-center justify-center gap-2 bg-white text-black dark:bg-dark-bg dark:text-white py-2 rounded-xl border border-black/20 dark:border-white/20 font-bold text-sm shadow-[0_4px_14px_0_rgba(0,0,0,0.1)] dark:shadow-[0_4px_14px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all">
                 <Icon icon="mdi:file-download-outline" className="w-4 h-4 md:w-5 md:h-5" />
                 <span>View Resume</span>
               </a>
@@ -456,6 +427,7 @@ export default function Hero({ profile }: HeroProps) {
                 <a
                   key={`${index}-${social.name}`}
                   href={social.url}
+                  aria-label={social.name}
                   target="_blank"
                   rel="noreferrer"
                   className="p-1.5 border border-black/20 dark:border-white/20 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 hover:shadow-sm transition-all duration-200"

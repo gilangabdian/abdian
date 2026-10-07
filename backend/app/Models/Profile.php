@@ -11,7 +11,9 @@ class Profile extends Model
         'name',
         'job_title',
         'about_description',
-        'is_available_for_work',
+        'status_message',
+        'status_last_updated_at',
+        'location_timezone',
         'hero_photos',
         'cv_path',
         'hidden_skill_categories',
@@ -30,7 +32,7 @@ class Profile extends Model
 
     protected $casts = [
         'hero_photos' => 'array',
-        'is_available_for_work' => 'boolean',
+        'status_last_updated_at' => 'datetime',
         'hidden_skill_categories' => 'array',
         'skill_categories_order' => 'array',
         'skill_categories_info' => 'array',

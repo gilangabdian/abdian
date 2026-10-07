@@ -105,56 +105,57 @@ export default function Experience({ experiences = [] }: ExperienceProps) {
     <section ref={sectionRef} className="py-20 overflow-hidden relative z-0">
       <div className="container mx-auto px-6 flex justify-center">
         <div className="w-full max-w-4xl">
-        <div className="mb-14 journey-header text-left">
-          <h2 className="text-3xl md:text-4xl text-black font-bold dark:text-white tracking-tight">Work Experience</h2>
-        </div>
+          <div className="mb-14 journey-header text-left">
+            <h2 className="text-3xl md:text-4xl text-black font-bold dark:text-white tracking-tight">
+              Work Experience
+            </h2>
+          </div>
 
-        <div className="space-y-12 md:space-y-14">
-          {sortedExperiences.map((exp) => (
-            <div key={exp.id} className="experience-item flex flex-col group relative">
-              <div className="mb-1">
-                <h3 className="text-xl md:text-2xl leading-snug">
-                  {exp.company_url ? (
-                    <a
-                      href={exp.company_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-black font-semibold dark:text-white mr-2 underline decoration-neutral-300 dark:decoration-neutral-600 decoration-1 hover:decoration-black dark:hover:decoration-white hover:decoration-2 underline-offset-4 transition-all duration-300"
-                    >
-                      {exp.company_name}
-                    </a>
-                  ) : (
-                    <span className="text-black font-semibold dark:text-white mr-2">{exp.company_name}</span>
-                  )}
-                  <span className="block md:inline font-normal text-neutral-500 dark:text-neutral-400 text-base md:text-lg mt-1 md:mt-0">
-                    {exp.role}
+          <div className="space-y-12 md:space-y-14">
+            {sortedExperiences.map((exp) => (
+              <div key={exp.id} className="experience-item flex flex-col group relative">
+                <div className="mb-1">
+                  <h3 className="text-xl md:text-2xl leading-snug">
+                    {exp.company_url ? (
+                      <a
+                        href={exp.company_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-black font-semibold dark:text-white mr-2 underline decoration-neutral-300 dark:decoration-neutral-600 decoration-1 hover:decoration-black dark:hover:decoration-white hover:decoration-2 underline-offset-4 transition-all duration-300">
+                        {exp.company_name}
+                      </a>
+                    ) : (
+                      <span className="text-black font-semibold dark:text-white mr-2">{exp.company_name}</span>
+                    )}
+                    <span className="block md:inline font-normal text-neutral-500 dark:text-neutral-400 text-base md:text-lg mt-1 md:mt-0">
+                      {exp.role}
+                    </span>
+                  </h3>
+                </div>
+
+                <div className="flex flex-wrap items-center text-[13px] text-neutral-500 dark:text-neutral-400 mb-2 gap-x-2 gap-y-1 font-normal">
+                  <span>
+                    {formatDate(exp.start_date)} — {exp.end_date ? formatDate(exp.end_date) : "Present"}
+                    <span className="ml-1">({getDuration(exp.start_date, exp.end_date, mounted)})</span>
                   </span>
-                </h3>
+
+                  {(exp.location || exp.status) && (
+                    <span className="text-neutral-300 dark:text-neutral-600 hidden md:inline">|</span>
+                  )}
+
+                  <span className="flex items-center gap-1">
+                    {exp.location && <span>{exp.location}</span>}
+                    {exp.status && <span className="opacity-80">({exp.status})</span>}
+                  </span>
+                </div>
+
+                <div
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(exp.description) }}
+                  className="prose prose-sm md:prose-base dark:prose-invert max-w-none text-neutral-700 dark:text-neutral-300 prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0 [&_ul+ul]:mt-0 [&_ol+ol]:mt-0 [&_ul+ol]:mt-0 [&_ol+ul]:mt-0 [&_p:empty::before]:content-['\00a0'] [&_p:empty::before]:inline-block [&_p]:!text-[#404040] [&_p]:text-[16px] [&_p]:leading-[28px] dark:[&_p]:!text-[#a3a3a3] [&_ul]:list-disc [&_ul]:pl-[1.5em] [&_ul]:!mt-[0.5em] [&_ul]:!mb-[0.5em] [&_ol]:list-decimal [&_ol]:pl-[1.5em] [&_ol]:!mt-[0.5em] [&_ol]:!mb-[0.5em] [&_li]:!mt-[0.25em] [&_li]:!mb-[0.25em] [&_li_p]:!mt-0 [&_li_p]:!mb-0"
+                />
               </div>
-
-              <div className="flex flex-wrap items-center text-[13px] text-neutral-500 dark:text-neutral-400 mb-2 gap-x-2 gap-y-1 font-normal">
-                <span>
-                  {formatDate(exp.start_date)} — {exp.end_date ? formatDate(exp.end_date) : "Present"}
-                  <span className="ml-1">({getDuration(exp.start_date, exp.end_date, mounted)})</span>
-                </span>
-
-                {(exp.location || exp.status) && (
-                  <span className="text-neutral-300 dark:text-neutral-600 hidden md:inline">|</span>
-                )}
-
-                <span className="flex items-center gap-1">
-                  {exp.location && <span>{exp.location}</span>}
-                  {exp.status && <span className="opacity-80">({exp.status})</span>}
-                </span>
-              </div>
-
-              <div
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(exp.description) }}
-                className="prose prose-sm md:prose-base dark:prose-invert max-w-none text-neutral-700 dark:text-neutral-300 prose-p:my-2 prose-ul:my-2 prose-li:my-0"
-              />
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

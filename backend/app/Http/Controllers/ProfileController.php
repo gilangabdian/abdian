@@ -72,6 +72,13 @@ class ProfileController extends Controller
             );
         }
 
+        // Handle Live Status timestamp update
+        if (array_key_exists('status_message', $data)) {
+            if ($profile->status_message !== $data['status_message']) {
+                $data['status_last_updated_at'] = now();
+            }
+        }
+
         // 5. Save & Refresh
         // DISINILAH penyimpanan ke Database terjadi.
         // Karena $data sudah berisi 'name', 'job_title' (dari request) DAN file paths,
