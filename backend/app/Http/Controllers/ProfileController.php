@@ -73,9 +73,18 @@ class ProfileController extends Controller
         }
 
         // Handle Live Status timestamp update
-        if (array_key_exists('status_message', $data)) {
-            if ($profile->status_message !== $data['status_message']) {
+        if (array_key_exists('status_message', $data) && $profile->status_message !== $data['status_message']) {
+            $data['status_last_updated_at'] = now();
+        }
+        
+        $scheduleFields = [
+            'is_status_schedule_enabled', 'status_schedule_days', 'status_schedule_start_time',
+            'status_schedule_end_time', 'status_message_active', 'status_message_inactive'
+        ];
+        foreach ($scheduleFields as $field) {
+            if (array_key_exists($field, $data) && $profile->{$field} !== $data[$field]) {
                 $data['status_last_updated_at'] = now();
+                break;
             }
         }
 

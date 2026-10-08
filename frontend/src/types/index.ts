@@ -115,6 +115,12 @@ export interface ProfileAbout {
   status_message?: string;
   status_last_updated_at?: string;
   location_timezone?: string;
+  is_status_schedule_enabled?: boolean;
+  status_schedule_days?: number[];
+  status_schedule_start_time?: string;
+  status_schedule_end_time?: string;
+  status_message_active?: string;
+  status_message_inactive?: string;
   hero_photos?: string[];
   hero_photo_urls?: string[];
   cv_path?: string;

@@ -78,4 +78,47 @@ class ProfileLiveStatusTest extends TestCase
         $updatedProfile = Profile::first();
         $this->assertEquals($timestamp->toDateTimeString(), $updatedProfile->status_last_updated_at->toDateTimeString());
     }
+
+    public function test_can_update_schedule_fields_and_updates_timestamp()
+    {
+        $this->authenticate();
+
+        $profile = Profile::create([
+            'name' => 'John Doe',
+            'job_title' => 'Developer',
+            'about_description' => 'Test',
+            'status_message' => 'Resting',
+            'status_last_updated_at' => now()->subDays(2),
+            'is_status_schedule_enabled' => false,
+        ]);
+
+        $data = [
+            'name' => 'John Doe',
+            'job_title' => 'Developer',
+            'about_description' => 'Test',
+            'is_status_schedule_enabled' => true,
+            'status_schedule_days' => [1, 2, 3, 4, 5],
+            'status_schedule_start_time' => '08:00',
+            'status_schedule_end_time' => '17:00',
+            'status_message_active' => 'Working',
+            'status_message_inactive' => 'Resting',
+        ];
+
+        $response = $this->postJson('/api/profile', $data);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('profiles', [
+            'is_status_schedule_enabled' => true,
+            'status_schedule_start_time' => '08:00',
+            'status_schedule_end_time' => '17:00',
+            'status_message_active' => 'Working',
+            'status_message_inactive' => 'Resting',
+        ]);
+        
+        $updatedProfile = Profile::first();
+        $this->assertEquals([1, 2, 3, 4, 5], $updatedProfile->status_schedule_days);
+        $this->assertNotEquals($profile->status_last_updated_at, $updatedProfile->status_last_updated_at);
+        $this->assertTrue($updatedProfile->status_last_updated_at->isToday());
+    }
 }

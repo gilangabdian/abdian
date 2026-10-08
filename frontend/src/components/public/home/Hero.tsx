@@ -396,11 +396,17 @@ export default function Hero({ profile }: HeroProps) {
               <Icon icon="mdi:map-marker" className="text-[#404040] dark:text-[#a3a3a3]" />
               <span className="text-[#404040] dark:text-[#a3a3a3]">Based in Indonesia</span>
             </div>
-            {profile.about.status_message && (
+            {(profile.about.is_status_schedule_enabled || profile.about.status_message) && (
               <LiveStatus
                 statusMessage={profile.about.status_message}
                 lastUpdatedAt={profile.about.status_last_updated_at}
                 locationTimezone={profile.about.location_timezone}
+                isStatusScheduleEnabled={profile.about.is_status_schedule_enabled}
+                statusScheduleDays={profile.about.status_schedule_days}
+                statusScheduleStartTime={profile.about.status_schedule_start_time}
+                statusScheduleEndTime={profile.about.status_schedule_end_time}
+                statusMessageActive={profile.about.status_message_active}
+                statusMessageInactive={profile.about.status_message_inactive}
               />
             )}
           </div>

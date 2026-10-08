@@ -1,0 +1,269 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Profile API",
+        "description": "API untuk mengelola Profile (About Me, Live Status, Hero Photos, dll).",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "Profile": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Gilang Ages"
+                    },
+                    "job_title": {
+                        "type": "string",
+                        "example": "Full Stack Developer"
+                    },
+                    "about_description": {
+                        "type": "string",
+                        "example": "Hello, I am Abdian..."
+                    },
+                    "status_message": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "I'm resting"
+                    },
+                    "status_last_updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true,
+                        "example": "2026-10-08T15:00:00.000000Z"
+                    },
+                    "location_timezone": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "Asia/Jakarta"
+                    },
+                    "is_status_schedule_enabled": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "status_schedule_days": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    "status_schedule_start_time": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "08:00"
+                    },
+                    "status_schedule_end_time": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "17:00"
+                    },
+                    "status_message_active": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "I'm working"
+                    },
+                    "status_message_inactive": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "I'm resting"
+                    },
+                    "hero_photos": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "hero_photo_urls": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "cv_path": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "cv_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "show_featured_projects_on_home": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "show_featured_certificates_on_home": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "show_experiences_on_home": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "show_tech_on_home": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_about_page_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_certificates_page_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_contacts_page_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "show_resume_button": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/profile": {
+            "get": {
+                "summary": "Get Profile (🌍 Global/Public)",
+                "description": "Mengembalikan data Profile beserta Social Media Contacts.",
+                "responses": {
+                    "200": {
+                        "description": "Success - Profile Data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "about": {
+                                            "$ref": "#/components/schemas/Profile"
+                                        },
+                                        "social_media": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Update Profile (🔒 Admin Only)",
+                "description": "Memperbarui data Profile.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "job_title": {
+                                        "type": "string"
+                                    },
+                                    "about_description": {
+                                        "type": "string"
+                                    },
+                                    "status_message": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "location_timezone": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "is_status_schedule_enabled": {
+                                        "type": "boolean"
+                                    },
+                                    "status_schedule_days[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "status_schedule_start_time": {
+                                        "type": "string",
+                                        "example": "08:00"
+                                    },
+                                    "status_schedule_end_time": {
+                                        "type": "string",
+                                        "example": "17:00"
+                                    },
+                                    "status_message_active": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "status_message_inactive": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "hero_photos[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "cv": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Profile"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

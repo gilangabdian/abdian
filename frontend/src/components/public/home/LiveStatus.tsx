@@ -3,15 +3,23 @@
 import { useEffect, useState, useRef } from "react";
 
 interface LiveStatusProps {
-  statusMessage: string;
+  statusMessage?: string;
   lastUpdatedAt?: string;
   locationTimezone?: string;
+  isStatusScheduleEnabled?: boolean;
+  statusScheduleDays?: number[];
+  statusScheduleStartTime?: string;
+  statusScheduleEndTime?: string;
+  statusMessageActive?: string;
+  statusMessageInactive?: string;
 }
 
 function timeAgoCustom(dateString: string) {
   const date = new Date(dateString);
   const now = new Date();
   const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (seconds < 0) return "just now";
 
   let interval = seconds / 31536000;
   if (interval > 1) return Math.floor(interval) + " years ago";
@@ -44,20 +52,26 @@ export default function LiveStatus({
   statusMessage,
   lastUpdatedAt,
   locationTimezone = "Asia/Jakarta",
+  isStatusScheduleEnabled,
+  statusScheduleDays,
+  statusScheduleStartTime,
+  statusScheduleEndTime,
+  statusMessageActive,
+  statusMessageInactive,
 }: LiveStatusProps) {
   const [localTime, setLocalTime] = useState("");
+  const [effectiveStatus, setEffectiveStatus] = useState<string>("");
+  const [effectiveLastUpdated, setEffectiveLastUpdated] = useState<string>("");
   const [mounted, setMounted] = useState(false);
   const [hue, setHue] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Generate random vibrant hue once on mount
     setHue(Math.floor(Math.random() * 360));
   }, []);
 
   useEffect(() => {
-    // Global click listener to close popup on outside click
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -74,37 +88,89 @@ export default function LiveStatus({
 
   useEffect(() => {
     setMounted(true);
-
-    // Initial format
     updateTime();
-
-    // Update time every second
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
 
     function updateTime() {
       try {
+        const now = new Date();
         const formatter = new Intl.DateTimeFormat("en-US", {
           timeZone: locationTimezone,
           hour: "numeric",
           minute: "2-digit",
           second: "2-digit",
-          timeZoneName: "shortOffset", // Gets GMT+7 or similar
-          hour12: true, // For PM/AM
+          timeZoneName: "shortOffset",
+          hour12: true,
         });
+        setLocalTime(formatter.format(now));
 
-        // Example output: "10:15:30 PM GMT+7"
-        const formatted = formatter.format(new Date());
-        setLocalTime(formatted);
+        if (isStatusScheduleEnabled) {
+          const formatterTZ = new Intl.DateTimeFormat("en-US", {
+            timeZone: locationTimezone,
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: 'numeric', minute: 'numeric', second: 'numeric',
+            hour12: false
+          });
+          const tzString = formatterTZ.format(now);
+          const tzDate = new Date(tzString);
+          
+          const currentDay = tzDate.getDay();
+          const currentHour = tzDate.getHours();
+          const currentMinute = tzDate.getMinutes();
+          const currentSecs = tzDate.getSeconds();
+
+          const startParts = (statusScheduleStartTime || "00:00").split(':').map(Number);
+          const endParts = (statusScheduleEndTime || "00:00").split(':').map(Number);
+          
+          const startTotalSecs = startParts[0] * 3600 + startParts[1] * 60;
+          const endTotalSecs = endParts[0] * 3600 + endParts[1] * 60;
+          const currentTotalSecs = currentHour * 3600 + currentMinute * 60 + currentSecs;
+
+          const activeDays = (statusScheduleDays || []).map(Number);
+          const isActive = activeDays.includes(currentDay) && currentTotalSecs >= startTotalSecs && currentTotalSecs < endTotalSecs;
+
+          if (isActive) {
+            setEffectiveStatus(statusMessageActive || "Active");
+            const diffSecs = currentTotalSecs - startTotalSecs;
+            const realFlipTime = new Date(now.getTime() - (diffSecs * 1000));
+            setEffectiveLastUpdated(realFlipTime.toISOString());
+          } else {
+            setEffectiveStatus(statusMessageInactive || "Inactive");
+            
+            let lastEndDiffSecs = 0;
+            if (activeDays.includes(currentDay) && currentTotalSecs >= endTotalSecs) {
+               lastEndDiffSecs = currentTotalSecs - endTotalSecs;
+            } else {
+               let daysBack = 1;
+               while (daysBack <= 7) {
+                 const checkDay = (currentDay - daysBack + 7) % 7;
+                 if (activeDays.includes(checkDay)) break;
+                 daysBack++;
+               }
+               if (daysBack <= 7) {
+                  const secondsPassedToday = currentTotalSecs;
+                  const secondsInPreviousDays = (daysBack - 1) * 86400;
+                  const secondsFromEndToMidnight = 86400 - endTotalSecs;
+                  lastEndDiffSecs = secondsPassedToday + secondsInPreviousDays + secondsFromEndToMidnight;
+               }
+            }
+            const realFlipTime = new Date(now.getTime() - (lastEndDiffSecs * 1000));
+            setEffectiveLastUpdated(realFlipTime.toISOString());
+          }
+        } else {
+           setEffectiveStatus(statusMessage || "");
+           setEffectiveLastUpdated(lastUpdatedAt || "");
+        }
       } catch {
         setLocalTime("Time unavailable");
       }
     }
-  }, [locationTimezone]);
+  }, [locationTimezone, isStatusScheduleEnabled, statusScheduleDays, statusScheduleStartTime, statusScheduleEndTime, statusMessageActive, statusMessageInactive, statusMessage, lastUpdatedAt]);
 
-  if (!mounted || !statusMessage) return null;
+  if (!mounted || !effectiveStatus) return null;
 
-  const timeAgo = lastUpdatedAt ? timeAgoCustom(lastUpdatedAt) : "recently";
+  const timeAgo = effectiveLastUpdated ? timeAgoCustom(effectiveLastUpdated) : "recently";
 
   return (
     <div
@@ -130,7 +196,7 @@ export default function LiveStatus({
         <div
           className="bg-white dark:bg-dark-bg text-black dark:text-white border rounded-xl shadow-[0_4px_14px_0_rgba(0,0,0,0.2)] dark:shadow-[0_4px_14px_0_rgba(255,255,255,0.05)] p-2 flex flex-col gap-0.5 relative"
           style={{ borderColor: borderColor }}>
-          <div className="font-bold text-xs">{statusMessage}</div>
+          <div className="font-bold text-xs">{effectiveStatus}</div>
           <div className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{timeAgo}</div>
 
           <hr className="my-1 border-t" style={{ borderColor: borderColor }} />

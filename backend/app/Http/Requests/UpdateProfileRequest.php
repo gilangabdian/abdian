@@ -11,6 +11,13 @@ class UpdateProfileRequest extends FormRequest
         return true; // Ubah ke true
     }
 
+    protected function prepareForValidation()
+    {
+        if ($this->has('is_status_schedule_enabled') && !$this->has('status_schedule_days')) {
+            $this->merge(['status_schedule_days' => []]);
+        }
+    }
+
     public function rules(): array
     {
         return [
@@ -39,6 +46,13 @@ class UpdateProfileRequest extends FormRequest
             'cv' => 'nullable|mimes:pdf|max:10240', // Max 10MB
             'status_message' => 'nullable|string|max:255',
             'location_timezone' => 'nullable|string|max:255',
+            'is_status_schedule_enabled' => 'nullable|boolean',
+            'status_schedule_days' => 'nullable|array',
+            'status_schedule_days.*' => 'nullable|integer|between:0,6',
+            'status_schedule_start_time' => 'nullable|date_format:H:i',
+            'status_schedule_end_time' => 'nullable|date_format:H:i',
+            'status_message_active' => 'nullable|string|max:255',
+            'status_message_inactive' => 'nullable|string|max:255',
             'hidden_skill_categories' => 'nullable|array',
             'hidden_skill_categories.*' => 'nullable|string',
             'default_skill_category' => 'nullable|string',

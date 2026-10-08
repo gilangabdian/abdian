@@ -25,6 +25,12 @@ export default function ProfileClient() {
     is_certificates_page_active: true,
     is_contacts_page_active: true,
     show_resume_button: true,
+    is_status_schedule_enabled: false,
+    status_schedule_days: [1, 2, 3, 4, 5],
+    status_schedule_start_time: "08:00",
+    status_schedule_end_time: "17:00",
+    status_message_active: "",
+    status_message_inactive: "",
   });
 
   const [originalForm, setOriginalForm] = useState({
@@ -41,6 +47,12 @@ export default function ProfileClient() {
     is_certificates_page_active: true,
     is_contacts_page_active: true,
     show_resume_button: true,
+    is_status_schedule_enabled: false,
+    status_schedule_days: [1, 2, 3, 4, 5],
+    status_schedule_start_time: "08:00",
+    status_schedule_end_time: "17:00",
+    status_message_active: "",
+    status_message_inactive: "",
   });
 
   type HeroPhoto = { id: string; file?: File; preview: string; isExisting?: boolean; originalUrl?: string };
@@ -82,7 +94,13 @@ export default function ProfileClient() {
       form.is_about_page_active !== originalForm.is_about_page_active ||
       form.is_certificates_page_active !== originalForm.is_certificates_page_active ||
       form.is_contacts_page_active !== originalForm.is_contacts_page_active ||
-      form.show_resume_button !== originalForm.show_resume_button;
+      form.show_resume_button !== originalForm.show_resume_button ||
+      form.is_status_schedule_enabled !== originalForm.is_status_schedule_enabled ||
+      JSON.stringify(form.status_schedule_days) !== JSON.stringify(originalForm.status_schedule_days) ||
+      form.status_schedule_start_time !== originalForm.status_schedule_start_time ||
+      form.status_schedule_end_time !== originalForm.status_schedule_end_time ||
+      form.status_message_active !== originalForm.status_message_active ||
+      form.status_message_inactive !== originalForm.status_message_inactive;
 
     return hasNewFiles || hasTextChanges || heroPhotosChanged;
   }, [form, originalForm, heroPhotos, originalHeroPhotos, cvFile]);
@@ -107,6 +125,12 @@ export default function ProfileClient() {
           is_certificates_page_active: result.about.is_certificates_page_active ?? true,
           is_contacts_page_active: result.about.is_contacts_page_active ?? true,
           show_resume_button: result.about.show_resume_button ?? true,
+          is_status_schedule_enabled: result.about.is_status_schedule_enabled ?? false,
+          status_schedule_days: (result.about.status_schedule_days || [1, 2, 3, 4, 5]).map(Number),
+          status_schedule_start_time: (result.about.status_schedule_start_time || "08:00:00").substring(0, 5),
+          status_schedule_end_time: (result.about.status_schedule_end_time || "17:00:00").substring(0, 5),
+          status_message_active: result.about.status_message_active || "",
+          status_message_inactive: result.about.status_message_inactive || "",
         });
 
         setOriginalForm({
@@ -123,6 +147,12 @@ export default function ProfileClient() {
           is_certificates_page_active: result.about.is_certificates_page_active ?? true,
           is_contacts_page_active: result.about.is_contacts_page_active ?? true,
           show_resume_button: result.about.show_resume_button ?? true,
+          is_status_schedule_enabled: result.about.is_status_schedule_enabled ?? false,
+          status_schedule_days: (result.about.status_schedule_days || [1, 2, 3, 4, 5]).map(Number),
+          status_schedule_start_time: (result.about.status_schedule_start_time || "08:00:00").substring(0, 5),
+          status_schedule_end_time: (result.about.status_schedule_end_time || "17:00:00").substring(0, 5),
+          status_message_active: result.about.status_message_active || "",
+          status_message_inactive: result.about.status_message_inactive || "",
         });
 
         if (result.about.hero_photo_urls && Array.isArray(result.about.hero_photo_urls)) {
@@ -212,6 +242,15 @@ export default function ProfileClient() {
       formData.append("is_certificates_page_active", form.is_certificates_page_active ? "1" : "0");
       formData.append("is_contacts_page_active", form.is_contacts_page_active ? "1" : "0");
       formData.append("show_resume_button", form.show_resume_button ? "1" : "0");
+
+      formData.append("is_status_schedule_enabled", form.is_status_schedule_enabled ? "1" : "0");
+      form.status_schedule_days.forEach(day => {
+        formData.append("status_schedule_days[]", day.toString());
+      });
+      formData.append("status_schedule_start_time", form.status_schedule_start_time);
+      formData.append("status_schedule_end_time", form.status_schedule_end_time);
+      formData.append("status_message_active", form.status_message_active);
+      formData.append("status_message_inactive", form.status_message_inactive);
 
       heroPhotos.forEach((hp) => {
         if (hp.isExisting && hp.originalUrl) {
@@ -347,16 +386,74 @@ export default function ProfileClient() {
                 </div>
                 
                 <div className="bg-blue-50 border-2 border-blue-200 p-4 rounded space-y-4">
-                  <div>
-                    <label className="block font-bold uppercase mb-2">Status Message (Live Status)</label>
-                    <input
-                      value={form.status_message}
-                      onChange={(e) => setForm({ ...form, status_message: e.target.value })}
-                      type="text"
-                      className="w-full border-2 border-black p-3 font-mono focus:outline-none focus:bg-gray-50 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-gray-400"
-                      placeholder="Ex: I'm resting (Leave empty to hide Live Status)"
-                    />
+                  <div className="flex flex-col gap-4">
+                    <label className="block font-bold uppercase">Live Status Mode</label>
+                    <div className="flex gap-4">
+                      <label className="flex items-center gap-2 cursor-pointer font-mono select-none">
+                        <input type="radio" checked={!form.is_status_schedule_enabled} onChange={() => setForm({...form, is_status_schedule_enabled: false})} className="w-4 h-4 cursor-pointer" />
+                        Manual
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer font-mono select-none">
+                        <input type="radio" checked={form.is_status_schedule_enabled} onChange={() => setForm({...form, is_status_schedule_enabled: true})} className="w-4 h-4 cursor-pointer" />
+                        Auto Schedule
+                      </label>
+                    </div>
                   </div>
+
+                  {!form.is_status_schedule_enabled ? (
+                    <div className="pt-2 border-t-2 border-blue-200">
+                      <label className="block font-bold uppercase mb-2">Manual Status Message</label>
+                      <input
+                        value={form.status_message}
+                        onChange={(e) => setForm({ ...form, status_message: e.target.value })}
+                        type="text"
+                        className="w-full border-2 border-black p-3 font-mono focus:outline-none focus:bg-gray-50 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all placeholder:text-gray-400"
+                        placeholder="Ex: I'm resting (Leave empty to hide Live Status)"
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-4 pt-4 border-t-2 border-blue-200">
+                      <div>
+                        <label className="block font-bold uppercase mb-2 text-sm">Active Days</label>
+                        <div className="flex flex-wrap gap-2">
+                          {[
+                            { label: "Mon", val: 1 }, { label: "Tue", val: 2 }, { label: "Wed", val: 3 }, 
+                            { label: "Thu", val: 4 }, { label: "Fri", val: 5 }, { label: "Sat", val: 6 }, { label: "Sun", val: 0 }
+                          ].map(d => (
+                            <label key={d.val} className={`border-2 border-black px-3 py-1 cursor-pointer font-bold font-mono text-sm transition-colors select-none ${form.status_schedule_days.includes(d.val) ? "bg-black text-white" : "bg-white text-black hover:bg-gray-100"}`}>
+                               <input type="checkbox" className="hidden" checked={form.status_schedule_days.includes(d.val)} onChange={(e) => {
+                                 let days = [...form.status_schedule_days];
+                                 if (e.target.checked) days.push(d.val);
+                                 else days = days.filter(x => x !== d.val);
+                                 setForm({...form, status_schedule_days: days});
+                               }} />
+                               {d.label}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-4">
+                        <div className="flex-1">
+                          <label className="block font-bold uppercase mb-2 text-sm">Start Time</label>
+                          <input type="time" value={form.status_schedule_start_time} onChange={(e) => setForm({...form, status_schedule_start_time: e.target.value})} className="w-full border-2 border-black p-2 font-mono [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:brightness-0" />
+                        </div>
+                        <div className="flex-1">
+                          <label className="block font-bold uppercase mb-2 text-sm">End Time</label>
+                          <input type="time" value={form.status_schedule_end_time} onChange={(e) => setForm({...form, status_schedule_end_time: e.target.value})} className="w-full border-2 border-black p-2 font-mono [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:brightness-0" />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-bold uppercase mb-2 text-sm">Active Status Message</label>
+                        <input type="text" value={form.status_message_active} onChange={(e) => setForm({...form, status_message_active: e.target.value})} className="w-full border-2 border-black p-2 font-mono focus:outline-none" placeholder="Ex: I'm working" />
+                      </div>
+                      <div>
+                        <label className="block font-bold uppercase mb-2 text-sm">Inactive Status Message</label>
+                        <input type="text" value={form.status_message_inactive} onChange={(e) => setForm({...form, status_message_inactive: e.target.value})} className="w-full border-2 border-black p-2 font-mono focus:outline-none" placeholder="Ex: I'm resting" />
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <label className="block font-bold uppercase mb-2">Location Timezone</label>
                     <input
