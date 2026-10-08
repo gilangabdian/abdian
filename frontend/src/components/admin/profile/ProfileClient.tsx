@@ -435,22 +435,22 @@ export default function ProfileClient() {
                       
                       <div className="flex gap-4">
                         <div className="flex-1">
-                          <label className="block font-bold uppercase mb-2 text-sm">Start Time</label>
-                          <input type="time" value={form.status_schedule_start_time} onChange={(e) => setForm({...form, status_schedule_start_time: e.target.value})} className="w-full border-2 border-black p-2 font-mono [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:brightness-0" />
+                          <label className="block font-bold uppercase mb-2 text-sm">Start Time <span className="text-red-500">*</span></label>
+                          <input type="time" required={form.is_status_schedule_enabled} value={form.status_schedule_start_time} onChange={(e) => setForm({...form, status_schedule_start_time: e.target.value})} className="w-full border-2 border-black p-2 font-mono [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:brightness-0" />
                         </div>
                         <div className="flex-1">
-                          <label className="block font-bold uppercase mb-2 text-sm">End Time</label>
-                          <input type="time" value={form.status_schedule_end_time} onChange={(e) => setForm({...form, status_schedule_end_time: e.target.value})} className="w-full border-2 border-black p-2 font-mono [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:brightness-0" />
+                          <label className="block font-bold uppercase mb-2 text-sm">End Time <span className="text-red-500">*</span></label>
+                          <input type="time" required={form.is_status_schedule_enabled} value={form.status_schedule_end_time} onChange={(e) => setForm({...form, status_schedule_end_time: e.target.value})} className="w-full border-2 border-black p-2 font-mono [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:brightness-0" />
                         </div>
                       </div>
 
                       <div>
-                        <label className="block font-bold uppercase mb-2 text-sm">Active Status Message</label>
-                        <input type="text" value={form.status_message_active} onChange={(e) => setForm({...form, status_message_active: e.target.value})} className="w-full border-2 border-black p-2 font-mono focus:outline-none" placeholder="Ex: I'm working" />
+                        <label className="block font-bold uppercase mb-2 text-sm">Active Status Message <span className="text-red-500">*</span></label>
+                        <input type="text" required={form.is_status_schedule_enabled} value={form.status_message_active} onChange={(e) => setForm({...form, status_message_active: e.target.value})} className="w-full border-2 border-black p-2 font-mono focus:outline-none" placeholder="Ex: I'm working" />
                       </div>
                       <div>
-                        <label className="block font-bold uppercase mb-2 text-sm">Inactive Status Message</label>
-                        <input type="text" value={form.status_message_inactive} onChange={(e) => setForm({...form, status_message_inactive: e.target.value})} className="w-full border-2 border-black p-2 font-mono focus:outline-none" placeholder="Ex: I'm resting" />
+                        <label className="block font-bold uppercase mb-2 text-sm">Inactive Status Message <span className="text-red-500">*</span></label>
+                        <input type="text" required={form.is_status_schedule_enabled} value={form.status_message_inactive} onChange={(e) => setForm({...form, status_message_inactive: e.target.value})} className="w-full border-2 border-black p-2 font-mono focus:outline-none" placeholder="Ex: I'm resting" />
                       </div>
                     </div>
                   )}
