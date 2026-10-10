@@ -64,6 +64,8 @@ export default function ProfileClient() {
 
   const heroPhotoInputRef = useRef<HTMLInputElement>(null);
   const cvInputRef = useRef<HTMLInputElement>(null);
+  const dragItem = useRef<number | null>(null);
+  const dragOverItem = useRef<number | null>(null);
 
   const hasChanges = useMemo(() => {
     const hasNewFiles = cvFile !== null;
@@ -203,6 +205,31 @@ export default function ProfileClient() {
     setHeroPhotos(heroPhotos.filter(p => p.id !== idToRemove));
   };
 
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+    dragItem.current = index;
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", index.toString());
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>, index: number) => {
+    dragOverItem.current = index;
+  };
+
+  const handleDragEnd = () => {
+    if (dragItem.current !== null && dragOverItem.current !== null && dragItem.current !== dragOverItem.current) {
+      const _heroPhotos = [...heroPhotos];
+      const draggedItemContent = _heroPhotos.splice(dragItem.current, 1)[0];
+      _heroPhotos.splice(dragOverItem.current, 0, draggedItemContent);
+      setHeroPhotos(_heroPhotos);
+    }
+    dragItem.current = null;
+    dragOverItem.current = null;
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault(); // Necessary to allow dropping
+  };
+
   const handleCvChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) setCvFile(file);
@@ -327,15 +354,23 @@ export default function ProfileClient() {
                 
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   {heroPhotos.map((photo, index) => (
-                    <div key={photo.id} className="relative group aspect-[4/5] border-4 border-black bg-gray-100 flex items-center justify-center overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-                      <img loading="lazy" src={photo.preview} className="w-full h-full object-cover" alt={`Hero ${index + 1}`} />
+                    <div 
+                      key={photo.id} 
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragEnter={(e) => handleDragEnter(e, index)}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={handleDragOver}
+                      className="relative group aspect-[4/5] border-4 border-black bg-gray-100 flex items-center justify-center overflow-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-grab active:cursor-grabbing"
+                    >
+                      <img loading="lazy" src={photo.preview} className="w-full h-full object-cover pointer-events-none select-none" alt={`Hero ${index + 1}`} />
                       <div className="absolute top-1 left-1 bg-black text-white px-2 py-0.5 text-xs font-bold font-mono">
                         {index + 1}
                       </div>
                       <button
                         type="button"
                         onClick={() => removeHeroPhoto(photo.id)}
-                        className="absolute top-2 right-2 bg-red-500 text-white p-1.5 hover:bg-red-600 hover:scale-110 transition-transform shadow-sm opacity-0 group-hover:opacity-100"
+                        className="absolute top-2 right-2 bg-red-500 text-white p-1.5 hover:bg-red-600 hover:scale-110 transition-transform shadow-sm opacity-100 md:opacity-0 md:group-hover:opacity-100"
                         title="Remove Photo"
                       >
                         <Icon icon="lucide:trash-2" className="w-4 h-4" />
@@ -358,7 +393,7 @@ export default function ProfileClient() {
                     </label>
                   )}
                 </div>
-                <p className="text-xs font-mono text-gray-500">* Photos will be displayed interactively on the home page. Hover changes to even photos, click changes to next odd photo.</p>
+                <p className="text-xs font-mono text-gray-500">* You can drag and drop photos to reorder them. The order here will reflect on your home page.</p>
               </div>
 
               <div className="md:col-span-3 space-y-5 mt-6">
