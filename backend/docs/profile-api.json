@@ -129,10 +129,7 @@
                         "type": "boolean",
                         "example": true
                     },
-                    "is_contacts_page_active": {
-                        "type": "boolean",
-                        "example": true
-                    },
+
                     "show_resume_button": {
                         "type": "boolean",
                         "example": true

@@ -66,7 +66,6 @@ class UpdateProfileRequest extends FormRequest
             'show_tech_on_home' => 'nullable|boolean',
             'is_about_page_active' => 'nullable|boolean',
             'is_certificates_page_active' => 'nullable|boolean',
-            'is_contacts_page_active' => 'nullable|boolean',
             'show_resume_button' => 'nullable|boolean',
         ];
     }

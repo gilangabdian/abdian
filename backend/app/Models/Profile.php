@@ -32,7 +32,6 @@ class Profile extends Model
         'show_tech_on_home',
         'is_about_page_active',
         'is_certificates_page_active',
-        'is_contacts_page_active',
         'show_resume_button',
     ];
 
@@ -50,7 +49,6 @@ class Profile extends Model
         'show_tech_on_home' => 'boolean',
         'is_about_page_active' => 'boolean',
         'is_certificates_page_active' => 'boolean',
-        'is_contacts_page_active' => 'boolean',
         'show_resume_button' => 'boolean',
     ];
 }

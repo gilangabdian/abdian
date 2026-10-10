@@ -48,7 +48,6 @@ class ProfileApiTest extends TestCase
                 'show_tech_on_home' => false,
                 'is_about_page_active' => false,
                 'is_certificates_page_active' => false,
-                'is_contacts_page_active' => false,
                 'show_resume_button' => false,
             ]);
 
@@ -69,7 +68,6 @@ class ProfileApiTest extends TestCase
         $this->assertFalse($profile->show_tech_on_home);
         $this->assertFalse($profile->is_about_page_active);
         $this->assertFalse($profile->is_certificates_page_active);
-        $this->assertFalse($profile->is_contacts_page_active);
         $this->assertFalse($profile->show_resume_button);
     }
 
@@ -111,6 +109,69 @@ class ProfileApiTest extends TestCase
         $this->assertEquals('http://existing-url.com/image.jpg', $profile->hero_photos[0]);
         Storage::disk('public')->assertExists($profile->hero_photos[1]);
         Storage::disk('public')->assertExists($profile->hero_photos[2]);
+    }
+
+    public function test_admin_can_upload_mixed_hero_photos_with_explicit_indices()
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $photo1 = UploadedFile::fake()->image('photo1.jpg');
+        $photo2 = UploadedFile::fake()->image('photo2.jpg');
+        $url1 = 'http://existing-url.com/img1.jpg';
+        $url2 = 'http://existing-url.com/img2.jpg';
+
+        $response = $this->actingAs($user)
+            ->post('/api/profile', [
+                'name' => 'Gilang',
+                'job_title' => 'Fullstack',
+                'about_description' => 'Coding',
+                'hero_photos' => [
+                    0 => $url1,
+                    1 => $photo1,
+                    2 => $url2,
+                    3 => $photo2,
+                ],
+            ]);
+
+        $response->assertStatus(200);
+
+        $profile = Profile::first();
+
+        $this->assertNotNull($profile->hero_photos, 'Hero photos array null');
+        $this->assertCount(4, $profile->hero_photos);
+
+        // Verify all elements are present
+        $this->assertContains($url1, $profile->hero_photos);
+        $this->assertContains($url2, $profile->hero_photos);
+        
+        $files = array_diff($profile->hero_photos, [$url1, $url2]);
+        $this->assertCount(2, $files);
+        foreach ($files as $file) {
+            Storage::disk('public')->assertExists($file);
+        }
+    }
+
+    public function test_upload_exceeds_max_files_limit()
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $photos = [];
+        for ($i = 0; $i < 11; $i++) {
+            $photos[$i] = UploadedFile::fake()->image("photo{$i}.jpg");
+        }
+
+        $response = $this->actingAs($user)
+            ->post('/api/profile', [
+                'name' => 'Gilang',
+                'job_title' => 'Fullstack',
+                'about_description' => 'Coding',
+                'hero_photos' => $photos,
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['hero_photos']);
     }
 
     public function test_validation_error_works()
