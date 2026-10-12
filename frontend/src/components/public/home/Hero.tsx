@@ -58,6 +58,110 @@ const DECORATIONS_CONFIG: Record<number, ConfigItem> = {
   0: {
     static: [
       {
+        src: "/decorations/deco4-1.png",
+        position: "-top-[3px] left-[5px]",
+        size: "w-12",
+        hoverEffect: "scale-110 -rotate-12 translate-x-2",
+      },
+      {
+        src: "/decorations/deco4-1.png",
+        position: "md:-top-[-240px] top-[310px] left-[280px] md:left-[210px]",
+        size: "w-8",
+        hoverEffect: "scale-110 translate-x-2",
+      },
+    ],
+    hoverOnly: [
+      {
+        src: "/decorations/deco4-hover.png",
+        position: "md:-top-[-120px] top-[150px] left-[70px] md:left-[160px]",
+        size: "w-6",
+        animation: "scale-110",
+        slideFrom: "translate-y-5",
+      },
+    ],
+  },
+  1: {
+    static: [
+      {
+        src: "/decorations/deco5-1.png",
+        position: "-bottom-[-85px] right-[30px]",
+        size: "w-10",
+        hoverEffect: "rotate-15",
+      },
+      {
+        src: "/decorations/deco5-2.png",
+        position: "-top-[-10px] left-[20px]",
+        size: "w-10",
+        hoverEffect: "scale-105 rotate-8",
+      },
+    ],
+    hoverOnly: [
+      {
+        src: "/decorations/deco5-hover.png",
+        position: "-top-[25px] right-[0px] rotate-16",
+        size: "w-20",
+        hoverEffect: "rotate-15",
+        slideFrom: "translate-x-10",
+      },
+    ],
+  },
+  2: {
+    static: [
+      {
+        src: "/decorations/deco6-2.png",
+        position: "md:-top-[-190px] top-[300px] left-[30px] md:left-[20px]",
+        size: "w-18",
+        hoverEffect: "scale-105 rotate-8",
+        // hoverEffect: "rotate-[120deg] transition-transform duration-700 custom-bounce",
+      },
+      {
+        src: "/decorations/deco6-1.png",
+        position: "md:-bottom-[-100px] -bottom-[-110px] right-[30px] md:right-[2px]",
+        size: "w-16",
+        hoverEffect: "rotate-[-20deg] transition-transform duration-700 custom-bounce",
+      },
+      {
+        src: "/decorations/deco6-1.png",
+        position: "md:-bottom-[-20px] -bottom-[-110px] right-[30px] md:right-[-12px] rotate-180",
+        size: "w-16",
+        hoverEffect: "rotate-[200deg] transition-transform duration-700 custom-bounce",
+      },
+    ],
+    hoverOnly: [
+      {
+        src: "/decorations/deco6-hover.png",
+        position: "-top-[50px] right-[20px]",
+        size: "w-25",
+        animation: "",
+        slideFrom: "-translate-y-10",
+      },
+    ],
+  },
+  3: {
+    static: [
+      {
+        src: "/decorations/deco7-1.png",
+        position: "top-[20px] right-[10px] -rotate-16",
+        size: "w-10",
+        hoverEffect: "scale-105",
+      },
+    ],
+    hoverOnly: [
+      {
+        src: "/decorations/deco7-2.png",
+        position: "md:top-[-48px] top-[-50px] left:-[60px] md:left-[-20px] -rotate-4",
+        size: "w-18",
+        hoverEffect: "scale-125 rotate-110",
+        slideFrom: "translate-y-2",
+        delay: "delay-0",
+      },
+    ],
+  },
+  4: { static: [], hoverOnly: [] },
+  5: { static: [], hoverOnly: [] },
+  6: {
+    static: [
+      {
         src: "/decorations/deco0-1.png",
         position: "-top-[-30px] left-[-1px]",
         size: "w-8",
@@ -86,32 +190,11 @@ const DECORATIONS_CONFIG: Record<number, ConfigItem> = {
       },
     ],
   },
-  1: {
-    static: [
-      {
-        src: "/decorations/deco1-1.png",
-        position: "-bottom-[-85px] right-[30px]",
-        size: "w-8",
-        hoverEffect: "rotate-15",
-      },
-      {
-        src: "/decorations/deco1-1.png",
-        position: "-top-[-10px] left-[10px]",
-        size: "w-8",
-        hoverEffect: "scale-105 rotate-20",
-      },
-    ],
-    hoverOnly: [
-      {
-        src: "/decorations/deco1-hover.png",
-        position: "-top-[25px] right-[0px] rotate-16",
-        size: "w-30",
-        hoverEffect: "rotate-15",
-        slideFrom: "translate-x-10",
-      },
-    ],
+  7: {
+    static: [],
+    hoverOnly: [],
   },
-  2: {
+  8: {
     static: [
       {
         src: "/decorations/deco2-1.png",
@@ -136,37 +219,6 @@ const DECORATIONS_CONFIG: Record<number, ConfigItem> = {
       },
     ],
   },
-  3: {
-    static: [
-      {
-        src: "/decorations/deco3-2.png",
-        position: "-bottom-[-100px] right-[26px]",
-        size: "w-8",
-        hoverEffect: "scale-125 ",
-      },
-      {
-        src: "/decorations/deco3-1.png",
-        position: "md:top-[234px] top-[300px] left-[50px] md:left-[35px]",
-        size: "w-8",
-        hoverEffect: "scale-125 rotate-20",
-      },
-    ],
-    hoverOnly: [
-      {
-        src: "/decorations/deco3-hover.png",
-        position: "md:top-[-55px] top-[-50px] left:-[60px] md:left-[-6px]",
-        size: "w-16",
-        hoverEffect: "scale-125 rotate-110",
-        slideFrom: "translate-y-2",
-        delay: "delay-0",
-      },
-    ],
-  },
-  4: { static: [], hoverOnly: [] },
-  5: { static: [], hoverOnly: [] },
-  6: { static: [], hoverOnly: [] },
-  7: { static: [], hoverOnly: [] },
-  8: { static: [], hoverOnly: [] },
   9: { static: [], hoverOnly: [] },
 };
 
