@@ -73,6 +73,7 @@ class VisitorController extends Controller
         $totalMarks = Visitor::where('left_mark', true)->count();
         $alreadyMarked = false;
 
+        $visitor = null;
         if ($request->device_id) {
             $visitor = Visitor::where('device_id', $request->device_id)->first();
             if ($visitor && $visitor->left_mark) {
@@ -80,13 +81,39 @@ class VisitorController extends Controller
             }
         }
 
-        return response()->json([
+        // 1. Check Cookie
+        if (!$alreadyMarked && $request->cookie('v_marked') === '1') {
+            $alreadyMarked = true;
+        }
+
+        // 2. Fallback check by IP in database (resists localStorage clear, cookie clear, & device emulation changes)
+        if (!$alreadyMarked) {
+            $ips = array_filter(array_unique([
+                $visitor?->ip_address,
+                $request->ip_address,
+                $request->ip(),
+            ]));
+
+            if (!empty($ips)) {
+                $alreadyMarked = Visitor::whereIn('ip_address', $ips)
+                    ->where('left_mark', true)
+                    ->exists();
+            }
+        }
+
+        $response = response()->json([
             'message' => 'Mark count retrieved successfully',
             'data' => [
                 'total_marks' => $totalMarks,
                 'already_marked' => $alreadyMarked
             ]
         ], 200);
+
+        if ($alreadyMarked) {
+            $response->withCookie(cookie()->forever('v_marked', '1'));
+        }
+
+        return $response;
     }
 
     /**
@@ -98,38 +125,78 @@ class VisitorController extends Controller
             return response()->json(['message' => 'device_id is required'], 400);
         }
 
+        $agent = new Agent();
+        $agent->setUserAgent($request->userAgent());
+        $os = $agent->platform() ?: null;
+        $browser = $agent->browser() ?: null;
+        $deviceType = $agent->isTablet() ? 'tablet' : ($agent->isMobile() ? 'mobile' : 'desktop');
+        $deviceName = $agent->device() ?: null;
+
         $visitor = Visitor::where('device_id', $request->device_id)->first();
+
+        // 1. Check if marked by device_id
+        $alreadyMarked = $visitor && $visitor->left_mark;
+
+        // 2. Check if marked by Cookie
+        if (!$alreadyMarked && $request->cookie('v_marked') === '1') {
+            $alreadyMarked = true;
+        }
+
+        // 3. Fallback check by IP in database (resists localStorage clear, cookie clear, & device emulation changes)
+        $ips = array_filter(array_unique([
+            $visitor?->ip_address,
+            $request->ip_address,
+            $request->ip(),
+        ]));
+
+        if (!$alreadyMarked && !empty($ips)) {
+            $existingMark = Visitor::whereIn('ip_address', $ips)
+                ->where('left_mark', true)
+                ->exists();
+
+            if ($existingMark) {
+                $alreadyMarked = true;
+            }
+        }
+
+        $clientIp = $request->ip_address ?: ($request->ip() ?: null);
 
         if (!$visitor) {
             // Log visitor silently if not exists
-            $agent = new Agent();
-            $agent->setUserAgent($request->userAgent());
             $visitor = Visitor::create([
-                'device_id' => $request->device_id,
-                'left_mark' => false,
-                'device_type' => $agent->isTablet() ? 'tablet' : ($agent->isMobile() ? 'mobile' : 'desktop'),
-                'os' => $agent->platform() ?: null,
-                'browser' => $agent->browser() ?: null,
-                'device_name' => $agent->device() ?: null,
+                'device_id'   => $request->device_id,
+                'left_mark'   => !$alreadyMarked,
+                'ip_address'  => $clientIp,
+                'device_type' => $deviceType,
+                'os'          => $os,
+                'browser'     => $browser,
+                'device_name' => $deviceName,
             ]);
-        }
-
-        $alreadyMarked = $visitor->left_mark;
-
-        if (!$alreadyMarked) {
+        } elseif (!$alreadyMarked) {
             $visitor->left_mark = true;
+            if (!$visitor->ip_address && $clientIp) {
+                $visitor->ip_address = $clientIp;
+            }
+            if (!$visitor->os && $os) {
+                $visitor->os = $os;
+            }
+            if (!$visitor->browser && $browser) {
+                $visitor->browser = $browser;
+            }
             $visitor->save();
         }
 
         $totalMarks = Visitor::where('left_mark', true)->count();
 
-        return response()->json([
+        $response = response()->json([
             'message' => $alreadyMarked ? 'Already marked' : 'Mark left successfully',
             'data' => [
                 'already_marked' => $alreadyMarked,
                 'total_marks' => $totalMarks
             ]
         ], 200);
+
+        return $response->withCookie(cookie()->forever('v_marked', '1'));
     }
 
     /**

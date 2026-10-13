@@ -108,7 +108,7 @@
         "/api/visitors/mark/count": {
             "get": {
                 "summary": "Get Mark Count (🌍 Global/Public)",
-                "description": "Get the total count of visitors who left a mark, and optionally check if a specific device has already marked.",
+                "description": "Get the total count of visitors who left a mark, and check if a specific device/IP has already marked (resists localStorage clear, cookie clear, and device emulation changes).",
                 "parameters": [
                     {
                         "name": "device_id",
@@ -141,7 +141,7 @@
         "/api/visitors/mark": {
             "post": {
                 "summary": "Leave a Mark (🌍 Global/Public)",
-                "description": "Allow a visitor to leave a mark. Will only increment the count once per device_id.",
+                "description": "Allow a visitor to leave a mark. Increments count once per unique visitor using multi-layer persistence (device_id, persistent cookie, and IP-level fallback to resist localStorage deletion, cookie clearing, and mobile device emulation changes).",
                 "requestBody": {
                     "required": true,
                     "content": {

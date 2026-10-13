@@ -33,11 +33,15 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
 
   // Mobile nav items — icon only
   const mobileIconLinks = [
-    ...(profile?.about?.is_about_page_active !== false ? [{ name: "About", href: "/about", icon: "mdi:card-account-details-outline" }] : []),
+    ...(profile?.about?.is_about_page_active !== false
+      ? [{ name: "About", href: "/about", icon: "mdi:card-account-details-outline" }]
+      : []),
     { name: "Blog", href: "/blogs", icon: "material-symbols-light:post-outline" },
     { name: "Notes", href: "/notes", icon: "mdi:note-outline" },
     { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
-    ...(profile?.about?.is_certificates_page_active !== false ? [{ name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" }] : []),
+    ...(profile?.about?.is_certificates_page_active !== false
+      ? [{ name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" }]
+      : []),
     { name: "Artworks", href: "/artworks", icon: "mdi:palette-outline" },
     { name: "Photos", href: "/photos", icon: "ri:camera-3-line" },
     // { name: "Github", href: "https://github.com/gilangabdian", icon: "mingcute:github-line" },
@@ -85,9 +89,9 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
     </svg>
   );
 
-  // ─── MOBILE NAVBAR MARKUP ────────────────────────
+  // ─── MOBILE NAVBAR MARKUP (< md) ────────────────────────
   const mobileNavbar = (
-    <div className="absolute top-2 left-0 right-0 z-50 lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-black">
+    <div className="absolute top-2 left-0 right-0 z-50 md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-black">
       {/* Kiri: SVG Logo */}
       <Link href="/" title="Gilang Abdian">
         {renderLogoSvg("mask0_mobile", 30, 30)}
@@ -132,19 +136,20 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
 
   return (
     <>
-      {/* ═══════════════ DESKTOP NAVBAR (lg+) ═══════════════ */}
+      {/* ═══════════════ DESKTOP & TABLET NAVBAR (md+) ═══════════════ */}
 
       {/* KIRI - SVG Logo (fixed) */}
-      <Link href="/" className="fixed top-5 left-6 z-50 hidden lg:block" title="Gilang Abdian">
+      <Link href="/" className="fixed top-5 left-6 z-50 hidden md:block" title="Gilang Abdian">
         {renderLogoSvg("mask0_desk", 40, 40)}
       </Link>
 
       {/* KANAN - Menu Items */}
-      <div className="absolute top-7 right-8 z-50 hidden lg:flex items-center gap-x-6">
+      <div className="absolute top-7 right-8 z-50 hidden md:flex items-center gap-x-6">
         {textLinks.map((link) => (
           <Link
             key={link.name}
             href={link.href}
+            title={link.name}
             className={`text-md tracking-tight transition-colors duration-200 ${
               isActive(link.href)
                 ? "text-black dark:text-white"
