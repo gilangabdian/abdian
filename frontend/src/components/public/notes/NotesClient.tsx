@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -12,11 +12,56 @@ interface NotesClientProps {
   initialNotes: Blog[];
 }
 
+interface NoteContentProps {
+  content: string;
+  onImageClick: (url: string) => void;
+}
+
+const NoteContent = React.memo(({ content, onImageClick }: NoteContentProps) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+
+    hljs.configure({ ignoreUnescapedHTML: true });
+
+    const t = setTimeout(() => {
+      if (contentRef.current) {
+        const codeBlocks = contentRef.current.querySelectorAll("pre code");
+        codeBlocks.forEach((block) => {
+          block.removeAttribute("data-highlighted");
+          hljs.highlightElement(block as HTMLElement);
+        });
+      }
+    }, 10);
+
+    return () => clearTimeout(t);
+  }, [content]);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === "IMG") {
+      const src = (target as HTMLImageElement).src;
+      if (src) onImageClick(src);
+    }
+  };
+
+  return (
+    <div
+      ref={contentRef}
+      className="flex-grow min-w-0 w-full prose prose-neutral dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
+      dangerouslySetInnerHTML={{ __html: content }}
+      onClick={handleClick}
+    />
+  );
+});
+
+NoteContent.displayName = "NoteContent";
+
 export default function NotesClient({ initialNotes }: NotesClientProps) {
   const [notes] = useState<Blog[]>(initialNotes);
   const [currentLang, setCurrentLang] = useState("id");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("blogLang");
@@ -26,21 +71,9 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
     NProgress.done();
   }, []);
 
-  useEffect(() => {
-    const t = setTimeout(() => {
-      if (containerRef.current) {
-        const codeBlocks = containerRef.current.querySelectorAll("pre code");
-        // Matikan warning karena sumber konten kita aman (dari Admin Panel)
-        hljs.configure({ ignoreUnescapedHTML: true });
-
-        codeBlocks.forEach((block) => {
-          block.removeAttribute("data-highlighted");
-          hljs.highlightElement(block as HTMLElement);
-        });
-      }
-    }, 10);
-    return () => clearTimeout(t);
-  }, [currentLang, notes]);
+  const handleImageClick = useCallback((src: string) => {
+    setSelectedImage(src);
+  }, []);
 
   const updateLang = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newLang = e.target.checked ? "en" : "id";
@@ -57,14 +90,6 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
     return { day, month, year };
   };
 
-  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLElement;
-    if (target.tagName === "IMG") {
-      const src = (target as HTMLImageElement).src;
-      if (src) setSelectedImage(src);
-    }
-  };
-
   return (
     <div className="pt-24 md:pt-40 pb-16 min-h-screen flex flex-col items-center">
       <div className="w-full max-w-3xl px-4 md:px-8">
@@ -74,7 +99,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
         {notes.length === 0 && <div className="text-center text-neutral-500 py-12">no notes yet!</div>}
 
         {notes.length > 0 && (
-          <div className="w-full flex flex-col relative" ref={containerRef}>
+          <div className="w-full flex flex-col relative">
             <style>{`
             div.callout {
                 position: relative !important;
@@ -193,11 +218,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
                     </div>
 
                     {/* Note Content */}
-                    <div
-                      className="flex-grow min-w-0 w-full prose prose-neutral dark:prose-invert prose-lg max-w-none prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-6 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-6 [&_div.callout]:py-1 [&_div.callout]:text-sm [&_div.callout]:md:text-base [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
-                      dangerouslySetInnerHTML={{ __html: content }}
-                      onClick={handleContentClick}
-                    />
+                    <NoteContent content={content} onImageClick={handleImageClick} />
                   </div>
                 );
               })}
