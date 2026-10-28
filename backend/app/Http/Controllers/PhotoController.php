@@ -101,6 +101,26 @@ class PhotoController extends Controller
         ]);
     }
 
+    public function bulkDelete(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:photos,id',
+        ]);
+
+        $photos = Photo::whereIn('id', $request->ids)->get();
+
+        foreach ($photos as $photo) {
+            $this->deleteFile($photo->image_url);
+        }
+
+        Photo::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Photos deleted successfully'
+        ]);
+    }
+
 
     private function resolveUrl($path)
     {

@@ -54,7 +54,67 @@ trait ImageUploadTrait
     }
 
     /**
-     * Delete an image from the disk
+     * Parse a Cloudinary URL to extract public_id and resource_type
+     *
+     * @param string $url
+     * @return array{public_id: string, resource_type: string}|null
+     */
+    protected function parseCloudinaryUrl(string $url): ?array
+    {
+        if (!str_contains($url, 'res.cloudinary.com')) {
+            return null;
+        }
+
+        // Determine resource_type (video or image)
+        $resourceType = 'image';
+        if (str_contains($url, '/video/upload/')) {
+            $resourceType = 'video';
+        } elseif (str_contains($url, '/raw/upload/')) {
+            $resourceType = 'raw';
+        }
+
+        $parts = explode('/upload/', $url);
+        if (count($parts) < 2) {
+            return null;
+        }
+
+        $afterUpload = $parts[1];
+        // Remove query parameters if any
+        $afterUpload = explode('?', $afterUpload)[0];
+
+        // Check if there is a version tag /v\d+/
+        if (preg_match('/(?:^|\/)v\d+\/(.+)$/', $afterUpload, $matches)) {
+            $pathWithoutVersion = $matches[1];
+        } else {
+            // Strip any transformation segment (e.g. f_auto,q_auto or w_500,h_500)
+            $segments = explode('/', $afterUpload);
+            $cleanSegments = [];
+            $foundContent = false;
+            foreach ($segments as $segment) {
+                if (!$foundContent && (str_contains($segment, ',') || preg_match('/^[a-z]{1,2}_/', $segment))) {
+                    continue;
+                }
+                $foundContent = true;
+                $cleanSegments[] = $segment;
+            }
+            $pathWithoutVersion = implode('/', $cleanSegments);
+        }
+
+        // Strip file extension (.jpg, .png, .mp4, .webp, etc.)
+        $publicId = preg_replace('/\.[^.\/]+$/', '', $pathWithoutVersion);
+
+        if (empty($publicId)) {
+            return null;
+        }
+
+        return [
+            'public_id' => $publicId,
+            'resource_type' => $resourceType,
+        ];
+    }
+
+    /**
+     * Delete an image from disk or Cloudinary intelligently based on URL & environment
      *
      * @param string|null $path The URL or path to delete
      * @param string|null $disk Force a specific disk, or null to auto-detect
@@ -66,20 +126,30 @@ trait ImageUploadTrait
             return;
         }
 
-        $disk = $disk ?? config('filesystems.default', 'public');
-
-        if ($disk === 'cloudinary') {
-            // Cloudinary deletion is complex because we need the public_id from the URL.
-            // Often, users prefer not to delete from cloudinary to preserve CDN links,
-            // or we use the cloudinary-laravel package's method. 
-            // We will skip cloudinary programmatic deletion for safety/simplicity as previously done in Profile.
-            // (Cloudinary handles overwrites if public_ids match, but we use random ids).
-        } else {
-            // Local disk deletion
-            if (!str_starts_with($path, 'http')) {
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->delete($path);
+        // 1. Smart Detection: If it's a Cloudinary URL
+        if (str_contains($path, 'res.cloudinary.com')) {
+            $parsed = $this->parseCloudinaryUrl($path);
+            if ($parsed && !empty($parsed['public_id'])) {
+                try {
+                    $cloudUrl = config('cloudinary.cloud_url');
+                    if ($cloudUrl) {
+                        $cloudinary = new Cloudinary($cloudUrl);
+                        $cloudinary->uploadApi()->destroy($parsed['public_id'], [
+                            'resource_type' => $parsed['resource_type'],
+                            'invalidate' => true,
+                        ]);
+                    }
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning("Failed to delete Cloudinary file: {$path}. Reason: " . $e->getMessage());
                 }
+            }
+            return;
+        }
+
+        // 2. Local Storage Deletion (when in development or path is a local relative path)
+        if (!str_starts_with($path, 'http')) {
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
             }
         }
     }

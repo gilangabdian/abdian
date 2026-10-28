@@ -27,6 +27,7 @@ class StoreProjectRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'is_featured' => 'boolean',
+            'is_published' => 'nullable|boolean',
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'status' => ['required', 'string', Rule::in(Project::STATUSES)],

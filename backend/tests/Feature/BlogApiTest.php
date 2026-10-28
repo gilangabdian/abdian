@@ -335,4 +335,43 @@ class BlogApiTest extends TestCase
                   ->assertJsonCount(1)
                   ->assertJsonFragment(['type' => 'note']);
     }
+
+    public function test_admin_can_toggle_blog_publish_status()
+    {
+        $blog = Blog::create([
+            'title' => 'Toggle Blog',
+            'content' => 'Content',
+            'is_published' => false
+        ]);
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+                         ->patchJson("/api/blogs/{$blog->id}/toggle-publish");
+
+        $response->assertStatus(200);
+        $this->assertTrue($blog->fresh()->is_published);
+
+        // Toggle back to draft
+        $response2 = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+                          ->patchJson("/api/blogs/{$blog->id}/toggle-publish");
+
+        $response2->assertStatus(200);
+        $this->assertFalse($blog->fresh()->is_published);
+    }
+
+    public function test_admin_can_bulk_delete_blogs()
+    {
+        $blog1 = Blog::create(['title' => 'Blog 1', 'content' => 'C1', 'is_published' => true]);
+        $blog2 = Blog::create(['title' => 'Blog 2', 'content' => 'C2', 'is_published' => true]);
+        $blog3 = Blog::create(['title' => 'Blog 3', 'content' => 'C3', 'is_published' => true]);
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+                         ->postJson('/api/blogs/bulk-delete', [
+                             'ids' => [$blog1->id, $blog2->id]
+                         ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('blogs', ['id' => $blog1->id]);
+        $this->assertDatabaseMissing('blogs', ['id' => $blog2->id]);
+        $this->assertDatabaseHas('blogs', ['id' => $blog3->id]);
+    }
 }

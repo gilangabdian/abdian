@@ -73,7 +73,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile', [ProfileController::class, 'update']); // Menggunakan POST untuk support file upload dengan mudah
 
     // Projects CRUD
+    Route::get('/admin/projects', [ProjectController::class, 'indexAdmin']);
     Route::post('/projects', [ProjectController::class, 'store']);
+    Route::post('/projects/bulk-delete', [ProjectController::class, 'bulkDelete']);
+    Route::patch('/projects/{id}/toggle-publish', [ProjectController::class, 'togglePublish']);
     Route::put('/projects/reorder', [ProjectController::class, 'reorder']);
     Route::put('/projects/{id}', [ProjectController::class, 'update']); // Note: Laravel kadang butuh _method: PUT di FormData untuk file
     Route::delete('/projects/{id}', [ProjectController::class, 'destroy']);
@@ -107,11 +110,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Artworks CRUD
     Route::post('/artworks', [ArtworkController::class, 'store']);
+    Route::post('/artworks/bulk-delete', [ArtworkController::class, 'bulkDelete']);
     Route::put('/artworks/{id}', [ArtworkController::class, 'update']);
     Route::delete('/artworks/{id}', [ArtworkController::class, 'destroy']);
 
     // Photos CRUD
     Route::post('/photos', [PhotoController::class, 'store']);
+    Route::post('/photos/bulk-delete', [PhotoController::class, 'bulkDelete']);
     Route::post('/photos/{id}', [PhotoController::class, 'update']);
     Route::delete('/photos/{id}', [PhotoController::class, 'destroy']);
 
@@ -119,6 +124,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/blogs', [BlogController::class, 'indexAdmin']);
     Route::get('/admin/blogs/{id}', [BlogController::class, 'showAdmin']);
     Route::post('/blogs', [BlogController::class, 'store']);
+    Route::post('/blogs/bulk-delete', [BlogController::class, 'bulkDelete']);
+    Route::patch('/blogs/{id}/toggle-publish', [BlogController::class, 'togglePublish']);
     Route::post('/blogs/upload-image', [BlogController::class, 'uploadImage']);
     Route::put('/blogs/{id}', [BlogController::class, 'update']);
     Route::post('/blogs/{id}', [BlogController::class, 'update']); // Fallback multipart if needed

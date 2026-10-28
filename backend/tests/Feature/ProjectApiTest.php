@@ -315,4 +315,130 @@ class ProjectApiTest extends TestCase
 
         $response->assertStatus(401);
     }
+
+    public function test_public_user_only_sees_published_projects()
+    {
+        $published = Project::create([
+            'title' => 'Published Project',
+            'description' => 'Desc',
+            'is_published' => true,
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        $unpublished = Project::create([
+            'title' => 'Draft Project',
+            'description' => 'Desc',
+            'is_published' => false,
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        $response = $this->getJson('/api/projects');
+
+        $response->assertStatus(200);
+        $titles = collect($response->json('data'))->pluck('title')->toArray();
+
+        $this->assertContains('Published Project', $titles);
+        $this->assertNotContains('Draft Project', $titles);
+    }
+
+    public function test_admin_can_view_all_projects_including_unpublished()
+    {
+        $user = User::factory()->create();
+
+        Project::create([
+            'title' => 'Public Project',
+            'description' => 'Desc',
+            'is_published' => true,
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        Project::create([
+            'title' => 'Draft Project',
+            'description' => 'Desc',
+            'is_published' => false,
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        $response = $this->actingAs($user)->getJson('/api/admin/projects');
+
+        $response->assertStatus(200);
+        $titles = collect($response->json('data'))->pluck('title')->toArray();
+
+        $this->assertContains('Public Project', $titles);
+        $this->assertContains('Draft Project', $titles);
+    }
+
+    public function test_admin_can_toggle_project_published_status()
+    {
+        $user = User::factory()->create();
+
+        $project = Project::create([
+            'title' => 'Toggle Me',
+            'description' => 'Desc',
+            'is_published' => true,
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        // Toggle to false
+        $response = $this->actingAs($user)->patchJson("/api/projects/{$project->id}/toggle-publish");
+        $response->assertStatus(200);
+        $this->assertFalse($project->fresh()->is_published);
+
+        // Toggle back to true
+        $response2 = $this->actingAs($user)->patchJson("/api/projects/{$project->id}/toggle-publish");
+        $response2->assertStatus(200);
+        $this->assertTrue($project->fresh()->is_published);
+    }
+
+    public function test_admin_can_bulk_delete_projects()
+    {
+        $user = User::factory()->create();
+
+        $project1 = Project::create([
+            'title' => 'Project 1',
+            'description' => 'Desc',
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        $project2 = Project::create([
+            'title' => 'Project 2',
+            'description' => 'Desc',
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        $project3 = Project::create([
+            'title' => 'Keep Project',
+            'description' => 'Desc',
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        $response = $this->actingAs($user)->postJson('/api/projects/bulk-delete', [
+            'ids' => [$project1->id, $project2->id],
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('projects', ['id' => $project1->id]);
+        $this->assertDatabaseMissing('projects', ['id' => $project2->id]);
+        $this->assertDatabaseHas('projects', ['id' => $project3->id]);
+    }
+
+    public function test_bulk_delete_projects_validates_ids()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson('/api/projects/bulk-delete', [
+            'ids' => [],
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['ids']);
+    }
 }

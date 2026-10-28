@@ -8,13 +8,14 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ImageUploadTrait;
+use App\Services\RevalidationService;
 
 class ProjectController extends Controller
 {
     use ImageUploadTrait;
     public function index(Request $request)
     {
-        $query = Project::query();
+        $query = Project::query()->where('is_published', true);
 
         // Fitur Filter: Jika frontend mengirim ?featured=1, ambil yang featured saja
         if ($request->has('featured') && $request->featured == '1') {
@@ -22,6 +23,22 @@ class ProjectController extends Controller
         }
 
         // PERBAIKAN DI SINI: Tambahkan with('skills') agar relasi skill ikut terambil
+        $projects = $query->with('skills')->orderBy('sort_order', 'asc')->latest('id')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $projects,
+        ]);
+    }
+
+    public function indexAdmin(Request $request)
+    {
+        $query = Project::query();
+
+        if ($request->has('featured') && $request->featured == '1') {
+            $query->where('is_featured', true);
+        }
+
         $projects = $query->with('skills')->orderBy('sort_order', 'asc')->latest('id')->get();
 
         return response()->json([
@@ -85,6 +102,7 @@ class ProjectController extends Controller
             'title' => $data['title'],
             'description' => $data['description'],
             'is_featured' => $data['is_featured'] ?? false,
+            'is_published' => array_key_exists('is_published', $data) ? (bool) $data['is_published'] : $project->is_published,
             'start_date' => $data['start_date'],
             'end_date' => $data['end_date'],
             'status' => $data['status'],
@@ -105,6 +123,43 @@ class ProjectController extends Controller
         }
 
         return response()->json(['message' => 'Project updated', 'data' => $project->load('skills')]);
+    }
+
+    public function togglePublish($id)
+    {
+        $project = Project::findOrFail($id);
+        $project->is_published = !($project->is_published ?? true);
+        $project->save();
+
+        RevalidationService::tag('projects');
+
+        return response()->json([
+            'message' => $project->is_published ? 'Project berhasil dipublish' : 'Project berhasil dijadikan draft',
+            'data' => $project->load('skills')
+        ]);
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:projects,id',
+        ]);
+
+        $projects = Project::whereIn('id', $request->ids)->get();
+
+        foreach ($projects as $project) {
+            $this->deleteFile($project->thumbnail_path);
+            $project->skills()->detach();
+        }
+
+        Project::whereIn('id', $request->ids)->delete();
+
+        RevalidationService::tag('projects');
+
+        return response()->json([
+            'message' => 'Projects deleted successfully'
+        ]);
     }
 
     public function destroy($id)

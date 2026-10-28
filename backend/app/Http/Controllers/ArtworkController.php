@@ -95,6 +95,26 @@ class ArtworkController extends Controller
         ]);
     }
 
+    public function bulkDelete(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:artworks,id',
+        ]);
+
+        $artworks = Artwork::whereIn('id', $request->ids)->get();
+
+        foreach ($artworks as $artwork) {
+            $this->deleteFile($artwork->image_url);
+        }
+
+        Artwork::whereIn('id', $request->ids)->delete();
+
+        return response()->json([
+            'message' => 'Artworks deleted successfully'
+        ]);
+    }
+
     private function resolveUrl($path)
     {
         if (!$path) {

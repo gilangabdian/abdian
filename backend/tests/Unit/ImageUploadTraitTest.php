@@ -21,14 +21,24 @@ class ImageUploadTraitTest extends TestCase
             // Expose the protected method for testing via a public wrapper
             public function testFormatUrl($url, $extension)
             {
-            // Replicate the exact logic from the trait for unit testing purposes
-            $ext = strtolower($extension);
-            if ($ext !== 'pdf' && $ext !== 'svg') {
-                return str_replace('/upload/', '/upload/f_auto,q_auto/', $url);
+                // Replicate the exact logic from the trait for unit testing purposes
+                $ext = strtolower($extension);
+                if ($ext !== 'pdf' && $ext !== 'svg') {
+                    return str_replace('/upload/', '/upload/f_auto,q_auto/', $url);
+                }
+                return $url;
             }
-            return $url;
-        }
-    };
+
+            public function testParseCloudinaryUrl(string $url): ?array
+            {
+                return $this->parseCloudinaryUrl($url);
+            }
+
+            public function testDeleteFile(?string $path, ?string $disk = null): void
+            {
+                $this->deleteFile($path, $disk);
+            }
+        };
     }
 
     public function test_it_appends_webp_optimization_for_images()
@@ -59,5 +69,45 @@ class ImageUploadTraitTest extends TestCase
         
         $this->assertEquals('https://res.cloudinary.com/demo/image/upload/v1234/animation.svg', $optimizedUrl);
         $this->assertStringNotContainsString('f_auto,q_auto', $optimizedUrl);
+    }
+
+    public function test_it_parses_cloudinary_image_url_with_transformations_and_folder()
+    {
+        $url = 'https://res.cloudinary.com/mycloud/image/upload/f_auto,q_auto/v1722000000/projects/sample_uuid.jpg';
+        $parsed = $this->traitObject->testParseCloudinaryUrl($url);
+
+        $this->assertNotNull($parsed);
+        $this->assertEquals('projects/sample_uuid', $parsed['public_id']);
+        $this->assertEquals('image', $parsed['resource_type']);
+    }
+
+    public function test_it_parses_cloudinary_video_url()
+    {
+        $url = 'https://res.cloudinary.com/mycloud/video/upload/f_auto,q_auto/v1722000000/projects/demo_video.mp4';
+        $parsed = $this->traitObject->testParseCloudinaryUrl($url);
+
+        $this->assertNotNull($parsed);
+        $this->assertEquals('projects/demo_video', $parsed['public_id']);
+        $this->assertEquals('video', $parsed['resource_type']);
+    }
+
+    public function test_it_returns_null_for_non_cloudinary_url()
+    {
+        $url = 'https://example.com/images/photo.jpg';
+        $parsed = $this->traitObject->testParseCloudinaryUrl($url);
+
+        $this->assertNull($parsed);
+    }
+
+    public function test_it_deletes_local_file_from_public_disk()
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+        \Illuminate\Support\Facades\Storage::disk('public')->put('projects/test.jpg', 'fake content');
+
+        $this->assertTrue(\Illuminate\Support\Facades\Storage::disk('public')->exists('projects/test.jpg'));
+
+        $this->traitObject->testDeleteFile('projects/test.jpg');
+
+        $this->assertFalse(\Illuminate\Support\Facades\Storage::disk('public')->exists('projects/test.jpg'));
     }
 }

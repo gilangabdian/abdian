@@ -84,4 +84,21 @@ class PhotoApiTest extends TestCase
 
         $this->deleteJson("/api/photos/{$photo->id}")->assertStatus(401);
     }
+
+    public function test_admin_can_bulk_delete_photos()
+    {
+        $photo1 = Photo::factory()->create();
+        $photo2 = Photo::factory()->create();
+        $photo3 = Photo::factory()->create();
+
+        $response = $this->actingAs($this->admin, 'sanctum')
+                         ->postJson('/api/photos/bulk-delete', [
+                             'ids' => [$photo1->id, $photo2->id]
+                         ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('photos', ['id' => $photo1->id]);
+        $this->assertDatabaseMissing('photos', ['id' => $photo2->id]);
+        $this->assertDatabaseHas('photos', ['id' => $photo3->id]);
+    }
 }

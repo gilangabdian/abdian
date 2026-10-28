@@ -132,3 +132,44 @@ export const adminReorderProjects = async (token: string, orderedIds: number[]) 
     body: JSON.stringify({ ordered_ids: orderedIds }),
   });
 };
+
+
+export const getAdminProjects = async (token: string): Promise<Project[]> => {
+  try {
+    const res = await fetch(`${API_URL}/admin/projects`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+      cache: 'no-store',
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.data !== undefined ? json.data : json;
+  } catch (error) {
+    console.error('Failed to fetch admin projects', error);
+    return [];
+  }
+};
+
+export const adminTogglePublishProject = async (token: string, id: string | number) => {
+  return await fetch(`${API_URL}/projects/${id}/toggle-publish`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    },
+  });
+};
+
+export const adminBulkDeleteProjects = async (token: string, ids: (string | number)[]) => {
+  return await fetch(`${API_URL}/projects/bulk-delete`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ ids }),
+  });
+};

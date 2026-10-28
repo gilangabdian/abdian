@@ -84,4 +84,21 @@ class ArtworkApiTest extends TestCase
 
         $this->deleteJson("/api/artworks/{$artwork->id}")->assertStatus(401);
     }
+
+    public function test_admin_can_bulk_delete_artworks()
+    {
+        $artwork1 = Artwork::factory()->create();
+        $artwork2 = Artwork::factory()->create();
+        $artwork3 = Artwork::factory()->create();
+
+        $response = $this->actingAs($this->admin, 'sanctum')
+                         ->postJson('/api/artworks/bulk-delete', [
+                             'ids' => [$artwork1->id, $artwork2->id]
+                         ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('artworks', ['id' => $artwork1->id]);
+        $this->assertDatabaseMissing('artworks', ['id' => $artwork2->id]);
+        $this->assertDatabaseHas('artworks', ['id' => $artwork3->id]);
+    }
 }

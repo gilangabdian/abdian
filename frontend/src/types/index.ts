@@ -45,6 +45,7 @@ export interface Certificate {
   credential_link?: string;
   image_path?: string;
   is_featured: boolean;
+  is_published?: boolean;
   order_number: number;
   type?: string;
   description?: string;
@@ -192,6 +193,7 @@ export interface Project {
   live_demo_link?: string;
   technologies?: string[];
   is_featured: boolean;
+  is_published?: boolean;
   order_number: number;
   category_id?: number;
   thumbnail_path?: string;

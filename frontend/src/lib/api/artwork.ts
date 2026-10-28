@@ -75,3 +75,16 @@ export const reorderArtworks = async (token: string, ordered_ids: (string | numb
     body: JSON.stringify({ ordered_ids }),
   });
 };
+
+
+export const bulkDeleteArtworks = async (token: string, ids: (string | number)[]) => {
+  return await fetch(`${API_URL}/artworks/bulk-delete`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ ids }),
+  });
+};

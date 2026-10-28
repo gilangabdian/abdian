@@ -320,6 +320,49 @@
                     }
                 }
             }
+        },
+        "/api/blogs/bulk-delete": {
+            "post": {
+                "summary": "Bulk delete blogs (🔒 Admin Only)",
+                "security": [{ "bearerAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["ids"],
+                                "properties": {
+                                    "ids": {
+                                        "type": "array",
+                                        "items": { "type": "integer" },
+                                        "example": [1, 2, 3]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Blogs deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/blogs/{id}/toggle-publish": {
+            "patch": {
+                "summary": "Quick toggle blog published status (🔒 Admin Only)",
+                "security": [{ "bearerAuth": [] }],
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status toggled successfully"
+                    }
+                }
+            }
         }
     }
 }

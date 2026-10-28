@@ -63,3 +63,16 @@ export const deletePhoto = async (token: string, id: string | number) => {
     },
   });
 };
+
+
+export const bulkDeletePhotos = async (token: string, ids: (string | number)[]) => {
+  return await fetch(`${API_URL}/photos/bulk-delete`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ ids }),
+  });
+};

@@ -10,6 +10,7 @@ export interface ProjectFormData {
   repository_link: string;
   live_demo_link: string;
   is_featured: boolean;
+  is_published: boolean;
   start_date: string;
   end_date: string;
   status: string;
@@ -306,6 +307,25 @@ export default function ProjectFormBasicFields({ form, onChange }: ProjectFormBa
             placeholder="e.g. Lead Developer"
             className="w-full p-3 border-2 border-black font-mono text-sm focus:bg-gray-50 focus:outline-none transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,0)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
           />
+        </div>
+      </div>
+
+      {/* Published Checkbox */}
+      <div className="border-2 border-black bg-gray-50 p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex flex-col sm:flex-row items-start sm:items-center gap-4 transition-transform hover:-translate-y-1">
+        <div className="relative flex items-center">
+          <input
+            type="checkbox"
+            id="is_published"
+            checked={form.is_published}
+            onChange={(e) => handleChange("is_published", e.target.checked)}
+            className="peer h-6 w-6 cursor-pointer appearance-none border-2 border-black bg-white transition-all checked:bg-black checked:bg-[url('https://api.iconify.design/lucide/check.svg?color=white')] checked:bg-center checked:bg-no-repeat"
+          />
+          <label htmlFor="is_published" className="ml-3 font-black uppercase cursor-pointer select-none text-lg">
+            Publish Project?
+          </label>
+        </div>
+        <div className="text-xs font-mono text-gray-500 border-l-2 border-black pl-4 hidden sm:block">
+          {form.is_published ? "Tampil di halaman publik (/projects)." : "Tersimpan sebagai draft (hanya terlihat oleh admin)."}
         </div>
       </div>
 

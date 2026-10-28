@@ -127,3 +127,26 @@ export const uploadBlogImage = async (token: string, formData: FormData) => {
     body: formData,
   });
 };
+
+
+export const adminTogglePublishBlog = async (token: string, id: string | number) => {
+  return await fetch(`${API_URL}/blogs/${id}/toggle-publish`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    },
+  });
+};
+
+export const adminBulkDeleteBlogs = async (token: string, ids: (string | number)[]) => {
+  return await fetch(`${API_URL}/blogs/bulk-delete`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ ids }),
+  });
+};

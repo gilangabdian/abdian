@@ -28,6 +28,7 @@ const DEFAULT_FORM: ProjectFormData = {
   repository_link: "",
   live_demo_link: "",
   is_featured: false,
+  is_published: true,
   start_date: "",
   end_date: "",
   status: "completed",
@@ -86,6 +87,7 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
               repository_link: data.repository_link || "",
               live_demo_link: data.live_demo_link || "",
               is_featured: !!data.is_featured,
+              is_published: data.is_published !== undefined ? !!data.is_published : true,
               start_date: data.start_date ? data.start_date.substring(0, 10) : "",
               end_date: data.end_date ? data.end_date.substring(0, 10) : "",
               status: data.status || "completed",
@@ -189,6 +191,7 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
       formData.append("repository_link", form.repository_link || "");
       formData.append("live_demo_link", form.live_demo_link || "");
       formData.append("is_featured", form.is_featured ? "1" : "0");
+      formData.append("is_published", form.is_published ? "1" : "0");
       formData.append("start_date", form.start_date);
       formData.append("end_date", form.end_date || "");
       formData.append("status", form.status);
@@ -267,6 +270,7 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
       repository_link: form.repository_link,
       live_demo_link: form.live_demo_link,
       is_featured: form.is_featured,
+      is_published: form.is_published,
       order_number: 0,
       type: form.type,
       status: form.status,

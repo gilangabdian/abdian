@@ -110,6 +110,36 @@ class BlogController extends Controller
         ]);
     }
 
+    public function togglePublish($id)
+    {
+        $blog = Blog::findOrFail($id);
+        $blog->is_published = !$blog->is_published;
+        $blog->save();
+
+        RevalidationService::tag('blogs');
+
+        return response()->json([
+            'message' => $blog->is_published ? 'Blog berhasil dipublish' : 'Blog berhasil dijadikan draft',
+            'data' => $blog
+        ]);
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:blogs,id',
+        ]);
+
+        Blog::whereIn('id', $request->ids)->delete();
+
+        RevalidationService::tag('blogs');
+
+        return response()->json([
+            'message' => 'Blogs deleted successfully'
+        ]);
+    }
+
     // TIPTAP IMAGE UPLOAD
     public function uploadImage(Request $request)
     {
