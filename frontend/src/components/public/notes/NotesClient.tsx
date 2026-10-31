@@ -92,7 +92,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
 
   return (
     <div className="pt-24 md:pt-40 pb-16 min-h-screen flex flex-col items-center">
-      <div className="w-full max-w-3xl px-4 md:px-8">
+      <div className="w-full max-w-3xl px-6 md:px-8">
         <h1 className="text-3xl font-bold tracking-wide text-black dark:text-white block md:hidden mb-10 -mt-6 text-center">
           Notes
         </h1>

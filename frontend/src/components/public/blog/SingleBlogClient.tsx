@@ -242,7 +242,7 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
         onScrollToHeading={scrollToHeading}
       />
 
-      <div className="max-w-[560px] mx-auto px-4 md:px-8">
+      <div className="max-w-[560px] mx-auto px-6 md:px-8">
         <article ref={articleRef} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="relative mt-8">
           {/* Header */}
           <header className="mb-12">

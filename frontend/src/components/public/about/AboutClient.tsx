@@ -256,7 +256,7 @@ export default function AboutClient({ aboutContent, aboutUpdatedAt }: AboutClien
         onScrollToHeading={scrollToHeading}
       />
 
-      <section className="-mt-12 md:-mt-2 min-h-screen flex justify-center py-24 px-4 sm:px-6 font-sans text-black dark:text-white">
+      <section className="-mt-12 md:-mt-2 min-h-screen flex justify-center py-24 px-6 font-sans text-black dark:text-white">
         <div className="container max-w-[560px] w-full flex flex-col space-y-12 mt-10 mx-auto">
           {/* About Section */}
           <div className="flex flex-col space-y-4" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>

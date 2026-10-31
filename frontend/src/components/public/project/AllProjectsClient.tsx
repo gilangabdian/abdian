@@ -93,7 +93,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
         .markdown-preview em, .markdown-preview i { font-style: italic !important; }
       `}</style>
 
-      <div className="px-4 mt-16 md:mt-0 py-16 md:px-8 max-w-7xl mx-auto">
+      <div className="px-6 mt-16 md:mt-0 py-16 md:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-16 md:mb-20 -mt-12 md:mt-7 page-title invisible opacity-0">
           <h1 className="text-3xl md:text-4xl font-bold tracking-wide text-black dark:text-white">All Projects</h1>
           <p className="mt-4 font-sans text-neutral-600 dark:text-neutral-400 text-sm md:text-base max-w-xl mx-auto italic">

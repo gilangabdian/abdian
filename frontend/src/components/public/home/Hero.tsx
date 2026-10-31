@@ -32,7 +32,7 @@ const HeroDescriptionContent = React.memo(({ html }: { html: string }) => {
     <div
       ref={ref}
       suppressHydrationWarning={true}
-      className="prose prose-neutral dark:prose-invert prose-sm md:prose-base max-w-none text-justify prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-4 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-4 [&_div.callout]:py-1 [&_div.callout]:text-xs [&_div.callout]:md:text-sm [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
+      className="prose prose-neutral dark:prose-invert prose-sm md:prose-base max-w-none text-left prose-headings:font-black prose-headings:text-black dark:prose-headings:text-white prose-img:rounded-lg [&_div.callout]:flex [&_div.callout]:my-4 [&_div.callout]:items-start [&_div.callout]:border-l-0 [&_div.callout]:border-neutral-300 [&_div.callout]:dark:border-neutral-700 [&_div.callout]:relative [&_div.callout]:pl-4 [&_div.callout]:py-1 [&_div.callout]:text-xs [&_div.callout]:md:text-sm [&_div.callout]:text-neutral-400 [&_div.callout]:dark:text-neutral-500 [&_div.callout]:not-italic"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
@@ -399,18 +399,17 @@ export default function Hero({ profile }: HeroProps) {
         duration: 0.8,
         stagger: 0.2,
         ease: "power2.out",
-      })
-        .from(
-          ".hero-content",
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: "power2.out",
-          },
-          "-=0.6",
-        );
+      }).from(
+        ".hero-content",
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+        },
+        "-=0.6",
+      );
 
       if (isProfilePictureVisible && heroPhotos.length > 0) {
         tl.from(
