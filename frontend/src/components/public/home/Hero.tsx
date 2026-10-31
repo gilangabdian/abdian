@@ -306,6 +306,7 @@ export default function Hero({ profile }: HeroProps) {
   const [isMobile, setIsMobile] = useState(false);
 
   const heroPhotos = profile?.about?.hero_photo_urls || [];
+  const isProfilePictureVisible = profile?.about?.show_profile_picture !== false;
 
   const currentDecorations = DECORATIONS_CONFIG[currentIndex] || { static: [], hoverOnly: [] };
 
@@ -409,8 +410,10 @@ export default function Hero({ profile }: HeroProps) {
             ease: "power2.out",
           },
           "-=0.6",
-        )
-        .from(
+        );
+
+      if (isProfilePictureVisible && heroPhotos.length > 0) {
+        tl.from(
           ".hero-image",
           {
             y: 100,
@@ -421,6 +424,7 @@ export default function Hero({ profile }: HeroProps) {
           },
           "-=1.0",
         );
+      }
     },
     { scope: heroRef, dependencies: [profile] },
   );
@@ -569,7 +573,7 @@ export default function Hero({ profile }: HeroProps) {
         </div>
 
         {/* Right Content - Profile Image */}
-        {heroPhotos.length > 0 && (
+        {isProfilePictureVisible && heroPhotos.length > 0 && (
           <div className="w-full md:w-5/12 flex justify-center md:justify-end hero-image">
             <div className="relative inline-block w-[400px] md:w-[300px] -mt-18 md:-mt-32">
               <div className="absolute inset-0 bg-gray-100 dark:bg-white/5 rounded-full scale-90 blur-3xl -z-10 opacity-50"></div>

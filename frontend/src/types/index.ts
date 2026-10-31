@@ -136,6 +136,7 @@ export interface ProfileAbout {
   is_about_page_active?: boolean;
   is_certificates_page_active?: boolean;
   show_resume_button?: boolean;
+  show_profile_picture?: boolean;
   created_at?: string;
   updated_at?: string;
   cv_url?: string;

@@ -67,6 +67,7 @@ class UpdateProfileRequest extends FormRequest
             'is_about_page_active' => 'nullable|boolean',
             'is_certificates_page_active' => 'nullable|boolean',
             'show_resume_button' => 'nullable|boolean',
+            'show_profile_picture' => 'nullable|boolean',
         ];
     }
 

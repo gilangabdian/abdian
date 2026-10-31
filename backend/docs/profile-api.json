@@ -133,6 +133,11 @@
                     "show_resume_button": {
                         "type": "boolean",
                         "example": true
+                    },
+                    "show_profile_picture": {
+                        "type": "boolean",
+                        "description": "Menentukan apakah foto profil/hero photos aktif dan ditampilkan di halaman beranda/hero.",
+                        "example": true
                     }
                 }
             }
@@ -234,6 +239,10 @@
                                     "cv": {
                                         "type": "string",
                                         "format": "binary"
+                                    },
+                                    "show_profile_picture": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 }
                             }

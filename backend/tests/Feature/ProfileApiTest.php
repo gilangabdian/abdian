@@ -49,6 +49,7 @@ class ProfileApiTest extends TestCase
                 'is_about_page_active' => false,
                 'is_certificates_page_active' => false,
                 'show_resume_button' => false,
+                'show_profile_picture' => false,
             ]);
 
         $response->assertStatus(200)
@@ -69,6 +70,7 @@ class ProfileApiTest extends TestCase
         $this->assertFalse($profile->is_about_page_active);
         $this->assertFalse($profile->is_certificates_page_active);
         $this->assertFalse($profile->show_resume_button);
+        $this->assertFalse($profile->show_profile_picture);
     }
 
     public function test_admin_can_upload_photo_secondary_image_and_cv()
@@ -229,5 +231,43 @@ class ProfileApiTest extends TestCase
             ->assertJsonCount(2, 'social_media')
             ->assertJsonMissing(['platform_name' => 'Email'])
             ->assertJsonMissing(['platform_name' => 'email']);
+    }
+
+    public function test_admin_can_toggle_show_profile_picture()
+    {
+        $user = User::factory()->create();
+
+        $profile = Profile::create([
+            'name' => 'Gilang',
+            'job_title' => 'Fullstack',
+            'about_description' => 'Bio info',
+            'show_profile_picture' => true,
+        ]);
+
+        $this->assertTrue($profile->show_profile_picture);
+
+        // Turn it off
+        $response = $this->actingAs($user)
+            ->postJson('/api/profile', [
+                'name' => 'Gilang',
+                'job_title' => 'Fullstack',
+                'about_description' => 'Bio info',
+                'show_profile_picture' => false,
+            ]);
+
+        $response->assertStatus(200);
+        $this->assertFalse($profile->fresh()->show_profile_picture);
+
+        // Turn it back on
+        $response = $this->actingAs($user)
+            ->postJson('/api/profile', [
+                'name' => 'Gilang',
+                'job_title' => 'Fullstack',
+                'about_description' => 'Bio info',
+                'show_profile_picture' => true,
+            ]);
+
+        $response->assertStatus(200);
+        $this->assertTrue($profile->fresh()->show_profile_picture);
     }
 }

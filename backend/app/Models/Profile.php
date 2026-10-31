@@ -21,6 +21,7 @@ class Profile extends Model
         'status_message_active',
         'status_message_inactive',
         'hero_photos',
+        'show_profile_picture',
         'cv_path',
         'hidden_skill_categories',
         'default_skill_category',
@@ -37,6 +38,7 @@ class Profile extends Model
 
     protected $casts = [
         'hero_photos' => 'array',
+        'show_profile_picture' => 'boolean',
         'status_last_updated_at' => 'datetime',
         'is_status_schedule_enabled' => 'boolean',
         'status_schedule_days' => 'array',

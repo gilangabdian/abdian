@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Contact;
 use App\Models\Profile;
 use App\Traits\ImageUploadTrait;
+use App\Services\RevalidationService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -95,6 +96,8 @@ class ProfileController extends Controller
         $profile->fill($data);
         $profile->save();
         $profile->refresh();
+
+        RevalidationService::tag('profile');
 
         // 6. Append URLs
         if (is_array($profile->hero_photos)) {

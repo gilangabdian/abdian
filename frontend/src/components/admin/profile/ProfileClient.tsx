@@ -24,6 +24,7 @@ export default function ProfileClient() {
     is_about_page_active: true,
     is_certificates_page_active: true,
     show_resume_button: true,
+    show_profile_picture: true,
     is_status_schedule_enabled: false,
     status_schedule_days: [1, 2, 3, 4, 5],
     status_schedule_start_time: "08:00",
@@ -45,6 +46,7 @@ export default function ProfileClient() {
     is_about_page_active: true,
     is_certificates_page_active: true,
     show_resume_button: true,
+    show_profile_picture: true,
     is_status_schedule_enabled: false,
     status_schedule_days: [1, 2, 3, 4, 5],
     status_schedule_start_time: "08:00",
@@ -94,6 +96,7 @@ export default function ProfileClient() {
       form.is_about_page_active !== originalForm.is_about_page_active ||
       form.is_certificates_page_active !== originalForm.is_certificates_page_active ||
       form.show_resume_button !== originalForm.show_resume_button ||
+      form.show_profile_picture !== originalForm.show_profile_picture ||
       form.is_status_schedule_enabled !== originalForm.is_status_schedule_enabled ||
       JSON.stringify(form.status_schedule_days) !== JSON.stringify(originalForm.status_schedule_days) ||
       form.status_schedule_start_time !== originalForm.status_schedule_start_time ||
@@ -123,6 +126,7 @@ export default function ProfileClient() {
           is_about_page_active: result.about.is_about_page_active ?? true,
           is_certificates_page_active: result.about.is_certificates_page_active ?? true,
           show_resume_button: result.about.show_resume_button ?? true,
+          show_profile_picture: result.about.show_profile_picture ?? true,
           is_status_schedule_enabled: result.about.is_status_schedule_enabled ?? false,
           status_schedule_days: (result.about.status_schedule_days || [1, 2, 3, 4, 5]).map(Number),
           status_schedule_start_time: (result.about.status_schedule_start_time || "08:00:00").substring(0, 5),
@@ -144,6 +148,7 @@ export default function ProfileClient() {
           is_about_page_active: result.about.is_about_page_active ?? true,
           is_certificates_page_active: result.about.is_certificates_page_active ?? true,
           show_resume_button: result.about.show_resume_button ?? true,
+          show_profile_picture: result.about.show_profile_picture ?? true,
           is_status_schedule_enabled: result.about.is_status_schedule_enabled ?? false,
           status_schedule_days: (result.about.status_schedule_days || [1, 2, 3, 4, 5]).map(Number),
           status_schedule_start_time: (result.about.status_schedule_start_time || "08:00:00").substring(0, 5),
@@ -263,6 +268,7 @@ export default function ProfileClient() {
       formData.append("is_about_page_active", form.is_about_page_active ? "1" : "0");
       formData.append("is_certificates_page_active", form.is_certificates_page_active ? "1" : "0");
       formData.append("show_resume_button", form.show_resume_button ? "1" : "0");
+      formData.append("show_profile_picture", form.show_profile_picture ? "1" : "0");
 
       formData.append("is_status_schedule_enabled", form.is_status_schedule_enabled ? "1" : "0");
       form.status_schedule_days.forEach(day => {
@@ -341,10 +347,33 @@ export default function ProfileClient() {
           <form onSubmit={handleSubmit} className="space-y-6 mt-2">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-3 flex flex-col gap-4">
-                <div className="flex justify-between items-center border-b-2 border-black pb-2">
-                  <label className="font-bold uppercase inline-block">Hero Photos (Max 10)</label>
-                  <span className="font-mono text-sm">{heroPhotos.length}/10</span>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-black pb-2 gap-2">
+                  <div className="flex items-center gap-3">
+                    <label className="font-bold uppercase inline-block">Hero Photos (Max 10)</label>
+                    <span className="font-mono text-sm">({heroPhotos.length}/10)</span>
+                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={form.show_profile_picture} 
+                        onChange={(e) => setForm({ ...form, show_profile_picture: e.target.checked })} 
+                        className="sr-only" 
+                      />
+                      <div className={`block w-11 h-6 transition-colors border-2 border-black ${form.show_profile_picture ? 'bg-black' : 'bg-gray-300'}`}></div>
+                      <div className={`absolute left-0.5 top-0.5 bg-white w-5 h-5 transition-transform border-2 border-black ${form.show_profile_picture ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                    </div>
+                    <span className={`font-mono text-xs uppercase font-bold px-2 py-0.5 border border-black ${form.show_profile_picture ? 'bg-green-100 text-green-900 border-green-600' : 'bg-red-100 text-red-900 border-red-600'}`}>
+                      {form.show_profile_picture ? 'Active' : 'Disabled'}
+                    </span>
+                  </label>
                 </div>
+                {!form.show_profile_picture && (
+                  <div className="bg-amber-50 border-2 border-amber-300 p-2 text-xs font-mono text-amber-800 flex items-center gap-2">
+                    <Icon icon="lucide:alert-circle" className="w-4 h-4 flex-shrink-0" />
+                    <span>Hero Photos saat ini dinonaktifkan dan tidak akan tampil di section Hero landing page.</span>
+                  </div>
+                )}
                 
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   {heroPhotos.map((photo, index) => (
@@ -676,6 +705,25 @@ export default function ProfileClient() {
                     </div>
                     <span className="font-bold font-mono text-sm text-gray-700">
                       {form.show_resume_button ? 'Visible' : 'Hidden'}
+                    </span>
+                  </label>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="font-bold uppercase text-sm">Profile Picture (Hero Photos)</label>
+                  <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={form.show_profile_picture} 
+                        onChange={(e) => setForm({ ...form, show_profile_picture: e.target.checked })} 
+                        className="sr-only" 
+                      />
+                      <div className={`block w-14 h-8 transition-colors border-2 border-black ${form.show_profile_picture ? 'bg-black' : 'bg-gray-300'}`}></div>
+                      <div className={`absolute left-1 top-1 bg-white w-6 h-6 transition-transform border-2 border-black ${form.show_profile_picture ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                    </div>
+                    <span className="font-bold font-mono text-sm text-gray-700">
+                      {form.show_profile_picture ? 'Visible' : 'Hidden'}
                     </span>
                   </label>
                 </div>
