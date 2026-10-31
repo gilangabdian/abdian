@@ -573,7 +573,7 @@ export default function Hero({ profile }: HeroProps) {
         </div>
 
         {/* Right Content - Profile Image */}
-        {isProfilePictureVisible && heroPhotos.length > 0 && (
+        {isProfilePictureVisible && heroPhotos.length > 0 ? (
           <div className="w-full md:w-5/12 flex justify-center md:justify-end hero-image">
             <div className="relative inline-block w-[400px] md:w-[300px] -mt-18 md:-mt-32">
               <div className="absolute inset-0 bg-gray-100 dark:bg-white/5 rounded-full scale-90 blur-3xl -z-10 opacity-50"></div>
@@ -613,6 +613,8 @@ export default function Hero({ profile }: HeroProps) {
               />
             </div>
           </div>
+        ) : (
+          <div className="hidden md:block md:w-5/12" aria-hidden="true" />
         )}
       </div>
     </div>
