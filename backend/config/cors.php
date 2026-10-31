@@ -21,7 +21,7 @@ return [
 
     'allowed_origins' => [
         'http://localhost:5173', //local
-        'http://localhost:3002', //nextjs test
+        'http://localhost:3000', //nextjs test
         'https://abdian.vercel.app', //production
     ],
 

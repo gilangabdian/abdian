@@ -307,6 +307,7 @@ export default function Hero({ profile }: HeroProps) {
 
   const heroPhotos = profile?.about?.hero_photo_urls || [];
   const isProfilePictureVisible = profile?.about?.show_profile_picture !== false;
+  const hasPhoto = isProfilePictureVisible && heroPhotos.length > 0;
 
   const currentDecorations = DECORATIONS_CONFIG[currentIndex] || { static: [], hoverOnly: [] };
 
@@ -435,10 +436,16 @@ export default function Hero({ profile }: HeroProps) {
   return (
     <div
       ref={heroRef}
-      className="container mx-auto px-6 pt-26 pb-6 md:pt-8 md:pb-0 min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-2 mt-8">
+      className={`container mx-auto px-6 ${
+        hasPhoto ? "pt-26 pb-6 items-center" : "pt-24 pb-6 items-start"
+      } md:pt-8 md:pb-0 md:items-center min-h-screen flex justify-center overflow-hidden`}>
+      <div className={`flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-2 ${
+        hasPhoto ? "mt-8" : "mt-0 md:mt-8"
+      }`}>
         {/* Left Content */}
-        <div className="flex-1 flex flex-col items-start space-y-3 md:space-y-3 mt-4">
+        <div className={`flex-1 flex flex-col items-start space-y-3 md:space-y-3 ${
+          hasPhoto ? "mt-4" : "mt-0 md:mt-4"
+        }`}>
           <div className="space-y-0.5">
             <h1 className="hero-text text-4xl md:text-5xl font-bold leading-tight tracking-tight">
               Hi, I&apos;m{" "}
