@@ -146,7 +146,18 @@ export default function HomepageClient({
 
     // Simulasi pengambilan API (1500ms) seperti Vue agar loadingnya jalan
     setTimeout(() => {
-      const firstHeroPhoto = profile?.about?.hero_photo_urls?.[0];
+      // Preload the photo the visitor will actually see (last viewed), not always photo #1
+      const heroPhotoUrls = profile?.about?.hero_photo_urls ?? [];
+      let heroPhotoIndex = 0;
+      try {
+        const saved = parseInt(localStorage.getItem("hero_last_index") ?? "", 10);
+        if (!isNaN(saved) && saved > 0 && saved < heroPhotoUrls.length) {
+          heroPhotoIndex = saved;
+        }
+      } catch {
+        // localStorage may be blocked; fall back to the first photo
+      }
+      const firstHeroPhoto = heroPhotoUrls[heroPhotoIndex];
       if (firstHeroPhoto) {
         preloadImage(firstHeroPhoto).then(() => {
           finalizeLoading();

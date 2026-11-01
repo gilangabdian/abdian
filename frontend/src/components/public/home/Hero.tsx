@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Profile } from "@/types";
@@ -301,6 +301,7 @@ export default function Hero({ profile }: HeroProps) {
   const heroRef = useRef<HTMLDivElement>(null);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [photoInstanceKey, setPhotoInstanceKey] = useState("ssr");
   const [isHovered, setIsHovered] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -311,23 +312,50 @@ export default function Hero({ profile }: HeroProps) {
 
   const currentDecorations = DECORATIONS_CONFIG[currentIndex] || { static: [], hoverOnly: [] };
 
+  // Restore the last viewed photo BEFORE the browser paints (layout effect, not passive effect).
+  // The server always renders photo #1 (it cannot read localStorage). If we only swapped `src`
+  // on the same <img>, the browser would keep showing photo #1 until the new one finished
+  // loading. So when a different photo is restored we also change `photoInstanceKey`, making
+  // React create a fresh <img> that starts directly with the correct photo (React does not
+  // patch a mismatched `src` during hydration).
+  useLayoutEffect(() => {
+    try {
+      const savedIndex = localStorage.getItem("hero_last_index");
+      if (savedIndex !== null) {
+        const idx = parseInt(savedIndex, 10);
+        if (!isNaN(idx) && idx > 0 && heroPhotos.length > 0 && idx < heroPhotos.length) {
+          const img = new Image();
+          img.src = heroPhotos[idx];
+          setCurrentIndex(idx);
+          setPhotoInstanceKey("restored");
+        }
+      }
+    } catch {
+      // localStorage may be blocked; fall back to the first photo
+    }
+  }, [heroPhotos]);
+
   useEffect(() => {
     // Check mobile screen
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    // Load saved index from localStorage
-    const savedIndex = localStorage.getItem("hero_last_index");
-    if (savedIndex !== null) {
-      const idx = parseInt(savedIndex, 10);
-      if (!isNaN(idx) && heroPhotos.length > 0 && idx < heroPhotos.length) {
-        setCurrentIndex(idx);
-      }
-    }
+    // Warm remaining hero photos into browser cache in the background after initial render
+    const preloadTimer = setTimeout(() => {
+      heroPhotos.forEach((url) => {
+        if (url) {
+          const img = new Image();
+          img.src = url;
+        }
+      });
+    }, 800);
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, [heroPhotos.length]);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(preloadTimer);
+    };
+  }, [heroPhotos]);
 
   const showDecorations = isHovered || isMobile;
 
@@ -582,7 +610,6 @@ export default function Hero({ profile }: HeroProps) {
         {isProfilePictureVisible && heroPhotos.length > 0 ? (
           <div className="w-full md:w-5/12 flex justify-center md:justify-end hero-image">
             <div className="relative inline-block w-[400px] md:w-[300px] -mt-18 md:-mt-32">
-              <div className="absolute inset-0 bg-gray-100 dark:bg-white/5 rounded-full scale-90 blur-3xl -z-10 opacity-50"></div>
 
               {/* Decorations Container */}
               <div
@@ -607,7 +634,8 @@ export default function Hero({ profile }: HeroProps) {
 
               {}
               <img
-                loading="lazy"
+                key={photoInstanceKey}
+                loading="eager"
                 src={heroPhotos[currentIndex]}
                 alt={profile.about.name}
                 onMouseEnter={handleMouseEnter}
