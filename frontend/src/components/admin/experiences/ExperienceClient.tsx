@@ -239,11 +239,6 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
     }
   };
 
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return "PRESENT";
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("id-ID", { month: "short", year: "numeric" }).format(date).toUpperCase();
-  };
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -261,9 +256,8 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
 
       <div
         ref={formTopRef}
-        className={`border-4 border-black p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-16 transition-colors scroll-mt-24 relative ${
-          isEditing ? "bg-gray-50" : "bg-white"
-        }`}
+        className={`border-4 border-black p-6 md:p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] mb-16 transition-colors scroll-mt-24 relative ${isEditing ? "bg-gray-50" : "bg-white"
+          }`}
       >
         {isEditing && (
           <div className="absolute -top-4 -right-2 bg-white border-2 border-black px-3 py-1 font-black text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rotate-3">
@@ -328,11 +322,10 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
                     e.stopPropagation();
                     setIsStatusDropdownOpen(!isStatusDropdownOpen);
                   }}
-                  className={`w-full font-mono bg-white flex justify-between items-center focus:outline-none transition-all text-left border-2 border-black px-3 ${
-                    isStatusDropdownOpen
+                  className={`w-full font-mono bg-white flex justify-between items-center focus:outline-none transition-all text-left border-2 border-black px-3 ${isStatusDropdownOpen
                       ? "border-b-0 pb-[14px] pt-3 shadow-none"
                       : "py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-                  }`}
+                    }`}
                 >
                   <span className="truncate">{form.status}</span>
                   <Icon
@@ -347,9 +340,8 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
                       <div
                         key={opt}
                         onClick={() => selectStatus(opt)}
-                        className={`p-3 border-b-2 border-black last:border-b-0 cursor-pointer font-mono text-sm hover:bg-black hover:text-white transition-colors flex items-center justify-between group ${
-                          form.status === opt ? "bg-gray-200" : ""
-                        }`}
+                        className={`p-3 border-b-2 border-black last:border-b-0 cursor-pointer font-mono text-sm hover:bg-black hover:text-white transition-colors flex items-center justify-between group ${form.status === opt ? "bg-gray-200" : ""
+                          }`}
                       >
                         <span>{opt}</span>
                         {form.status === opt && (
@@ -396,11 +388,10 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
                 onChange={(e) => setForm({ ...form, end_date: e.target.value })}
                 type="date"
                 disabled={form.is_current}
-                className={`w-full p-3 border-2 border-black font-mono focus:outline-none transition-all ${
-                  form.is_current
+                className={`w-full p-3 border-2 border-black font-mono focus:outline-none transition-all ${form.is_current
                     ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                     : "focus:bg-gray-50 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                }`}
+                  }`}
               />
 
               <div className="mt-3 flex items-center gap-2">
@@ -462,9 +453,8 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`flex-1 py-3 font-black text-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 uppercase flex justify-center items-center gap-2 ${
-                isEditing ? "bg-white hover:bg-gray-200" : "bg-black text-white hover:text-black hover:bg-gray-100"
-              }`}
+              className={`flex-1 py-3 font-black text-lg border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px] transition-all disabled:opacity-50 uppercase flex justify-center items-center gap-2 ${isEditing ? "bg-white hover:bg-gray-200" : "bg-black text-white hover:text-black hover:bg-gray-100"
+                }`}
             >
               <Icon icon={isSubmitting ? "svg-spinners:3-dots-fade" : isEditing ? "lucide:save" : "lucide:plus-circle"} />
               {isSubmitting ? "SAVING..." : isEditing ? "UPDATE EXPERIENCE" : "SAVE EXPERIENCE"}
@@ -505,7 +495,7 @@ export default function ExperienceClient({ initialExperiences }: ExperienceClien
           <div className="space-y-12 md:space-y-14 bg-white p-6 md:p-10 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
             {experiences.map((exp) => (
               <div key={exp.id} className="experience-item flex flex-col group relative border-b-2 border-gray-100 last:border-b-0 pb-10 last:pb-0">
-                
+
                 {/* Admin Badges */}
                 <div className="absolute top-0 right-0 flex items-center gap-2">
                   {!exp.is_active && (
