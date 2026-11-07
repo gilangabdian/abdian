@@ -14,8 +14,29 @@ interface AllPhotosClientProps {
 
 export default function AllPhotosClient({ initialPhotos }: AllPhotosClientProps) {
   const [photos] = useState<Photo[]>(initialPhotos);
-  const [isSquareGrid, setIsSquareGrid] = useState(false);
+  const [isSquareGrid, setIsSquareGrid] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("photos_view_mode");
+        if (saved !== null) {
+          return saved === "square";
+        }
+      } catch {
+        // Fallback if localStorage is disabled
+      }
+    }
+    return false; // Default: Masonry
+  });
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const handleToggleView = (val: boolean) => {
+    setIsSquareGrid(val);
+    try {
+      localStorage.setItem("photos_view_mode", val ? "square" : "masonry");
+    } catch {
+      // Fallback if localStorage is disabled
+    }
+  };
 
   useEffect(() => {
     NProgress.done();
@@ -55,7 +76,7 @@ export default function AllPhotosClient({ initialPhotos }: AllPhotosClientProps)
       <div className="max-w-7xl mx-auto px-4 pb-4 md:px-16 lg:px-7">
         {photos.length === 0 && <div className="text-center font-sans text-neutral-500 py-12">coming soon...</div>}
 
-        {photos.length > 0 && <PhotoControls isSquareGrid={isSquareGrid} onToggle={setIsSquareGrid} />}
+        {photos.length > 0 && <PhotoControls isSquareGrid={isSquareGrid} onToggle={handleToggleView} />}
       </div>
 
       <div className={`max-w-7xl mx-auto ${isSquareGrid ? "px-4 md:px-8 lg:px-8" : "px-8 md:px-16 lg:px-16"}`}>

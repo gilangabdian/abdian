@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePhotoRequest;
 use App\Http\Requests\UpdatePhotoRequest;
 use App\Models\Photo;
+use App\Services\RevalidationService;
 use Cloudinary\Configuration\Configuration;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Storage;
@@ -59,6 +60,8 @@ class PhotoController extends Controller
             ]);
         }
 
+        RevalidationService::tag('photos');
+
         return response()->json([
             'message' => count($createdPhotos) > 1 ? 'Photos created successfully' : 'Photo created successfully',
             'data' => count($createdPhotos) > 1 ? $createdPhotos : $createdPhotos[0]
@@ -82,6 +85,8 @@ class PhotoController extends Controller
 
         $photo->update($data);
 
+        RevalidationService::tag('photos');
+
         return response()->json([
             'message' => 'Photo updated successfully',
             'data' => $photo
@@ -95,6 +100,8 @@ class PhotoController extends Controller
         $this->deleteFile($photo->image_url);
 
         $photo->delete();
+
+        RevalidationService::tag('photos');
 
         return response()->json([
             'message' => 'Photo deleted successfully'
@@ -115,6 +122,8 @@ class PhotoController extends Controller
         }
 
         Photo::whereIn('id', $request->ids)->delete();
+
+        RevalidationService::tag('photos');
 
         return response()->json([
             'message' => 'Photos deleted successfully'

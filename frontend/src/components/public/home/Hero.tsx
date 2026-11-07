@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef, useMemo } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Profile } from "@/types";
@@ -306,7 +306,7 @@ export default function Hero({ profile }: HeroProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const heroPhotos = profile?.about?.hero_photo_urls || [];
+  const heroPhotos = useMemo(() => profile?.about?.hero_photo_urls || [], [profile?.about?.hero_photo_urls]);
   const isProfilePictureVisible = profile?.about?.show_profile_picture !== false;
   const hasPhoto = isProfilePictureVisible && heroPhotos.length > 0;
 

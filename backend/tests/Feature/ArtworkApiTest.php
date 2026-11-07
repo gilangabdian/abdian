@@ -6,6 +6,7 @@ use App\Models\Artwork;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -100,5 +101,42 @@ class ArtworkApiTest extends TestCase
         $this->assertDatabaseMissing('artworks', ['id' => $artwork1->id]);
         $this->assertDatabaseMissing('artworks', ['id' => $artwork2->id]);
         $this->assertDatabaseHas('artworks', ['id' => $artwork3->id]);
+    }
+
+    public function test_revalidation_is_called_on_artwork_create_and_delete()
+    {
+        Http::fake([
+            '*/api/revalidate' => Http::response(['revalidated' => true], 200),
+        ]);
+
+        config(['services.nextjs.base_url' => 'http://localhost:3000']);
+        config(['services.nextjs.revalidate_secret' => 'test-secret']);
+
+        Storage::fake('public');
+        $file = UploadedFile::fake()->image('artwork_reval.jpg');
+
+        $response = $this->actingAs($this->admin, 'sanctum')
+                         ->post('/api/artworks', [
+                             'image' => $file
+                         ]);
+
+        $response->assertStatus(201);
+
+        Http::assertSent(function (\Illuminate\Http\Client\Request $request) {
+            return str_contains($request->url(), '/api/revalidate')
+                && $request['tag'] === 'artworks'
+                && $request['secret'] === 'test-secret';
+        });
+
+        $artworkId = $response->json('data.id');
+
+        $this->actingAs($this->admin, 'sanctum')
+             ->deleteJson("/api/artworks/{$artworkId}")
+             ->assertStatus(200);
+
+        Http::assertSent(function (\Illuminate\Http\Client\Request $request) {
+            return str_contains($request->url(), '/api/revalidate')
+                && $request['tag'] === 'artworks';
+        });
     }
 }

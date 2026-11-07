@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArtworkRequest;
 use App\Http\Requests\UpdateArtworkRequest;
 use App\Models\Artwork;
+use App\Services\RevalidationService;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Support\Facades\Storage;
 
@@ -56,6 +57,8 @@ class ArtworkController extends Controller
             ]);
         }
 
+        RevalidationService::tag('artworks');
+
         return response()->json([
             'message' => count($createdArtworks) > 1 ? 'Artworks created successfully' : 'Artwork created successfully',
             'data' => count($createdArtworks) > 1 ? $createdArtworks : $createdArtworks[0]
@@ -77,6 +80,8 @@ class ArtworkController extends Controller
 
         $artwork->update($data);
 
+        RevalidationService::tag('artworks');
+
         return response()->json([
             'message' => 'Artwork updated successfully',
             'data' => $artwork
@@ -89,6 +94,8 @@ class ArtworkController extends Controller
         $this->deleteFile($artwork->image_url);
 
         $artwork->delete();
+
+        RevalidationService::tag('artworks');
 
         return response()->json([
             'message' => 'Artwork deleted successfully'
@@ -109,6 +116,8 @@ class ArtworkController extends Controller
         }
 
         Artwork::whereIn('id', $request->ids)->delete();
+
+        RevalidationService::tag('artworks');
 
         return response()->json([
             'message' => 'Artworks deleted successfully'
