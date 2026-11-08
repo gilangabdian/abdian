@@ -88,9 +88,8 @@ export default function AllArtworksClient({ initialArtworks }: AllArtworksClient
               <div
                 key={artwork.id}
                 onClick={() => openModal(artwork.image_url)}
-                className={`artwork-item bg-white dark:bg-black flex items-center justify-center ${
-                  isSquareGrid ? "aspect-square overflow-hidden" : ""
-                }`}
+                className={`artwork-item bg-white dark:bg-black flex items-center justify-center ${isSquareGrid ? "aspect-square overflow-hidden" : ""
+                  }`}
                 style={{ opacity: 0, visibility: "hidden" }}>
                 <img
                   src={artwork.image_url}
@@ -107,8 +106,7 @@ export default function AllArtworksClient({ initialArtworks }: AllArtworksClient
           <div
             className="thank-you-msg max-w-[650px] mx-auto mt-16 text-center text-neutral-500 dark:text-neutral-400 font-sans text-sm tracking-wide"
             style={{ opacity: 0, visibility: "hidden" }}>
-            Thank you for your interest in my art, but I've decided to stop pursuing it (for who knows how long) because
-            I no longer feel like I'm finding joy in it.
+            Thank you for your interest in my art.
           </div>
         )}
       </div>
