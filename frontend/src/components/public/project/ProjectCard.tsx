@@ -115,7 +115,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     Boolean(project.youtube_url);
 
   return (
-    <article className="project-card-item break-inside-avoid w-full mb-6 bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-300 flex flex-col justify-between shadow-xs hover:shadow-sm">
+    <article
+      className="project-card-item w-full bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden hover:border-neutral-300 dark:hover:border-neutral-700 transition-[border-color,box-shadow] duration-200 flex flex-col justify-between shadow-xs hover:shadow-sm"
+      style={{ opacity: 0, visibility: "hidden" }}
+    >
       {/* Top Media */}
       {hasMedia && (
         <div className="w-full bg-neutral-50 dark:bg-neutral-900/40 border-b border-neutral-200 dark:border-neutral-800 overflow-hidden">

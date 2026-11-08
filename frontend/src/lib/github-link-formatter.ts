@@ -21,7 +21,7 @@ export function formatGithubLinks(container: HTMLElement) {
           // If it's a repo link, we show the repo name, otherwise the username
           const linkText = repo ? repo : username;
 
-          let avatarUrl = `https://github.com/${username}.png?size=120`;
+          let avatarUrl = `https://avatars.githubusercontent.com/${username}`;
           let isCustomIcon = false;
 
           // Check if user provided a custom icon hash (e.g. #icon-typescript)
@@ -48,6 +48,9 @@ export function formatGithubLinks(container: HTMLElement) {
             <img
               src="${avatarUrl}"
               alt="${linkText}"
+              referrerpolicy="no-referrer"
+              crossorigin="anonymous"
+              loading="lazy"
               class="w-6 h-6 m-0 !my-0 ${isCustomIcon ? "rounded-md p-[2px]" : "rounded-full"}"
               style="display: block; ${isCustomIcon ? "object-fit: contain;" : ""}"
             />

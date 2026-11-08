@@ -3,11 +3,33 @@
 import { useState, useEffect } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import gsap from "gsap";
 import { Project } from "@/types";
 import ProjectCard from "./ProjectCard";
 
 interface AllProjectsClientProps {
   initialProjects: Project[];
+}
+
+function useColumnCount() {
+  const [cols, setCols] = useState(3);
+
+  useEffect(() => {
+    const update = () => {
+      if (window.innerWidth < 768) {
+        setCols(1);
+      } else if (window.innerWidth < 1024) {
+        setCols(2);
+      } else {
+        setCols(3);
+      }
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return cols;
 }
 
 export default function AllProjectsClient({ initialProjects }: AllProjectsClientProps) {
@@ -25,9 +47,44 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
     });
   });
 
+  const cols = useColumnCount();
+
   useEffect(() => {
     NProgress.done();
   }, []);
+
+  useEffect(() => {
+    if (projects.length > 0) {
+      const timer = setTimeout(() => {
+        gsap.fromTo(
+          ".project-page-title",
+          { y: 30, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.8, ease: "power2.out" }
+        );
+        gsap.fromTo(
+          ".project-card-item",
+          { y: 20, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+            stagger: 0.05,
+            clearProps: "all",
+          }
+        );
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [projects.length, cols]);
+
+  // Distribute projects across columns so the reading order is horizontal (row-by-row):
+  // Row 1: Item 1, Item 2, Item 3
+  // Row 2: Item 4, Item 5, Item 6
+  // Row 3: Item 7, Item 8, Item 9
+  const columns = Array.from({ length: cols }, (_, colIndex) =>
+    projects.filter((_, itemIndex) => itemIndex % cols === colIndex)
+  );
 
   return (
     <div className="min-h-screen">
@@ -58,37 +115,13 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
         .markdown-preview p { margin-bottom: 0.75rem; }
         .markdown-preview strong, .markdown-preview b { font-weight: 900 !important; color: inherit; }
         .markdown-preview em, .markdown-preview i { font-style: italic !important; }
-
-        @keyframes projectFadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(14px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .project-page-title {
-          animation: projectFadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-
-        .project-card-item {
-          animation: projectFadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-
-        .project-card-item:nth-child(1) { animation-delay: 0.04s; }
-        .project-card-item:nth-child(2) { animation-delay: 0.08s; }
-        .project-card-item:nth-child(3) { animation-delay: 0.12s; }
-        .project-card-item:nth-child(4) { animation-delay: 0.16s; }
-        .project-card-item:nth-child(5) { animation-delay: 0.20s; }
-        .project-card-item:nth-child(6) { animation-delay: 0.24s; }
-        .project-card-item:nth-child(n+7) { animation-delay: 0.28s; }
       `}</style>
 
       <div className="px-6 mt-16 md:mt-0 py-16 md:px-8 max-w-7xl mx-auto">
-        <div className="text-center mb-16 md:mb-20 -mt-12 md:mt-7 project-page-title">
+        <div
+          className="text-center mb-16 md:mb-20 -mt-12 md:mt-7 project-page-title"
+          style={{ opacity: 0, visibility: "hidden" }}
+        >
           <h1 className="text-3xl md:text-4xl font-bold tracking-wide text-black dark:text-white">All Projects</h1>
           <p className="mt-4 font-sans text-neutral-600 dark:text-neutral-400 text-sm md:text-base max-w-xl mx-auto italic">
             "Projects that i created."
@@ -96,9 +129,17 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
         </div>
 
         {projects.length > 0 ? (
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 [column-fill:_balance] max-w-7xl mx-auto">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+          <div
+            className={`grid gap-6 items-start max-w-7xl mx-auto ${
+              cols === 1 ? "grid-cols-1" : cols === 2 ? "grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            }`}
+          >
+            {columns.map((col, colIdx) => (
+              <div key={colIdx} className="flex flex-col gap-6">
+                {col.map((project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))}
+              </div>
             ))}
           </div>
         ) : (
