@@ -16,24 +16,20 @@ interface AboutClientProps {
 }
 
 /**
- * Given an HTML string, inject a "Last updated on..." <span>
- * immediately after the very first <h2> (or any heading) element.
- * If no heading is found, prepend the date at the start.
+ * Injects a spacer after the very first heading (h1-h3) to preserve
+ * the generous spacing before the first paragraph of content.
  */
-function injectDateAfterFirstH2(html: string, formattedDate: string): string {
+function injectFirstHeadingSpacing(html: string): string {
   if (!html) return html;
 
-  const dateHtml = `<span class="about-last-updated block text-sm text-neutral-500 dark:text-neutral-500 -mt-2 mb-12">Last updated on ${formattedDate}</span>`;
-
-  // Find the first closing heading tag (h1-h3) and inject date after it
   const headingMatch = html.match(/<\/(h[1-3])>/i);
   if (headingMatch && headingMatch.index !== undefined) {
     const closeTagEnd = headingMatch.index + headingMatch[0].length;
-    return html.slice(0, closeTagEnd) + dateHtml + html.slice(closeTagEnd);
+    const spacerHtml = `<div class="h-8" aria-hidden="true"></div>`;
+    return html.slice(0, closeTagEnd) + spacerHtml + html.slice(closeTagEnd);
   }
 
-  // Fallback: prepend date
-  return dateHtml + html;
+  return html;
 }
 
 // Separate React.memo component for dynamic content (same pattern as BlogContent in SingleBlogClient.tsx)
@@ -41,32 +37,23 @@ function injectDateAfterFirstH2(html: string, formattedDate: string): string {
 const AboutContent = React.memo(
   ({
     aboutContent,
-    aboutUpdatedAt,
     onTocExtracted,
     onImageClick,
   }: {
     aboutContent: string;
-    aboutUpdatedAt: string | null;
+    aboutUpdatedAt?: string | null;
     onTocExtracted: (toc: { id: string; text: string; level: string }[]) => void;
     onImageClick: (url: string) => void;
   }) => {
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const formattedDate = aboutUpdatedAt
-      ? new Date(aboutUpdatedAt).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
-      : "July 27, 2026";
-
-    // 1. Inject "Last updated on..." after first heading
-    const htmlWithDate = injectDateAfterFirstH2(aboutContent || "", formattedDate);
+    // 1. Inject spacing after first heading to preserve generous breathing room
+    const htmlWithSpacing = injectFirstHeadingSpacing(aboutContent || "");
 
     // 2. Pre-process HTML: inject heading IDs and extract ToC synchronously
     //    IDs are embedded in the HTML string BEFORE render, avoiding race conditions
     //    with React.memo caching and Turbopack's useEffect timing.
-    const { processedHtml, toc } = injectHeadingIds(htmlWithDate);
+    const { processedHtml, toc } = injectHeadingIds(htmlWithSpacing);
 
     // Effect 1: Report ToC from pre-computed data (no DOM dependency)
     useEffect(() => {
@@ -80,8 +67,8 @@ const AboutContent = React.memo(
       // Format GitHub links
       formatGithubLinks(contentRef.current);
 
-      // Inject staggered animations for paragraphs, headings, and the last updated text
-      const elements = contentRef.current.querySelectorAll("p, h2, h3, .about-last-updated");
+      // Inject staggered animations for paragraphs and headings
+      const elements = contentRef.current.querySelectorAll("p, h2, h3");
       elements.forEach((el, index) => {
         el.setAttribute("data-animate", "true");
         (el as HTMLElement).style.setProperty("--stagger", String(index + 1));
