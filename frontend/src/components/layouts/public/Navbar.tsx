@@ -26,7 +26,7 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
   const textLinks = [
     ...(profile?.about?.is_about_page_active !== false ? [{ name: "About", href: "/about" }] : []),
     { name: "Blog", href: "/blogs" },
-    { name: "Notes", href: "/notes" },
+    // { name: "Notes", href: "/notes" },
     { name: "Projects", href: "/projects" },
     ...(profile?.about?.is_certificates_page_active !== false ? [{ name: "Certificates", href: "/certificates" }] : []),
   ];
@@ -107,11 +107,10 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
               href={link.href}
               title={link.name}
               {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className={`transition-colors duration-200 ${
-                isActive(link.href)
+              className={`transition-colors duration-200 ${isActive(link.href)
                   ? "text-black dark:text-white"
                   : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
-              }`}>
+                }`}>
               <iconify-icon icon={link.icon} height="20" width="20" />
             </Link>
           );
@@ -150,11 +149,10 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
             key={link.name}
             href={link.href}
             title={link.name}
-            className={`text-md tracking-tight transition-colors duration-200 ${
-              isActive(link.href)
+            className={`text-md tracking-tight transition-colors duration-200 ${isActive(link.href)
                 ? "text-black dark:text-white"
                 : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
-            }`}>
+              }`}>
             {link.name}
           </Link>
         ))}
@@ -166,11 +164,10 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
               href={link.href}
               title={link.name}
               {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className={`transition-colors duration-200 ${
-                isActive(link.href)
+              className={`transition-colors duration-200 ${isActive(link.href)
                   ? "text-black dark:text-white"
                   : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
-              }`}>
+                }`}>
               <iconify-icon icon={link.icon} height="20" width="20" />
             </Link>
           );
