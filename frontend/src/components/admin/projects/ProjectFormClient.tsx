@@ -262,7 +262,10 @@ export default function ProjectFormClient({ isEditMode, projectId }: ProjectForm
       title: form.title || "Project Title",
       slug: "preview-project",
       short_description: "",
-      description: form.description || "Project description will appear here.",
+      description:
+        form.description && form.description.trim() !== "" && form.description.trim() !== "<p></p>"
+          ? form.description
+          : null,
       client_name: "",
       role: form.role,
       start_date: form.start_date,

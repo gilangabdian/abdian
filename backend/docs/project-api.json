@@ -110,10 +110,10 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": ["title", "description", "start_date", "status", "thumbnail"],
+                "required": ["title", "start_date", "status"],
                 "properties": {
                   "title": { "type": "string", "description": "Project title" },
-                  "description": { "type": "string", "description": "Project description" },
+                  "description": { "type": ["string", "null"], "description": "Project description (optional)" },
                   "is_featured": { "type": "boolean", "description": "Whether the project is featured" },
                   "start_date": { "type": "string", "format": "date", "description": "Start date" },
                   "end_date": { "type": "string", "format": "date", "description": "End date (nullable)" },
@@ -213,7 +213,7 @@
                 "type": "object",
                 "properties": {
                   "title": { "type": "string" },
-                  "description": { "type": "string" },
+                  "description": { "type": ["string", "null"] },
                   "is_featured": { "type": "boolean" },
                   "start_date": { "type": "string", "format": "date" },
                   "end_date": { "type": ["string", "null"], "format": "date" },
@@ -272,7 +272,7 @@
         "properties": {
           "id": { "type": "integer" },
           "title": { "type": "string" },
-          "description": { "type": "string" },
+          "description": { "type": ["string", "null"] },
           "is_featured": { "type": "boolean" },
           "is_published": { "type": "boolean" },
           "start_date": { "type": "string", "format": "date" },

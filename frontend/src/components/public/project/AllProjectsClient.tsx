@@ -122,7 +122,7 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
           className="text-center mb-16 md:mb-20 -mt-12 md:mt-7 project-page-title"
           style={{ opacity: 0, visibility: "hidden" }}
         >
-          <h1 className="text-3xl md:text-4xl font-bold tracking-wide text-black dark:text-white">All Projects</h1>
+          <h1 className="text-3xl md:text-4xl font-bold tracking-wide text-black dark:text-white">Projects</h1>
           <p className="mt-4 font-sans text-neutral-600 dark:text-neutral-400 text-sm md:text-base max-w-xl mx-auto italic">
             "Projects that i created."
           </p>

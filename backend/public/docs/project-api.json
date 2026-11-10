@@ -140,10 +140,7 @@
                                 "type": "object",
                                 "required": [
                                     "title",
-                                    "description",
-                                    "thumbnail",
                                     "start_date",
-                                    "end_date",
                                     "status"
                                 ],
                                 "properties": {
@@ -153,6 +150,7 @@
                                     },
                                     "description": {
                                         "type": "string",
+                                        "nullable": true,
                                         "example": "Security logging system for university project."
                                     },
                                     "start_date": {
@@ -340,9 +338,7 @@
                                 "type": "object",
                                 "required": [
                                     "title",
-                                    "description",
                                     "start_date",
-                                    "end_date",
                                     "status"
                                 ],
                                 "properties": {
@@ -352,6 +348,7 @@
                                     },
                                     "description": {
                                         "type": "string",
+                                        "nullable": true,
                                         "example": "Updated description..."
                                     },
                                     "start_date": {

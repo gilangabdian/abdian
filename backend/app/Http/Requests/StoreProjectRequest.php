@@ -25,7 +25,7 @@ class StoreProjectRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'is_featured' => 'boolean',
             'is_published' => 'nullable|boolean',
             'start_date' => 'required|date',
@@ -59,7 +59,13 @@ class StoreProjectRequest extends FormRequest
             $customTechStacks = json_decode($customTechStacks, true);
         }
 
+        $description = $this->description;
+        if ($description === '' || $description === 'null' || trim((string) $description) === '<p></p>') {
+            $description = null;
+        }
+
         $this->merge([
+            'description' => $description,
             'team_size' => $this->team_size === '' || $this->team_size === 'null' ? null : $this->team_size,
             'role' => $this->role === '' || $this->role === 'null' ? null : $this->role,
             'type' => $this->type === '' || $this->type === 'null' ? null : $this->type,

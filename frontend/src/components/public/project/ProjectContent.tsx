@@ -110,7 +110,7 @@ export default function ProjectContent({ project }: ProjectContentProps) {
         {/* LEFT COLUMN: Description + Tech Stack */}
         <div className="md:col-span-3 flex flex-col gap-6">
           {/* Description */}
-          {project.description && (
+          {project.description && project.description.trim() !== '' && project.description.trim() !== '<p></p>' && (
             <div>
               <h4 className="font-bold font-sans uppercase text-sm border-b border-neutral-200 dark:border-neutral-800 inline-block text-black dark:text-white">
                 Description

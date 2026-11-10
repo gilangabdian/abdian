@@ -93,7 +93,7 @@ export default function ProjectFormBasicFields({ form, onChange }: ProjectFormBa
       <div>
         <label className="block font-black mb-2 flex justify-between items-end text-sm uppercase">
           <span className="border-b-2 border-black inline-block">
-            Description <span className="text-red-500">*</span>
+            Description <span className="text-gray-400 text-[10px] normal-case ml-1">(optional)</span>
           </span>
         </label>
         <ProjectDescriptionEditor

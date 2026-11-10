@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { Icon } from "@iconify/react";
 import { Project } from "@/types";
 import { formatGithubLinks } from "@/lib/github-link-formatter";
 
@@ -17,31 +16,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       formatGithubLinks(contentRef.current);
     }
   }, [project.description]);
-
-  const formatStartDate = (dateStr?: string) => {
-    if (!dateStr) return "";
-    const parts = dateStr.split("T")[0].split("-");
-    if (parts.length === 3) {
-      const year = parseInt(parts[0], 10);
-      const month = parseInt(parts[1], 10) - 1;
-      const day = parseInt(parts[2], 10);
-      const d = new Date(Date.UTC(year, month, day));
-      return d.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        timeZone: "UTC",
-      });
-    }
-    const d = new Date(dateStr);
-    return isNaN(d.getTime())
-      ? ""
-      : d.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
-  };
 
   const renderMedia = () => {
     // 1. Video priority
@@ -61,7 +35,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     // 2. Twitter Embed priority
     if (project.twitter_url) {
       return (
-        <div className="w-full flex justify-center bg-neutral-50 dark:bg-neutral-900 overflow-hidden relative min-h-[220px]">
+        <div className="w-full flex justify-center bg-neutral-50 dark:bg-neutral-900 overflow-hidden relative z-20 min-h-[220px]">
           <blockquote className="twitter-tweet" data-theme="dark">
             <a href={project.twitter_url}></a>
           </blockquote>
@@ -80,7 +54,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       const ytId = getYoutubeId(project.youtube_url);
       if (ytId) {
         return (
-          <div className="w-full aspect-video">
+          <div className="w-full aspect-video relative z-20">
             <iframe
               className="w-full h-full"
               src={`https://www.youtube.com/embed/${ytId}`}
@@ -114,14 +88,31 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     Boolean(project.twitter_url) ||
     Boolean(project.youtube_url);
 
+  const hasDescription = Boolean(
+    project.description &&
+      project.description.trim() !== "" &&
+      project.description.trim() !== "<p></p>"
+  );
+
   return (
     <article
-      className="project-card-item w-full bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden hover:border-neutral-300 dark:hover:border-neutral-700 transition-[border-color,box-shadow] duration-200 flex flex-col justify-between shadow-xs hover:shadow-sm"
+      className="project-card-item w-full bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden cursor-pointer relative hover:z-20 hover:scale-[1.01] transition-transform duration-300 ease-out flex flex-col justify-between shadow-xs"
       style={{ opacity: 0, visibility: "hidden" }}
     >
+      {/* Native Overlay Anchor so browser displays destination URL preview at bottom-left */}
+      {project.repository_link && (
+        <a
+          href={project.repository_link}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open ${project.title} repository`}
+          className="absolute inset-0 z-10"
+        />
+      )}
+
       {/* Top Media */}
       {hasMedia && (
-        <div className="w-full bg-neutral-50 dark:bg-neutral-900/40 border-b border-neutral-200 dark:border-neutral-800 overflow-hidden">
+        <div className="w-full bg-neutral-50 dark:bg-neutral-900/40 overflow-hidden">
           {renderMedia()}
         </div>
       )}
@@ -133,47 +124,14 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             {project.title}
           </h2>
 
-          {project.description && (
+          {hasDescription && project.description && (
             <div
               ref={contentRef}
-              className="markdown-preview font-sans text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed break-words [&_a]:break-all prose prose-sm dark:prose-invert max-w-none [&_ul]:pl-[1.15rem] [&_ul]:ml-0 [&_ol]:pl-[1.25rem] [&_ol]:ml-0"
+              className="markdown-preview font-sans text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed break-words [&_a]:break-all [&_a]:relative [&_a]:z-20 prose prose-sm dark:prose-invert max-w-none [&_ul]:pl-[1.15rem] [&_ul]:ml-0 [&_ol]:pl-[1.25rem] [&_ol]:ml-0"
               dangerouslySetInnerHTML={{ __html: project.description }}
             />
           )}
         </div>
-
-        {/* Footer: Start Date & Action Links */}
-        {(project.start_date || project.repository_link || project.live_demo_link) && (
-          <div className="flex items-center justify-between pt-3.5 border-t border-neutral-100 dark:border-neutral-800/80 mt-auto">
-            <span className="text-xs text-neutral-500 dark:text-neutral-400 font-mono tracking-tight">
-              {formatStartDate(project.start_date)}
-            </span>
-            <div className="flex items-center gap-1.5 ml-auto">
-              {project.repository_link && (
-                <a
-                  href={project.repository_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="View Source Code"
-                  className="p-1.5 text-neutral-500 hover:text-black dark:text-neutral-400 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors"
-                >
-                  <Icon icon="mdi:github" className="text-xl" />
-                </a>
-              )}
-              {project.live_demo_link && (
-                <a
-                  href={project.live_demo_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Live Demo"
-                  className="p-1.5 text-neutral-500 hover:text-black dark:text-neutral-400 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md transition-colors"
-                >
-                  <Icon icon="mdi:external-link" className="text-xl" />
-                </a>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </article>
   );

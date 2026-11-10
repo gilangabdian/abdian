@@ -183,7 +183,7 @@ export interface Project {
   title: string;
   slug: string;
   short_description: string;
-  description: string;
+  description?: string | null;
   client_name?: string;
   role?: string;
   start_date?: string;

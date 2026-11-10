@@ -441,4 +441,44 @@ class ProjectApiTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['ids']);
     }
+
+    public function test_admin_can_create_and_update_project_without_description()
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        // 1. Create project without description (sending empty TipTap "<p></p>")
+        $response = $this->actingAs($user)->postJson('/api/projects', [
+            'title' => 'Project Without Description',
+            'description' => '<p></p>',
+            'thumbnail' => UploadedFile::fake()->image('thumb.jpg'),
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        $response->assertStatus(201);
+        $projectId = $response->json('data.id');
+
+        $this->assertDatabaseHas('projects', [
+            'id' => $projectId,
+            'title' => 'Project Without Description',
+            'description' => null,
+        ]);
+
+        // 2. Update project with empty string description
+        $updateResponse = $this->actingAs($user)->putJson("/api/projects/{$projectId}", [
+            'title' => 'Updated Project Without Description',
+            'description' => '',
+            'start_date' => '2025-01-01',
+            'status' => 'completed',
+        ]);
+
+        $updateResponse->assertStatus(200);
+
+        $this->assertDatabaseHas('projects', [
+            'id' => $projectId,
+            'title' => 'Updated Project Without Description',
+            'description' => null,
+        ]);
+    }
 }

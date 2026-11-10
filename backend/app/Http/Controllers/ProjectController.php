@@ -100,11 +100,11 @@ class ProjectController extends Controller
 
         $project->update([
             'title' => $data['title'],
-            'description' => $data['description'],
+            'description' => $data['description'] ?? null,
             'is_featured' => $data['is_featured'] ?? false,
             'is_published' => array_key_exists('is_published', $data) ? (bool) $data['is_published'] : $project->is_published,
             'start_date' => $data['start_date'],
-            'end_date' => $data['end_date'],
+            'end_date' => $data['end_date'] ?? null,
             'status' => $data['status'],
             'type' => $data['type'] ?? null,
             'team_size' => $data['team_size'] ?? null,

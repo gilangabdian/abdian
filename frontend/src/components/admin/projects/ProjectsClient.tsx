@@ -415,10 +415,14 @@ export default function ProjectsClient() {
                             </div>
                           )}
 
-                          <div
-                            dangerouslySetInnerHTML={{ __html: project.description || "" }}
-                            className="markdown-preview text-sm text-gray-500 font-mono line-clamp-2"
-                          ></div>
+                          {project.description &&
+                            project.description.trim() !== "" &&
+                            project.description.trim() !== "<p></p>" && (
+                              <div
+                                dangerouslySetInnerHTML={{ __html: project.description }}
+                                className="markdown-preview text-sm text-gray-500 font-mono line-clamp-2"
+                              ></div>
+                            )}
 
                           {project.repository_link || project.live_demo_link ? (
                             <div className="flex gap-3 mt-1">
@@ -676,10 +680,14 @@ export default function ProjectsClient() {
                     )}
                     <div className="flex-1 min-w-0 pr-8">
                       <h3 className="font-black text-lg uppercase leading-tight break-words">{project.title}</h3>
-                      <div
-                        dangerouslySetInnerHTML={{ __html: project.description || "" }}
-                        className="markdown-preview text-sm text-gray-500 font-mono mb-2 line-clamp-2"
-                      ></div>
+                      {project.description &&
+                        project.description.trim() !== "" &&
+                        project.description.trim() !== "<p></p>" && (
+                          <div
+                            dangerouslySetInnerHTML={{ __html: project.description }}
+                            className="markdown-preview text-sm text-gray-500 font-mono mb-2 line-clamp-2"
+                          ></div>
+                        )}
                       <div className="flex gap-3 mt-3">
                         {project.repository_link && (
                           <a

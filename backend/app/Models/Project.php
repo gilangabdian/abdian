@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property int $id
+ * @property string $title
+ * @property string|null $description
+ * @property bool $is_featured
+ * @property bool $is_published
+ */
 class Project extends Model
 {
     const STATUSES = ['completed', 'in_development', 'on_hold', 'cancelled'];
