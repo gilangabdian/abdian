@@ -536,6 +536,7 @@ export default function Hero({ profile }: HeroProps) {
           </div>
 
           <div className="hero-content mt-4 flex flex-col md:flex-row items-start md:items-center gap-2 text-base">
+            {/* <span className="whitespace-nowrap text-[#404040] dark:text-[#a3a3a3]">Find me on:</span> */}
             <div className="flex flex-wrap gap-2">
               {profile.social_media?.map((social: any, index) => (
                 <a
