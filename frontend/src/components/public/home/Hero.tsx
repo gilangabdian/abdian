@@ -293,9 +293,15 @@ gsap.registerPlugin(useGSAP);
 
 interface HeroProps {
   profile?: Profile | null;
+  isContentVisible?: boolean;
+  hasBelowFoldSections?: boolean;
 }
 
-export default function Hero({ profile }: HeroProps) {
+export default function Hero({
+  profile,
+  isContentVisible = true,
+  hasBelowFoldSections = true,
+}: HeroProps) {
   const [displayedJob, setDisplayedJob] = useState("");
   const [cursorVisible, setCursorVisible] = useState(true);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -420,6 +426,51 @@ export default function Hero({ profile }: HeroProps) {
   useGSAP(
     () => {
       if (!profile || !profile.about) return;
+
+      const footerEl = document.getElementById("public-footer");
+
+      // Minimalist mode (!hasPhoto): staggered reveal from Hero items -> Footer
+      if (!hasPhoto) {
+        if (!isContentVisible) {
+          gsap.set(".hero-stagger-item", { autoAlpha: 0, y: 18 });
+          if (!hasBelowFoldSections && footerEl) {
+            gsap.set(footerEl, { autoAlpha: 0, y: 12 });
+          }
+          return;
+        }
+
+        const tl = gsap.timeline();
+
+        tl.fromTo(
+          ".hero-stagger-item",
+          { y: 16, autoAlpha: 0 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.5,
+            stagger: 0.1,
+            ease: "power2.out",
+            clearProps: "all",
+          },
+        );
+
+        if (!hasBelowFoldSections && footerEl) {
+          tl.fromTo(
+            footerEl,
+            { y: 10, autoAlpha: 0 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              duration: 0.5,
+              ease: "power2.out",
+              clearProps: "all",
+            },
+            "-=0.38",
+          );
+        }
+        return;
+      }
+
       const tl = gsap.timeline();
 
       tl.from(".hero-text", {
@@ -454,7 +505,7 @@ export default function Hero({ profile }: HeroProps) {
         );
       }
     },
-    { scope: heroRef, dependencies: [profile, hasPhoto] },
+    { scope: heroRef, dependencies: [profile, hasPhoto, hasBelowFoldSections, isContentVisible] },
   );
 
   if (!profile || !profile.about) {
@@ -519,39 +570,48 @@ export default function Hero({ profile }: HeroProps) {
     return (
       <section
         ref={heroRef}
-        className="-mt-12 md:-mt-2 min-h-screen flex justify-center py-24 px-6 font-sans text-black dark:text-white">
-        <div className="container max-w-[560px] w-full flex flex-col mt-10 mx-auto">
-          <div className="hero-text mb-8 md:mb-10">
-            <h1 className="text-[24px] font-normal leading-snug tracking-tight text-black dark:text-white">
+        className={`flex justify-center px-6 font-sans text-black dark:text-white ${hasBelowFoldSections
+          ? "-mt-12 md:-mt-2 min-h-screen py-24"
+          : "-mt-8 md:-mt-2 pt-16 md:pt-24 pb-4"
+          }`}>
+        <div
+          className={`container max-w-[560px] w-full flex flex-col mx-auto ${hasBelowFoldSections ? "mt-10" : "mt-4 md:mt-10"
+            }`}>
+          <div className="mb-6 md:mb-10">
+            <h1 className="hero-stagger-item text-[24px] font-normal leading-snug tracking-tight text-black dark:text-white">
               {profile.about.name}
             </h1>
-            <span className="block text-base text-neutral-500 dark:text-neutral-500 mt-1">
+            <span className="hero-stagger-item block text-base text-neutral-500 dark:text-neutral-500">
               Indonesia
             </span>
           </div>
 
-          <div className="hero-content">
+          <div>
             <style>{proseStyles}</style>
-            <HeroDescriptionContent html={profile.about.about_description} />
-          </div>
-
-          <div className="hero-content mt-4 flex flex-col md:flex-row items-start md:items-center gap-2 text-base">
-            {/* <span className="whitespace-nowrap text-[#404040] dark:text-[#a3a3a3]">Find me on:</span> */}
-            <div className="flex flex-wrap gap-2">
-              {profile.social_media?.map((social: any, index) => (
-                <a
-                  key={`${index}-${social.name}`}
-                  href={social.url}
-                  aria-label={social.name}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-1.5 border border-black/20 dark:border-white/20 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 hover:shadow-sm transition-all duration-200"
-                  title={social.name}>
-                  <Icon icon={social.icon} className="w-4 h-4 text-black dark:text-white" />
-                </a>
-              ))}
+            <div className="hero-stagger-item">
+              <HeroDescriptionContent html={profile.about.about_description} />
             </div>
           </div>
+
+          {profile.social_media && profile.social_media.length > 0 && (
+            <div className="hero-stagger-item mt-4 flex flex-col md:flex-row items-start md:items-center gap-2 text-base">
+              {/* <span className="whitespace-nowrap text-[#404040] dark:text-[#a3a3a3]">Find me on:</span> */}
+              <div className="flex flex-wrap gap-2">
+                {profile.social_media.map((social: any, index) => (
+                  <a
+                    key={`${index}-${social.name}`}
+                    href={social.url}
+                    aria-label={social.name}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-1.5 border border-black/20 dark:border-white/20 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 hover:shadow-sm transition-all duration-200"
+                    title={social.name}>
+                    <Icon icon={social.icon} className="w-4 h-4 text-black dark:text-white" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* <div className="hero-content mt-4 w-full flex justify-start">
             <LeaveMark />

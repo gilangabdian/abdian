@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 import fpPromise from "@fingerprintjs/fingerprintjs";
 import { logVisitor, getGeoJSLocation } from "@/lib/api/visitor";
 
@@ -97,9 +98,10 @@ export default function HomepageClient({
   // Handle Intro Screen Logic
   useEffect(() => {
     const isReturningVisitor = sessionStorage.getItem("has_seen_intro") === "true";
-    
+
     // Jika sudah pernah melihat di tab ini, langsung hilangkan dari React DOM
     if (isReturningVisitor) {
+      NProgress.done();
       setHasSeenIntro(true);
       window.dispatchEvent(new CustomEvent("content-loaded"));
       setTimeout(() => ScrollTrigger.refresh(), 200);
@@ -107,7 +109,7 @@ export default function HomepageClient({
     }
 
     let percent = 0;
-    
+
     // Animasi selalu pelan (300ms) untuk mensimulasikan Vue behavior di tab baru
     const interval = setInterval(() => {
       percent += Math.floor(Math.random() * 3) + 1;
@@ -132,16 +134,16 @@ export default function HomepageClient({
       clearInterval(interval);
       setLoadingPercent(100);
       NProgress.done();
-      
+
       setTimeout(() => {
-        setIsFadingOut(true); 
+        setIsFadingOut(true);
         setTimeout(() => {
           setHasSeenIntro(true);
           sessionStorage.setItem("has_seen_intro", "true");
           window.dispatchEvent(new CustomEvent("content-loaded"));
           setTimeout(() => ScrollTrigger.refresh(), 200);
-        }, 500); 
-      }, 850); 
+        }, 500);
+      }, 850);
     };
 
     // Simulasi pengambilan API (1500ms) seperti Vue agar loadingnya jalan
@@ -172,9 +174,29 @@ export default function HomepageClient({
 
   // Removed GSAP Stacking Animation per user request because it caused visual bugs in Next.js
 
+  const heroPhotos = profile?.about?.hero_photo_urls || [];
+  const isProfilePictureVisible = profile?.about?.show_profile_picture !== false;
+  const hasPhoto = isProfilePictureVisible && heroPhotos.length > 0;
+
+  const hasBelowFoldSections =
+    profile?.about?.show_tech_on_home !== false ||
+    (profile?.about?.show_featured_projects_on_home !== false && projects.length > 0) ||
+    (profile?.about?.show_featured_certificates_on_home !== false && certificates.length > 0) ||
+    (profile?.about?.show_experiences_on_home !== false && experiences && experiences.length > 0);
+
+  const isNonScrollableMinimalHome = !hasPhoto && !hasBelowFoldSections;
+
   return (
-    <div className="min-h-screen bg-transparent font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0" ref={containerRef}>
-      
+    <div
+      data-minimal-home={isNonScrollableMinimalHome ? "true" : undefined}
+      className={
+        isNonScrollableMinimalHome
+          ? "h-full bg-transparent font-sans overflow-hidden flex flex-col"
+          : "min-h-screen bg-transparent font-sans overflow-x-hidden flex flex-col pb-24 md:pb-0"
+      }
+      ref={containerRef}
+    >
+
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -186,6 +208,29 @@ export default function HomepageClient({
               height: auto !important;
               overflow: visible !important;
               animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+            }
+            ${
+              isNonScrollableMinimalHome
+                ? `
+            html:has([data-minimal-home="true"]),
+            body:has([data-minimal-home="true"]) {
+              height: 100dvh !important;
+              max-height: 100dvh !important;
+              overflow: hidden !important;
+            }
+            .public-theme:has([data-minimal-home="true"]) {
+              height: 100dvh !important;
+              min-height: 100dvh !important;
+              max-height: 100dvh !important;
+              overflow: hidden !important;
+            }
+            .public-theme:has([data-minimal-home="true"]) > main {
+              flex: 1 1 0% !important;
+              min-height: 0 !important;
+              overflow: hidden !important;
+            }
+            `
+                : ""
             }
           `,
         }}
@@ -199,11 +244,15 @@ export default function HomepageClient({
       )}
 
       {/* Konten Web */}
-      <div 
+      <div
         id="main-content-wrapper"
         className={`transition-opacity duration-500 ${hasSeenIntro || isFadingOut ? "opacity-100 animate-in" : "opacity-0 h-screen overflow-hidden"}`}
       >
-        <Hero profile={profile} />
+        <Hero
+          profile={profile}
+          isContentVisible={hasSeenIntro || isFadingOut}
+          hasBelowFoldSections={hasBelowFoldSections}
+        />
 
         {profile?.about?.show_tech_on_home !== false && (
           <Tech skills={skills} profile={profile} />
