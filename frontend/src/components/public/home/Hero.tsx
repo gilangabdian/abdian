@@ -5,7 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Profile } from "@/types";
 import { Icon } from "@iconify/react";
-import LeaveMark from "./LeaveMark";
+// import LeaveMark from "./LeaveMark";
 import LiveStatus from "./LiveStatus";
 import hljs from "highlight.js";
 import "highlight.js/styles/night-owl.css";
@@ -454,26 +454,122 @@ export default function Hero({ profile }: HeroProps) {
         );
       }
     },
-    { scope: heroRef, dependencies: [profile] },
+    { scope: heroRef, dependencies: [profile, hasPhoto] },
   );
 
   if (!profile || !profile.about) {
     return null;
   }
 
+  const proseStyles = `
+    div.callout {
+      position: relative !important;
+    }
+    .prose div.callout p { color: #a3a3a3 !important; }
+    .dark .prose div.callout p { color: #737373 !important; }
+    div.callout::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top:1.5em;
+      bottom: 1.5em;
+      width: 4px;
+      background: #d4d4d8;
+      border-radius: 2px;
+    }
+    .dark div.callout::before {
+      background: #404040;
+    }
+    /* Custom blockquote styling to match callout border */
+    .prose blockquote {
+      position: relative !important;
+      border-left: none !important;
+      padding-left: 1.5rem !important;
+    }
+    .prose blockquote::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5em;
+      bottom: 0.5em;
+      width: 4px;
+      background: #d4d4d8;
+      border-radius: 2px;
+    }
+    .dark .prose blockquote::before {
+      background: #404040;
+    }
+    .prose p:empty::before { content: "\\00a0"; display: inline-block; }
+    .prose p { color: #404040  !important; font-size: 16px; line-height: 24px }
+    .dark .prose p { color: #a3a3a3  !important; }
+    .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
+    .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
+    .prose a:hover { text-decoration-color: #171717 !important; }
+    .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
+    .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; }
+    .prose h2, .prose h3 { position: relative; font-weight:normal; }
+    .prose h2::before, .prose h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
+    .prose h2:hover::before, .prose h3:hover::before { opacity: 1; }
+    .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
+    .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
+    .prose li { margin-bottom: 0.5em; }
+  `;
+
+  if (!hasPhoto) {
+    return (
+      <section
+        ref={heroRef}
+        className="-mt-12 md:-mt-2 min-h-screen flex justify-center py-24 px-6 font-sans text-black dark:text-white">
+        <div className="container max-w-[560px] w-full flex flex-col mt-10 mx-auto">
+          <div className="hero-text mb-8 md:mb-10">
+            <h1 className="text-[24px] font-normal leading-snug tracking-tight text-black dark:text-white">
+              {profile.about.name}
+            </h1>
+            <span className="block text-base text-neutral-500 dark:text-neutral-500 mt-1">
+              Indonesia
+            </span>
+          </div>
+
+          <div className="hero-content">
+            <style>{proseStyles}</style>
+            <HeroDescriptionContent html={profile.about.about_description} />
+          </div>
+
+          <div className="hero-content mt-4 flex flex-col md:flex-row items-start md:items-center gap-2 text-base">
+            <div className="flex flex-wrap gap-2">
+              {profile.social_media?.map((social: any, index) => (
+                <a
+                  key={`${index}-${social.name}`}
+                  href={social.url}
+                  aria-label={social.name}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-1.5 border border-black/20 dark:border-white/20 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 hover:shadow-sm transition-all duration-200"
+                  title={social.name}>
+                  <Icon icon={social.icon} className="w-4 h-4 text-black dark:text-white" />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* <div className="hero-content mt-4 w-full flex justify-start">
+            <LeaveMark />
+          </div> */}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <div
       ref={heroRef}
-      className={`container mx-auto px-6 ${
-        hasPhoto ? "pt-26 pb-6 items-center" : "pt-24 pb-6 items-start"
-      } md:pt-8 md:pb-0 md:items-center min-h-screen flex justify-center overflow-hidden`}>
-      <div className={`flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-2 ${
-        hasPhoto ? "mt-8" : "mt-0 md:mt-8"
-      }`}>
-        {/* Left Content */}
-        <div className={`flex-1 flex flex-col items-start space-y-3 md:space-y-3 ${
-          hasPhoto ? "mt-4" : "mt-0 md:mt-4"
+      className={`container mx-auto px-6 ${hasPhoto ? "pt-26 pb-6 items-center" : "pt-24 pb-6 items-start"
+        } md:pt-8 md:pb-0 md:items-center min-h-screen flex justify-center overflow-hidden`}>
+      <div className={`flex flex-col-reverse md:flex-row items-center justify-between w-full max-w-4xl gap-2 ${hasPhoto ? "mt-8" : "mt-0 md:mt-8"
         }`}>
+        {/* Left Content */}
+        <div className={`flex-1 flex flex-col items-start space-y-3 md:space-y-3 ${hasPhoto ? "mt-4" : "mt-0 md:mt-4"
+          }`}>
           <div className="space-y-0.5">
             <h1 className="hero-text text-4xl md:text-5xl font-bold leading-tight tracking-tight">
               Hi, I&apos;m{" "}
@@ -485,66 +581,13 @@ export default function Hero({ profile }: HeroProps) {
             <h2 className="hero-text text-xl md:text-2xl lg:text-3xl font-medium text-gray-800 dark:text-gray-200 pt-1 min-h-[1.5em] flex items-center">
               <span>{displayedJob}</span>
               <span
-                className={`inline-block w-[2px] h-[24px] md:h-[32px] bg-black dark:bg-white ml-1 align-middle transition-opacity duration-100 ${
-                  cursorVisible ? "opacity-100" : "opacity-0"
-                }`}></span>
+                className={`inline-block w-[2px] h-[24px] md:h-[32px] bg-black dark:bg-white ml-1 align-middle transition-opacity duration-100 ${cursorVisible ? "opacity-100" : "opacity-0"
+                  }`}></span>
             </h2>
           </div>
 
           <div className="hero-content">
-            <style>{`
-            div.callout {
-                position: relative !important;
-              }
-            .prose div.callout p { color: #a3a3a3 !important; }
-            .dark .prose div.callout p { color: #737373 !important; }
-              div.callout::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top:1.5em;
-                bottom: 1.5em;
-                width: 4px;
-                background: #d4d4d8;
-                border-radius: 2px;
-              }
-              .dark div.callout::before {
-                background: #404040;
-              }
-              /* Custom blockquote styling to match callout border */
-              .prose blockquote {
-                position: relative !important;
-                border-left: none !important;
-                padding-left: 1.5rem !important;
-              }
-              .prose blockquote::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 0.5em;
-                bottom: 0.5em;
-                width: 4px;
-                background: #d4d4d8;
-                border-radius: 2px;
-              }
-              .dark .prose blockquote::before {
-                background: #404040;
-              }
-              .prose p:empty::before { content: "\\00a0"; display: inline-block; }
-              .prose p { color: #404040  !important; font-size: 14px; line-height: 24px }
-              .dark .prose p { color: #a3a3a3  !important; }
-              .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
-              .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
-              .prose a:hover { text-decoration-color: #171717 !important; }
-              .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
-              .prose img { display: block; margin: 1.5em auto; max-width: 100%; height: auto; }
-              .prose h2, .prose h3 { position: relative; font-weight:normal; }
-              .prose h2::before, .prose h3::before { content: "#"; position: absolute; left: -1em; opacity: 0; color: #a3a3a3; transition: opacity 0.2s ease-in-out; }
-              .prose h2:hover::before, .prose h3:hover::before { opacity: 1; }
-              .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
-              .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
-              .prose li { margin-bottom: 0.5em; }
-            `}</style>
+            <style>{proseStyles}</style>
             <HeroDescriptionContent html={profile.about.about_description} />
           </div>
 
@@ -601,9 +644,9 @@ export default function Hero({ profile }: HeroProps) {
             </div>
           </div>
 
-          <div className="hero-content mt-4 w-full flex justify-start">
+          {/* <div className="hero-content mt-4 w-full flex justify-start">
             <LeaveMark />
-          </div>
+          </div> */}
         </div>
 
         {/* Right Content - Profile Image */}
@@ -632,7 +675,7 @@ export default function Hero({ profile }: HeroProps) {
                 ))}
               </div>
 
-              {}
+              { }
               <img
                 key={photoInstanceKey}
                 loading="eager"
@@ -641,9 +684,8 @@ export default function Hero({ profile }: HeroProps) {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onClick={handleClick}
-                className={`w-full h-full object-cover border-b border-black/20 dark:border-white/20 transition-bounce-hover ${
-                  isHovered ? "scale-[1.08]" : "scale-100"
-                } ${isAnimating ? "blur-md opacity-50" : "blur-0 opacity-100"}`}
+                className={`w-full h-full object-cover border-b border-black/20 dark:border-white/20 transition-bounce-hover ${isHovered ? "scale-[1.08]" : "scale-100"
+                  } ${isAnimating ? "blur-md opacity-50" : "blur-0 opacity-100"}`}
               />
             </div>
           </div>
