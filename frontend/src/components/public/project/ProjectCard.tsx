@@ -112,7 +112,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
       {/* Top Media */}
       {hasMedia && (
-        <div className="w-full bg-neutral-50 dark:bg-neutral-900/40 overflow-hidden">
+        <div className="w-full bg-neutral-50 dark:bg-neutral-900/40 border-b border-neutral-200 dark:border-neutral-800 overflow-hidden">
           {renderMedia()}
         </div>
       )}
