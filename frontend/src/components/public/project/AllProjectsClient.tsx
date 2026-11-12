@@ -130,9 +130,8 @@ export default function AllProjectsClient({ initialProjects }: AllProjectsClient
 
         {projects.length > 0 ? (
           <div
-            className={`grid gap-6 items-start max-w-7xl mx-auto ${
-              cols === 1 ? "grid-cols-1" : cols === 2 ? "grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-            }`}
+            className={`grid gap-6 items-start max-w-7xl mx-auto ${cols === 1 ? "grid-cols-1" : cols === 2 ? "grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              }`}
           >
             {columns.map((col, colIdx) => (
               <div key={colIdx} className="flex flex-col gap-6">

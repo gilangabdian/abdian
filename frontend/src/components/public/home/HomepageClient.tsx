@@ -209,9 +209,8 @@ export default function HomepageClient({
               overflow: visible !important;
               animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
             }
-            ${
-              isNonScrollableMinimalHome
-                ? `
+            ${isNonScrollableMinimalHome
+              ? `
             html:has([data-minimal-home="true"]),
             body:has([data-minimal-home="true"]) {
               height: 100dvh !important;
@@ -230,7 +229,7 @@ export default function HomepageClient({
               overflow: hidden !important;
             }
             `
-                : ""
+              : ""
             }
           `,
         }}
