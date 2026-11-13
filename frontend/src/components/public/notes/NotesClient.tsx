@@ -149,7 +149,7 @@ export default function NotesClient({ initialNotes }: NotesClientProps) {
               .prose p:empty::before { content: "\\00a0"; display: inline-block; }
               .prose p { color: #404040  !important; font-size: 16px; line-height: 28px }
               .dark .prose p { color: #a3a3a3  !important; }
-              .prose a { font-weight: 600 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
+              .prose a { font-weight: 400 !important; color: #000000 !important; text-decoration: underline !important; text-decoration-color: #d4d4d8 !important; text-underline-offset: 2px !important; transition: all 0.2s ease-in-out; }
               .dark .prose a { color: #e5e5e5 !important; text-decoration-color: #3f3f46 !important; }
               .prose a:hover { text-decoration-color: #171717 !important; }
               .dark .prose a:hover { text-decoration-color: #e5e5e5 !important; }
