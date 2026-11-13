@@ -6,9 +6,15 @@ import { formatGithubLinks } from "@/lib/github-link-formatter";
 
 interface ProjectCardProps {
   project: Project;
+  dataAnimate?: boolean;
+  staggerIndex?: number;
 }
 
-export default function ProjectCard({ project }: ProjectCardProps) {
+const ProjectCard = React.memo(function ProjectCard({
+  project,
+  dataAnimate,
+  staggerIndex,
+}: ProjectCardProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,6 +33,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           muted
           loop
           playsInline
+          preload="auto"
           className="w-full h-auto max-h-[400px] object-cover bg-black"
         />
       );
@@ -72,7 +79,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     if (project.thumbnail_url) {
       return (
         <img
-          loading="lazy"
           src={project.thumbnail_url}
           alt={project.title}
           className="w-full h-auto max-h-[400px] object-cover"
@@ -94,25 +100,32 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       project.description.trim() !== "<p></p>"
   );
 
+  const destinationUrl = project.repository_link || project.live_demo_link;
+
   return (
     <article
-      className="project-card-item w-full bg-white dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden cursor-pointer relative hover:z-20 hover:scale-[1.01] transition-transform duration-300 ease-out flex flex-col justify-between shadow-xs"
-      style={{ opacity: 0, visibility: "hidden" }}
+      data-animate={dataAnimate ? true : undefined}
+      style={
+        dataAnimate && typeof staggerIndex === "number"
+          ? ({ "--stagger": staggerIndex } as React.CSSProperties)
+          : undefined
+      }
+      className="project-card-item w-full bg-white dark:bg-neutral-900/60 border border-neutral-200/80 dark:border-neutral-800/80 rounded-xl overflow-hidden cursor-pointer relative hover:z-20 hover:scale-[1.01] transition-transform duration-300 ease-out flex flex-col justify-between shadow-xs"
     >
       {/* Native Overlay Anchor so browser displays destination URL preview at bottom-left */}
-      {project.repository_link && (
+      {destinationUrl && (
         <a
-          href={project.repository_link}
+          href={destinationUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`Open ${project.title} repository`}
+          aria-label={`Open ${project.title}`}
           className="absolute inset-0 z-10"
         />
       )}
 
       {/* Top Media */}
       {hasMedia && (
-        <div className="w-full bg-neutral-50 dark:bg-neutral-900/40 border-b border-neutral-200 dark:border-neutral-800 overflow-hidden">
+        <div className="w-full bg-neutral-50 dark:bg-neutral-900/40 border-b border-neutral-200/80 dark:border-neutral-800/80 overflow-hidden">
           {renderMedia()}
         </div>
       )}
@@ -120,7 +133,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       {/* Card Body */}
       <div className="p-5 md:p-6 flex flex-col flex-grow justify-between gap-4">
         <div className="flex flex-col gap-2.5">
-          <h2 className="text-xl font-bold tracking-tight text-black dark:text-white leading-snug">
+          <h2 className="text-lg md:text-xl font-medium tracking-tight text-black dark:text-white leading-snug">
             {project.title}
           </h2>
 
@@ -135,4 +148,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       </div>
     </article>
   );
-}
+});
+
+export default ProjectCard;

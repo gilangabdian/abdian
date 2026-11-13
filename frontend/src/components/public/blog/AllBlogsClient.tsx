@@ -63,6 +63,26 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
     ).result;
   }, [blogs]);
 
+  const footerStagger = useMemo(() => {
+    if (blogs.length === 0) return 3;
+    let maxStagger = 2;
+    groupedBlogs.forEach((group) => {
+      const lastItemStagger = group.startIndex + 2 + group.blogs.length;
+      if (lastItemStagger > maxStagger) {
+        maxStagger = lastItemStagger;
+      }
+    });
+    return maxStagger + 1;
+  }, [blogs.length, groupedBlogs]);
+
+  useEffect(() => {
+    const footerEl = document.getElementById("public-footer");
+    if (footerEl) {
+      footerEl.setAttribute("data-animate", "true");
+      (footerEl as HTMLElement).style.setProperty("--stagger", String(footerStagger));
+    }
+  }, [footerStagger]);
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const month = date.toLocaleString("en-US", { month: "short" });

@@ -37,7 +37,7 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
       ? [{ name: "About", href: "/about", icon: "mdi:card-account-details-outline" }]
       : []),
     { name: "Blog", href: "/blogs", icon: "material-symbols-light:post-outline" },
-    { name: "Notes", href: "/notes", icon: "mdi:note-outline" },
+    // { name: "Notes", href: "/notes", icon: "mdi:note-outline" },
     { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
     ...(profile?.about?.is_certificates_page_active !== false
       ? [{ name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" }]
