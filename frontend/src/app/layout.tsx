@@ -4,6 +4,7 @@ import "highlight.js/styles/night-owl.css";
 import Provider from "./provider";
 import Script from "next/script";
 import { Inter } from "next/font/google";
+import { SITE_URL, siteConfig } from "@/config/site";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap", preload: false });
 export const metadata: Metadata = {
@@ -14,30 +15,24 @@ export const metadata: Metadata = {
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml", sizes: "any" }],
   },
-  description:
-    "Hello World from Gilang Abdian. He is a software engineer who loves to experiment. In his free time, he enjoys contributing to open-source libraries.",
-  metadataBase: new URL("https://abdian.vercel.app"),
-  keywords:
-    "Gilang Abdian, Software Engineer, Gilang, Abdian, gilangabdian, gilang, abdian, personal website, Personal Website, gilang abdian, software engineer, Portfolio",
-  authors: [{ name: "Gilang Abdian" }],
+  description: siteConfig.description,
+  metadataBase: new URL(SITE_URL),
+  keywords: siteConfig.keywords,
+  authors: siteConfig.authors,
   openGraph: {
     type: "website",
-    url: "https://abdian.vercel.app/",
-    title: "Gilang Abdian",
-    description:
-      "Hello World from Gilang Abdian. He is a software engineer who loves to experiment. In his free time, he enjoys contributing to open-source libraries.",
-    images: ["https://abdian.vercel.app/hide-tokyo-ghoul.png"],
+    url: `${SITE_URL}/`,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gilang Abdian",
-    description:
-      "Hello World from Gilang Abdian. He is a software engineer who loves to experiment. In his free time, he enjoys contributing to open-source libraries.",
-    images: ["https://abdian.vercel.app/hide-tokyo-ghoul.png"],
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
   },
-  verification: {
-    google: "FnSR5V_A9QHTGt_cKUdziQtpTBvFqG4_aBz5-m-iHGc",
-  },
+  verification: siteConfig.verification,
 };
 
 export default function RootLayout({
@@ -48,12 +43,12 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: "Gilang Abdian",
+    name: siteConfig.name,
     alternateName: ["Gilang", "Abdian", "gilangabdian", "abdian", "gilang"],
-    url: "https://abdian.vercel.app/",
-    image: "https://abdian.vercel.app/hide-tokyo-ghoul.png",
+    url: `${SITE_URL}/`,
+    image: siteConfig.ogImage,
     jobTitle: "Software Engineer",
-    sameAs: ["https://github.com/gilangabdian"],
+    sameAs: [siteConfig.links.github],
   };
 
   return (

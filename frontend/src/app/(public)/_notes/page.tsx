@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Script from "next/script";
 import { getAllBlogs } from "@/lib/api/blog";
 import NotesClient from "@/components/public/notes/NotesClient";
+import { SITE_URL } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Notes",
@@ -16,7 +17,7 @@ export default async function NotesPage() {
     "@type": "Blog",
     name: "Notes",
     description: "A collection of random thoughts, snippets, and learnings.",
-    url: "https://abdian.vercel.app/notes",
+    url: `${SITE_URL}/notes`,
     blogPost: notes.map((note) => {
       const seoTitle = note.title_en || note.title;
       const seoContent = note.content_en || note.content;
@@ -25,7 +26,7 @@ export default async function NotesPage() {
         "@type": "BlogPosting",
         headline: seoTitle,
         description: note.excerpt || (seoContent || "").substring(0, 150).replace(/<[^>]*>?/gm, ""),
-        url: `https://abdian.vercel.app/blogs/${note.slug}`,
+        url: `${SITE_URL}/blogs/${note.slug}`,
         datePublished: note.published_at || note.created_at,
         dateModified: note.updated_at || note.published_at || note.created_at,
       };

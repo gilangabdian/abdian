@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { getBlogBySlug } from "@/lib/api/blog";
 import { notFound } from "next/navigation";
 import SingleBlogClient from "@/components/public/blog/SingleBlogClient";
+import { SITE_URL, siteConfig } from "@/config/site";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -26,18 +27,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: seoTitle,
     description: blog.excerpt || plainTextContent,
     alternates: {
-      canonical: `https://abdian.vercel.app/blogs/${blog.slug}`,
+      canonical: `${SITE_URL}/blogs/${blog.slug}`,
     },
     openGraph: {
       title: seoTitle,
       description: blog.excerpt || plainTextContent,
-      url: `https://abdian.vercel.app/blogs/${blog.slug}`,
+      url: `${SITE_URL}/blogs/${blog.slug}`,
       type: "article",
       publishedTime: blog.published_at || blog.created_at,
       authors: ["Gilang Abdian"],
       images: [
         {
-          url: blog.cover_image_url || "https://abdian.vercel.app/hide-tokyo-ghoul.png",
+          url: blog.cover_image_url || siteConfig.ogImage,
           alt: blog.title,
         },
       ],
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title: seoTitle,
       description: blog.excerpt || plainTextContent,
-      images: [blog.cover_image_url || "https://abdian.vercel.app/hide-tokyo-ghoul.png"],
+      images: [blog.cover_image_url || siteConfig.ogImage],
     },
   };
 }
@@ -74,25 +75,25 @@ export default async function SingleBlogPage({ params }: Props) {
     "@type": "BlogPosting",
     headline: seoTitle,
     description: blog.excerpt || (seoContent || "").replace(/<[^>]*>?/gm, "").substring(0, 160),
-    image: blog.cover_image_url || "https://abdian.vercel.app/hide-tokyo-ghoul.png",
+    image: blog.cover_image_url || siteConfig.ogImage,
     author: {
       "@type": "Person",
       name: "Gilang Abdian",
-      url: "https://abdian.vercel.app/",
+      url: `${SITE_URL}/`,
     },
     publisher: {
       "@type": "Person",
       name: "Gilang Abdian",
       logo: {
         "@type": "ImageObject",
-        url: "https://abdian.vercel.app/icon.svg",
+        url: siteConfig.icon,
       },
     },
     datePublished: blog.published_at || blog.created_at,
     dateModified: blog.updated_at || blog.published_at || blog.created_at,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://abdian.vercel.app/blogs/${blog.slug}`,
+      "@id": `${SITE_URL}/blogs/${blog.slug}`,
     },
     articleBody: (seoContent || "").replace(/<[^>]*>?/gm, ""), // Strip HTML
   };

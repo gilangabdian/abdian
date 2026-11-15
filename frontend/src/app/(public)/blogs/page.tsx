@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Script from "next/script";
 import { getAllBlogs } from "@/lib/api/blog";
 import AllBlogsClient from "@/components/public/blog/AllBlogsClient";
+import { SITE_URL } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -16,12 +17,12 @@ export default async function BlogPage() {
     "@type": "Blog",
     name: "Blog",
     description: "A poorly writer. Trying to write about something that interest me",
-    url: "https://abdian.vercel.app/blogs",
+    url: `${SITE_URL}/blogs`,
     blogPost: blogs.map((blog) => ({
       "@type": "BlogPosting",
       headline: blog.title,
       description: blog.excerpt || (blog.content || "").substring(0, 150).replace(/<[^>]*>?/gm, ""),
-      url: `https://abdian.vercel.app/blogs/${blog.slug}`,
+      url: `${SITE_URL}/blogs/${blog.slug}`,
       datePublished: blog.published_at || blog.created_at,
       dateModified: blog.updated_at || blog.published_at || blog.created_at,
     })),

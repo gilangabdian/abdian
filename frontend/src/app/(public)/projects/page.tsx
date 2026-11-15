@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Script from "next/script";
 import { getAllProjects } from "@/lib/api/project";
 import AllProjectsClient from "@/components/public/project/AllProjectsClient";
+import { SITE_URL } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "All Projects",
@@ -16,13 +17,13 @@ export default async function ProjectsPage() {
     "@type": "CollectionPage",
     name: "All Projects",
     description: "Projects that I created.",
-    url: "https://abdian.vercel.app/projects",
+    url: `${SITE_URL}/projects`,
     mainEntity: {
       "@type": "ItemList",
       itemListElement: projects.map((project, index) => ({
         "@type": "ListItem",
         position: index + 1,
-        url: `https://abdian.vercel.app/projects#${project.slug}`,
+        url: `${SITE_URL}/projects#${project.slug}`,
         name: project.title,
         description: project.short_description || project.title,
       })),

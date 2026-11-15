@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Script from "next/script";
 import { getAllArtworks } from "@/lib/api/artwork";
 import AllArtworksClient from "@/components/public/artwork/AllArtworksClient";
+import { SITE_URL } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Artworks",
@@ -16,7 +17,7 @@ export default async function ArtworksPage() {
     "@type": "CollectionPage",
     name: "Artworks",
     description: "My side hobby.",
-    url: "https://abdian.vercel.app/artworks",
+    url: `${SITE_URL}/artworks`,
     mainEntity: {
       "@type": "ImageGallery",
       image: artworks.map((artwork) => ({

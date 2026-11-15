@@ -3,13 +3,13 @@ import Script from "next/script";
 import { getProfile } from "@/lib/api/profile";
 import { getAboutPage } from "@/lib/api/about";
 import AboutClient from "@/components/public/about/AboutClient";
+import { notFound } from "next/navigation";
+import { SITE_URL, siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "About",
   description: "About Gilang Abdian.",
 };
-
-import { notFound } from "next/navigation";
 
 export default async function AboutPage() {
   const profile = await getProfile();
@@ -38,11 +38,11 @@ export default async function AboutPage() {
     dateModified: aboutUpdatedAt ? new Date(aboutUpdatedAt).toISOString() : undefined,
     mainEntity: {
       "@type": "Person",
-      name: profile?.about?.name || "Gilang Abdian",
+      name: profile?.about?.name || siteConfig.name,
       jobTitle: profile?.about?.job_title || "Software Engineer",
-      description: aboutContent ? aboutContent.substring(0, 150).replace(/<[^>]*>?/gm, "") : "About Gilang Abdian",
-      image: "https://abdian.vercel.app/hide-tokyo-ghoul.png",
-      url: "https://abdian.vercel.app/about",
+      description: aboutContent ? aboutContent.substring(0, 150).replace(/<[^>]*>?/gm, "") : `About ${siteConfig.name}`,
+      image: siteConfig.ogImage,
+      url: `${SITE_URL}/about`,
     },
   };
 

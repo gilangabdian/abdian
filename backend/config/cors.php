@@ -19,11 +19,26 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        'http://localhost:5173', //local
-        'http://localhost:3000', //nextjs test
-        'https://abdian.vercel.app', //production
-    ],
+    'allowed_origins' => (function () {
+        $envOrigins = env('CORS_ALLOWED_ORIGINS');
+        if (!empty($envOrigins)) {
+            return array_values(array_filter(array_map('trim', explode(',', $envOrigins))));
+        }
+
+        $frontendUrl = env('FRONTEND_URL');
+
+        $defaults = [
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            'https://abdian.my.id',
+        ];
+
+        if (!empty($frontendUrl)) {
+            $defaults[] = rtrim($frontendUrl, '/');
+        }
+
+        return array_values(array_unique(array_filter($defaults)));
+    })(),
 
     'allowed_origins_patterns' => [],
 

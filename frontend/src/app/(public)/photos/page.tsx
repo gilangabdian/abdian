@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Script from "next/script";
 import { getAllPhotos } from "@/lib/api/photo";
 import AllPhotosClient from "@/components/public/photo/AllPhotosClient";
+import { SITE_URL } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Photos",
@@ -16,7 +17,7 @@ export default async function PhotosPage() {
     "@type": "CollectionPage",
     name: "Photos",
     description: "My personal photos collection.",
-    url: "https://abdian.vercel.app/photos",
+    url: `${SITE_URL}/photos`,
     mainEntity: {
       "@type": "ImageGallery",
       image: photos.map((photo) => ({

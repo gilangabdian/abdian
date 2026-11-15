@@ -196,7 +196,7 @@ class BlogApiTest extends TestCase
             '*/api/revalidate' => Http::response(['revalidated' => true], 200),
         ]);
 
-        config(['services.nextjs.base_url' => 'http://localhost:5173']);
+        config(['services.nextjs.base_url' => 'http://localhost:3000']);
         config(['services.nextjs.revalidate_secret' => 'test-secret']);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
@@ -221,7 +221,7 @@ class BlogApiTest extends TestCase
             '*/api/revalidate' => Http::response(['revalidated' => true], 200),
         ]);
 
-        config(['services.nextjs.base_url' => 'http://localhost:5173']);
+        config(['services.nextjs.base_url' => 'http://localhost:3000']);
         config(['services.nextjs.revalidate_secret' => 'test-secret']);
 
         $blog = Blog::create(['title' => 'Original', 'content' => 'Original Content']);
@@ -246,7 +246,7 @@ class BlogApiTest extends TestCase
             '*/api/revalidate' => Http::response(['revalidated' => true], 200),
         ]);
 
-        config(['services.nextjs.base_url' => 'http://localhost:5173']);
+        config(['services.nextjs.base_url' => 'http://localhost:3000']);
         config(['services.nextjs.revalidate_secret' => 'test-secret']);
 
         $blog = Blog::create(['title' => 'To Delete Reval', 'content' => 'Content']);

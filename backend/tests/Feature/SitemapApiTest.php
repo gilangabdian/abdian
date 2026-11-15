@@ -14,6 +14,8 @@ class SitemapApiTest extends TestCase
 
     public function test_sitemap_returns_valid_xml_with_public_urls()
     {
+        config(['app.frontend_url' => 'https://abdian.my.id']);
+
         // Create published and draft items
         $publishedProject = Project::create([
             'title' => 'Published Project',
@@ -51,15 +53,26 @@ class SitemapApiTest extends TestCase
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'text/xml; charset=UTF-8');
 
-        // Should contain static routes
-        $response->assertSee('<loc>https://abdian.vercel.app/</loc>', false);
-        $response->assertSee('<loc>https://abdian.vercel.app/blogs</loc>', false);
+        // Should contain static routes with https://abdian.my.id
+        $response->assertSee('<loc>https://abdian.my.id/</loc>', false);
+        $response->assertSee('<loc>https://abdian.my.id/blogs</loc>', false);
 
         // Should contain published items
-        $response->assertSee('<loc>https://abdian.vercel.app/projects/' . $publishedProject->id . '</loc>', false);
-        $response->assertSee('<loc>https://abdian.vercel.app/blogs/' . $publishedBlog->slug . '</loc>', false);
+        $response->assertSee('<loc>https://abdian.my.id/projects/' . $publishedProject->id . '</loc>', false);
+        $response->assertSee('<loc>https://abdian.my.id/blogs/' . $publishedBlog->slug . '</loc>', false);
 
         // Should NOT contain draft items
         $response->assertDontSee($draftBlog->slug);
+    }
+
+    public function test_sitemap_uses_configured_frontend_url()
+    {
+        config(['app.frontend_url' => 'http://localhost:3000']);
+
+        $response = $this->get('/api/sitemap');
+
+        $response->assertStatus(200);
+        $response->assertSee('<loc>http://localhost:3000/</loc>', false);
+        $response->assertSee('<loc>http://localhost:3000/blogs</loc>', false);
     }
 }
