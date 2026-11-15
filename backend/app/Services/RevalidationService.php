@@ -24,6 +24,8 @@ class RevalidationService
             return false;
         }
 
+        $baseUrl = rtrim($baseUrl, '/');
+
         try {
             $response = Http::timeout(3)->post("{$baseUrl}/api/revalidate", [
                 'tag' => $tag,

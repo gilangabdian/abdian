@@ -45,7 +45,7 @@ return [
     ],
 
     'nextjs' => [
-        'base_url' => env('NEXTJS_BASE_URL', 'http://localhost:3000'),
+        'base_url' => rtrim(env('NEXTJS_BASE_URL', env('FRONTEND_URL', 'http://localhost:3000')), '/'),
         'revalidate_secret' => env('NEXTJS_REVALIDATION_SECRET'),
     ],
 
