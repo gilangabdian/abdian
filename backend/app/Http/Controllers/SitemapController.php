@@ -28,7 +28,7 @@ class SitemapController extends Controller
             '/contacts' => '0.6',
         ];
 
-        $baseUrl = rtrim(config('app.frontend_url', env('FRONTEND_URL', 'https://abdian.my.id')), '/');
+        $baseUrl = rtrim(config('app.frontend_url', 'https://abdian.my.id'), '/');
 
         foreach ($staticRoutes as $route => $priority) {
             $xml .= '<url>';
