@@ -70,25 +70,25 @@ export default function SimpleProjectPage() {
     {
       id: 11,
       name: "Color generator",
-      url: "https://abdian-cv.vercel.app/proyek15-colorgenerator/index.html",
+      url: "https://simple.abdian.my.id/proyek15-colorgenerator/index.html",
       desc: "generate color and copy it",
     },
     {
       id: 12,
       name: "Live score counter",
-      url: "https://abdian-cv.vercel.app/proyek9-scoreboard/index.html",
+      url: "https://simple.abdian.my.id/proyek9-scoreboard/index.html",
       desc: "calculate the match score",
     },
     {
       id: 13,
       name: "Kuizia",
-      url: "https://abdian-cv.vercel.app/proyek8-kuizia/",
+      url: "https://simple.abdian.my.id/proyek8-kuizia/",
       desc: "play educational quizzes in Indonesian",
     },
     {
       id: 14,
       name: "Go check",
-      url: "https://abdian-cv.vercel.app/proyek16-gocheck/index.html",
+      url: "https://simple.abdian.my.id/proyek16-gocheck/index.html",
       desc: "simple app web to save your note",
     },
   ];
