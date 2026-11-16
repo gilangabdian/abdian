@@ -70,25 +70,25 @@ export default function SimpleProjectPage() {
     {
       id: 11,
       name: "Color generator",
-      url: "https://simple.abdian.my.id/proyek15-colorgenerator/index.html",
+      url: "https://day-one.abdian.my.id/proyek15-colorgenerator/index.html",
       desc: "generate color and copy it",
     },
     {
       id: 12,
       name: "Live score counter",
-      url: "https://simple.abdian.my.id/proyek9-scoreboard/index.html",
+      url: "https://day-one.abdian.my.id/proyek9-scoreboard/index.html",
       desc: "calculate the match score",
     },
     {
       id: 13,
       name: "Kuizia",
-      url: "https://simple.abdian.my.id/proyek8-kuizia/",
+      url: "https://day-one.abdian.my.id/proyek8-kuizia/",
       desc: "play educational quizzes in Indonesian",
     },
     {
       id: 14,
       name: "Go check",
-      url: "https://simple.abdian.my.id/proyek16-gocheck/index.html",
+      url: "https://day-one.abdian.my.id/proyek16-gocheck/index.html",
       desc: "simple app web to save your note",
     },
   ];
