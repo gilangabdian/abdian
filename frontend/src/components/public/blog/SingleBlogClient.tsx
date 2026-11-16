@@ -147,7 +147,7 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
   };
 
   return (
-    <div className="pt-20 pb-20 min-h-screen bg-white dark:bg-black text-neutral-800 dark:text-neutral-300">
+    <div className="flex-grow w-full flex justify-center px-6 -mt-8 md:-mt-2 pt-16 md:pt-24 pb-8 md:pb-12 bg-white dark:bg-black text-neutral-800 dark:text-neutral-300">
       <style>{`
       div.callout {
           position: relative !important;
@@ -242,8 +242,8 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
         onScrollToHeading={scrollToHeading}
       />
 
-      <div className="max-w-[560px] mx-auto px-6 md:px-8">
-        <article ref={articleRef} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="relative mt-8">
+      <div className="w-full max-w-[560px] mx-auto">
+        <article ref={articleRef} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} className="relative mt-4 md:mt-10">
           {/* Header */}
           <header className="mb-12">
             <h1 className="text-4xl font-medium leading-none mb-3 text-black dark:text-white">
