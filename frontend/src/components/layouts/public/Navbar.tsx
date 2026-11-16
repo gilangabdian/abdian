@@ -22,6 +22,17 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
     return pathname.startsWith(href);
   };
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (pathname === href) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.nativeEvent) {
+        e.nativeEvent.stopImmediatePropagation?.();
+        e.nativeEvent.stopPropagation?.();
+      }
+    }
+  };
+
   // Desktop nav items — text only
   const textLinks = [
     ...(profile?.about?.is_about_page_active !== false ? [{ name: "About", href: "/about" }] : []),
@@ -93,7 +104,7 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
   const mobileNavbar = (
     <div className="absolute top-2 left-0 right-0 z-50 md:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-black">
       {/* Kiri: SVG Logo */}
-      <Link href="/" title="Gilang Abdian">
+      <Link href="/" title="Gilang Abdian" onClick={(e) => handleNavClick(e, "/")}>
         {renderLogoSvg("mask0_mobile", 30, 30)}
       </Link>
 
@@ -106,6 +117,7 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
               key={`mobile-${link.name}`}
               href={link.href}
               title={link.name}
+              onClick={(e) => handleNavClick(e, link.href)}
               {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className={`transition-colors duration-200 ${isActive(link.href)
                 ? "text-black dark:text-white"
@@ -138,7 +150,12 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
       {/* ═══════════════ DESKTOP & TABLET NAVBAR (md+) ═══════════════ */}
 
       {/* KIRI - SVG Logo (fixed) */}
-      <Link href="/" className="fixed top-5 left-6 z-50 hidden md:block" title="Gilang Abdian">
+      <Link
+        href="/"
+        className="fixed top-5 left-6 z-50 hidden md:block"
+        title="Gilang Abdian"
+        onClick={(e) => handleNavClick(e, "/")}
+      >
         {renderLogoSvg("mask0_desk", 40, 40)}
       </Link>
 
@@ -149,6 +166,7 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
             key={link.name}
             href={link.href}
             title={link.name}
+            onClick={(e) => handleNavClick(e, link.href)}
             className={`text-md tracking-tight transition-colors duration-200 ${isActive(link.href)
               ? "text-black dark:text-white"
               : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
@@ -163,6 +181,7 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
               key={link.name}
               href={link.href}
               title={link.name}
+              onClick={(e) => handleNavClick(e, link.href)}
               {...(isGithub ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className={`transition-colors duration-200 ${isActive(link.href)
                 ? "text-black dark:text-white"
