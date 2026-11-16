@@ -91,7 +91,7 @@ export default function AllBlogsClient({ initialBlogs }: AllBlogsClientProps) {
   };
 
   return (
-    <section className="min-h-screen flex justify-center px-6 font-sans text-black dark:text-white -mt-8 md:-mt-2 pt-16 md:pt-24 pb-20">
+    <section className="flex-grow flex justify-center px-6 font-sans text-black dark:text-white -mt-8 md:-mt-2 pt-16 md:pt-24 pb-8 md:pb-12">
       <div className="container max-w-[560px] w-full flex flex-col mx-auto mt-4 md:mt-10">
         {/* Header - Ketinggian vertikal persis sama dengan nama di Home (/) */}
         <header className="mb-8 md:mb-12 flex items-center justify-between">

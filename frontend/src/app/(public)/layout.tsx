@@ -20,8 +20,8 @@ export default async function PublicLayout({
         <Navbar profile={profile} />
       </React.Suspense>
       <div className="public-theme flex flex-col min-h-screen bg-white dark:bg-black text-black dark:text-white w-full pt-14 lg:pt-0">
-        <main className="flex-grow relative ">{children}</main>
-        <div className="relative z-10">
+        <main className="flex-grow flex flex-col relative ">{children}</main>
+        <div className="relative z-10 overflow-hidden">
           <Footer />
         </div>
         <ScrollToTop />
