@@ -16,6 +16,9 @@ export const siteConfig = {
     github: "https://github.com/gilangabdian",
   },
   verification: {
-    google: "imoTslMebB5ymnOOV5_kyPf4iP_tG2fQWgZyNZDWocM",
+    google: [
+      "imoTslMebB5ymnOOV5_kyPf4iP_tG2fQWgZyNZDWocM",  // abdian.my.id
+      "FnSR5V_A9QHTGt_cKUdziQtpTBvFqG4_aBz5-m-iHGc", // abdian.vercel.app (selama Change of Address aktif)
+    ]
   },
 };
