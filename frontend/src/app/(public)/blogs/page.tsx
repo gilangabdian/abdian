@@ -20,8 +20,8 @@ export default async function BlogPage() {
     url: `${SITE_URL}/blogs`,
     blogPost: blogs.map((blog) => ({
       "@type": "BlogPosting",
-      headline: blog.title,
-      description: blog.excerpt || (blog.content || "").substring(0, 150).replace(/<[^>]*>?/gm, ""),
+      headline: blog.title_en || blog.title,
+      description: blog.excerpt || (blog.content_en || blog.content || "").substring(0, 150).replace(/<[^>]*>?/gm, ""),
       url: `${SITE_URL}/blogs/${blog.slug}`,
       datePublished: blog.published_at || blog.created_at,
       dateModified: blog.updated_at || blog.published_at || blog.created_at,
