@@ -24,6 +24,6 @@ export const siteConfig = {
     github: "https://github.com/gilangabdian",
   },
   verification: {
-    google: "FnSR5V_A9QHTGt_cKUdziQtpTBvFqG4_aBz5-m-iHGc",
+    google: "imoTslMebB5ymnOOV5_kyPf4iP_tG2fQWgZyNZDWocM",
   },
 };
