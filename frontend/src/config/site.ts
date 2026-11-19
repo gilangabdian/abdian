@@ -1,14 +1,6 @@
-const getSiteUrl = (): string => {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL;
-  }
-  if (process.env.NODE_ENV === "production") {
-    return "https://abdian.my.id";
-  }
-  return "http://localhost:3000";
-};
-
-export const SITE_URL = getSiteUrl().replace(/\/$/, "");
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://abdian.my.id"
+).replace(/\/$/, "");
 
 export const siteConfig = {
   name: "Gilang Abdian",
