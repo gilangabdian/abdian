@@ -51,6 +51,8 @@ class WebhookTest extends TestCase
         $this->assertIsArray($routes);
         $this->assertContains('/', $routes);
         $this->assertContains('/about', $routes);
+        $this->assertContains('/projects/day-one', $routes);
+        $this->assertNotContains('/contacts', $routes);
         $this->assertTrue(collect($routes)->contains(fn($url) => str_contains($url, '/blogs/')));
     }
 }

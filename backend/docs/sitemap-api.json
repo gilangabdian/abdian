@@ -14,7 +14,7 @@
     "/sitemap": {
       "get": {
         "summary": "Get dynamic sitemap.xml",
-        "description": "Returns a dynamically generated XML sitemap containing all published projects and blogs, as well as static routes.",
+        "description": "Returns a dynamically generated XML sitemap containing active static routes (including /projects/day-one, with /about and /certificates dynamically included based on Profile visibility flags) and published blogs. Excludes dead routes (/projects/{id}, /contacts) and draft blogs.",
         "tags": ["Sitemap"],
         "responses": {
           "200": {
@@ -23,7 +23,7 @@
               "text/xml": {
                 "schema": {
                   "type": "string",
-                  "example": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <url>\n    <loc>https://abdian.my.id/</loc>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n</urlset>"
+                  "example": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <url>\n    <loc>https://abdian.my.id/</loc>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>https://abdian.my.id/projects</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n  <url>\n    <loc>https://abdian.my.id/projects/day-one</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n  <url>\n    <loc>https://abdian.my.id/blogs</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n  <url>\n    <loc>https://abdian.my.id/blogs/my-first-blog</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n</urlset>"
                 }
               }
             }
@@ -33,8 +33,8 @@
     },
     "/prerender-routes": {
       "get": {
-        "summary": "Get all frontend routes for prerendering",
-        "description": "Returns a JSON array of all public routes (static and dynamic) to be used by Vite/Puppeteer during the build process for prerendering SSG pages.",
+        "summary": "Get all active frontend routes for prerendering",
+        "description": "Returns a JSON array of all active public routes (active static routes including /projects/day-one, conditionally /about and /certificates based on Profile visibility flags, and published blog slugs).",
         "tags": ["Sitemap"],
         "responses": {
           "200": {
@@ -49,8 +49,11 @@
                 },
                 "example": [
                   "/",
-                  "/projects/1",
-                  "/projects/2",
+                  "/projects",
+                  "/projects/day-one",
+                  "/blogs",
+                  "/artworks",
+                  "/photos",
                   "/blogs/my-first-blog"
                 ]
               }
