@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\System;
 
 use App\Services\RevalidationService;
 use Illuminate\Support\Facades\Http;

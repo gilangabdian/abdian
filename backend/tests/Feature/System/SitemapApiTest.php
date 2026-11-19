@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\System;
 
 use App\Models\Blog;
 use App\Models\Profile;

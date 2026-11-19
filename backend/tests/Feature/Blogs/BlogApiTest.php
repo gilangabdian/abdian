@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Blogs;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -276,8 +276,7 @@ class BlogApiTest extends TestCase
         $response->assertStatus(201);
     }
 
-    /** @test */
-    public function public_blog_list_response_has_expected_columns()
+    public function test_public_blog_list_response_has_expected_columns()
     {
         // Create a published blog with all fields populated
         Blog::create([

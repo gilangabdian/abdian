@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Media;
 
 use App\Models\Certificate;
 use App\Models\Project;
@@ -22,10 +22,7 @@ class UploadTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    /**
-     * @test
-     */
-    public function it_can_upload_project_with_thumbnail()
+    public function test_it_can_upload_project_with_thumbnail()
     {
         // Mock disk yang digunakan (sesuai FILESYSTEM_DISK)
         Storage::fake(config('filesystems.default'));
@@ -56,10 +53,7 @@ class UploadTest extends TestCase
         $this->assertStringNotContainsString('localhost', $project->thumbnail_url);
     }
 
-    /**
-     * @test
-     */
-    public function it_can_upload_certificate_with_image()
+    public function test_it_can_upload_certificate_with_image()
     {
         Storage::fake(config('filesystems.default'));
 

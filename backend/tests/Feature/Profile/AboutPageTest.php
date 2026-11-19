@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Profile;
 
 use App\Models\AboutPage;
 use App\Models\User;
@@ -11,8 +11,7 @@ class AboutPageTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function guest_can_view_about_page()
+    public function test_guest_can_view_about_page()
     {
         // Create sample content
         AboutPage::create([
@@ -32,8 +31,7 @@ class AboutPageTest extends TestCase
             ]);
     }
 
-    /** @test */
-    public function about_page_returns_null_when_not_set_yet()
+    public function test_about_page_returns_null_when_not_set_yet()
     {
         $response = $this->getJson('/api/about-page');
 
@@ -41,8 +39,7 @@ class AboutPageTest extends TestCase
         $this->assertNull($response->json('data'));
     }
 
-    /** @test */
-    public function admin_can_update_about_page_content()
+    public function test_admin_can_update_about_page_content()
     {
         $user = User::factory()->create();
 
@@ -61,8 +58,7 @@ class AboutPageTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function admin_can_set_content_to_empty()
+    public function test_admin_can_set_content_to_empty()
     {
         $user = User::factory()->create();
 
@@ -85,8 +81,7 @@ class AboutPageTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function guest_cannot_update_about_page()
+    public function test_guest_cannot_update_about_page()
     {
         $response = $this->putJson('/api/admin/about-page', [
             'content' => '<p>Hacked</p>',
@@ -95,8 +90,7 @@ class AboutPageTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function admin_can_update_with_long_html_content()
+    public function test_admin_can_update_with_long_html_content()
     {
         $user = User::factory()->create();
 
@@ -118,8 +112,7 @@ class AboutPageTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function about_page_response_structure_is_consistent()
+    public function test_about_page_response_structure_is_consistent()
     {
         $user = User::factory()->create();
 

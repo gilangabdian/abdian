@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Portfolio;
 
 use App\Models\Experience;
 use App\Models\User;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Media;
 
 use App\Models\Artwork;
 use App\Models\User;
