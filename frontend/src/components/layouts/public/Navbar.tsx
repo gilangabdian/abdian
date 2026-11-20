@@ -38,7 +38,7 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
     ...(profile?.about?.is_about_page_active !== false ? [{ name: "About", href: "/about" }] : []),
     { name: "Blog", href: "/blogs" },
     // { name: "Notes", href: "/notes" },
-    { name: "Projects", href: "/projects" },
+    ...(profile?.about?.is_projects_page_active !== false ? [{ name: "Projects", href: "/projects" }] : []),
     ...(profile?.about?.is_certificates_page_active !== false ? [{ name: "Certificates", href: "/certificates" }] : []),
   ];
 
@@ -49,7 +49,9 @@ export default function Navbar({ profile }: { profile?: Profile | null }) {
       : []),
     { name: "Blog", href: "/blogs", icon: "material-symbols-light:post-outline" },
     // { name: "Notes", href: "/notes", icon: "mdi:note-outline" },
-    { name: "Projects", href: "/projects", icon: "mdi:folder-outline" },
+    ...(profile?.about?.is_projects_page_active !== false
+      ? [{ name: "Projects", href: "/projects", icon: "mdi:folder-outline" }]
+      : []),
     ...(profile?.about?.is_certificates_page_active !== false
       ? [{ name: "Certificates", href: "/certificates", icon: "icon-park-outline:certificate" }]
       : []),

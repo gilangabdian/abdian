@@ -135,6 +135,7 @@ export interface ProfileAbout {
   show_tech_on_home?: boolean;
   is_about_page_active?: boolean;
   is_certificates_page_active?: boolean;
+  is_projects_page_active?: boolean;
   show_resume_button?: boolean;
   show_profile_picture?: boolean;
   created_at?: string;

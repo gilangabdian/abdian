@@ -129,6 +129,11 @@
                         "type": "boolean",
                         "example": true
                     },
+                    "is_projects_page_active": {
+                        "type": "boolean",
+                        "description": "Menentukan apakah halaman /projects dan /projects/day-one aktif (200) atau dinonaktifkan (404).",
+                        "example": true
+                    },
 
                     "show_resume_button": {
                         "type": "boolean",
@@ -239,6 +244,19 @@
                                     "cv": {
                                         "type": "string",
                                         "format": "binary"
+                                    },
+                                    "is_about_page_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "is_certificates_page_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "is_projects_page_active": {
+                                        "type": "boolean",
+                                        "description": "Aktif/nonaktifkan halaman /projects dan /projects/day-one.",
+                                        "example": true
                                     },
                                     "show_profile_picture": {
                                         "type": "boolean",

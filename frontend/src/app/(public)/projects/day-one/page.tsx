@@ -1,4 +1,7 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { getProfile } from '@/lib/api/profile';
+
 interface Project {
   id: number;
   name: string;
@@ -11,7 +14,13 @@ export const metadata: Metadata = {
   description: 'Projects day one'
 }
 
-export default function SimpleProjectPage() {
+export default async function SimpleProjectPage() {
+  const profile = await getProfile();
+
+  if (profile?.about?.is_projects_page_active === false) {
+    notFound();
+  }
+
   const projects: Project[] = [
     {
       id: 1,

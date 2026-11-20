@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import Script from "next/script";
+import { notFound } from "next/navigation";
+import { getProfile } from "@/lib/api/profile";
 import { getAllProjects } from "@/lib/api/project";
 import AllProjectsClient from "@/components/public/project/AllProjectsClient";
 import { SITE_URL } from "@/config/site";
@@ -10,6 +12,12 @@ export const metadata: Metadata = {
 };
 
 export default async function ProjectsPage() {
+  const profile = await getProfile();
+
+  if (profile?.about?.is_projects_page_active === false) {
+    notFound();
+  }
+
   const projects = await getAllProjects();
 
   const jsonLd = {

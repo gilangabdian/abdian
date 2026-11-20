@@ -14,7 +14,7 @@
     "/sitemap": {
       "get": {
         "summary": "Get dynamic sitemap.xml",
-        "description": "Returns a dynamically generated XML sitemap containing active static routes (including /projects/day-one, with /about and /certificates dynamically included based on Profile visibility flags) and published blogs. Excludes dead routes (/projects/{id}, /contacts) and draft blogs.",
+        "description": "Returns a dynamically generated XML sitemap containing active static routes (with /about, /certificates, and /projects + /projects/day-one dynamically included based on Profile visibility flags) and published blogs. Excludes dead routes (/projects/{id}, /contacts) and draft blogs.",
         "tags": ["Sitemap"],
         "responses": {
           "200": {
@@ -34,7 +34,7 @@
     "/prerender-routes": {
       "get": {
         "summary": "Get all active frontend routes for prerendering",
-        "description": "Returns a JSON array of all active public routes (active static routes including /projects/day-one, conditionally /about and /certificates based on Profile visibility flags, and published blog slugs).",
+        "description": "Returns a JSON array of all active public routes (core static routes, conditionally /about, /certificates, and /projects + /projects/day-one based on Profile visibility flags, plus published blog slugs).",
         "tags": ["Sitemap"],
         "responses": {
           "200": {

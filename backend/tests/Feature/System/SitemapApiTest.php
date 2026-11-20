@@ -20,6 +20,7 @@ class SitemapApiTest extends TestCase
             'about_description' => 'Test description',
             'is_about_page_active' => true,
             'is_certificates_page_active' => true,
+            'is_projects_page_active' => true,
         ], $overrides));
     }
 
@@ -152,6 +153,44 @@ class SitemapApiTest extends TestCase
         $responseAfterFlip->assertSee('<loc>https://abdian.my.id/certificates</loc>', false);
     }
 
+    public function test_sitemap_excludes_projects_and_day_one_when_projects_page_toggled_off()
+    {
+        config(['app.frontend_url' => 'https://abdian.my.id']);
+
+        $this->createProfile([
+            'is_projects_page_active' => false,
+        ]);
+
+        $response = $this->get('/api/sitemap');
+
+        $response->assertStatus(200);
+        $response->assertDontSee('<loc>https://abdian.my.id/projects</loc>', false);
+        $response->assertDontSee('<loc>https://abdian.my.id/projects/day-one</loc>', false);
+
+        // Other active public routes must remain present
+        $response->assertSee('<loc>https://abdian.my.id/</loc>', false);
+        $response->assertSee('<loc>https://abdian.my.id/about</loc>', false);
+        $response->assertSee('<loc>https://abdian.my.id/blogs</loc>', false);
+        $response->assertSee('<loc>https://abdian.my.id/certificates</loc>', false);
+        $response->assertSee('<loc>https://abdian.my.id/artworks</loc>', false);
+        $response->assertSee('<loc>https://abdian.my.id/photos</loc>', false);
+    }
+
+    public function test_sitemap_includes_projects_and_day_one_when_projects_page_toggled_on()
+    {
+        config(['app.frontend_url' => 'https://abdian.my.id']);
+
+        $this->createProfile([
+            'is_projects_page_active' => true,
+        ]);
+
+        $response = $this->get('/api/sitemap');
+
+        $response->assertStatus(200);
+        $response->assertSee('<loc>https://abdian.my.id/projects</loc>', false);
+        $response->assertSee('<loc>https://abdian.my.id/projects/day-one</loc>', false);
+    }
+
     public function test_sitemap_uses_configured_frontend_url()
     {
         config(['app.frontend_url' => 'https://custom.example.com/']);
@@ -200,6 +239,7 @@ class SitemapApiTest extends TestCase
         $profile = $this->createProfile([
             'is_about_page_active' => false,
             'is_certificates_page_active' => false,
+            'is_projects_page_active' => false,
         ]);
 
         // Toggles OFF
@@ -208,8 +248,6 @@ class SitemapApiTest extends TestCase
         $routesOff = $responseOff->json();
 
         $this->assertContains('/', $routesOff);
-        $this->assertContains('/projects', $routesOff);
-        $this->assertContains('/projects/day-one', $routesOff);
         $this->assertContains('/blogs', $routesOff);
         $this->assertContains('/artworks', $routesOff);
         $this->assertContains('/photos', $routesOff);
@@ -217,6 +255,8 @@ class SitemapApiTest extends TestCase
 
         $this->assertNotContains('/about', $routesOff);
         $this->assertNotContains('/certificates', $routesOff);
+        $this->assertNotContains('/projects', $routesOff);
+        $this->assertNotContains('/projects/day-one', $routesOff);
         $this->assertNotContains('/contacts', $routesOff);
         $this->assertNotContains('/projects/' . $project->id, $routesOff);
         $this->assertNotContains('/blogs/draft-post', $routesOff);
@@ -225,6 +265,7 @@ class SitemapApiTest extends TestCase
         $profile->update([
             'is_about_page_active' => true,
             'is_certificates_page_active' => true,
+            'is_projects_page_active' => true,
         ]);
 
         $responseOn = $this->get('/api/prerender-routes');
@@ -233,6 +274,7 @@ class SitemapApiTest extends TestCase
 
         $this->assertContains('/about', $routesOn);
         $this->assertContains('/certificates', $routesOn);
+        $this->assertContains('/projects', $routesOn);
         $this->assertContains('/projects/day-one', $routesOn);
         $this->assertNotContains('/contacts', $routesOn);
         $this->assertNotContains('/projects/' . $project->id, $routesOn);

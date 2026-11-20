@@ -13,6 +13,7 @@ class SitemapController extends Controller
         $profile = Profile::first();
         $isAboutActive = $profile ? ($profile->is_about_page_active !== false) : true;
         $isCertificatesActive = $profile ? ($profile->is_certificates_page_active !== false) : true;
+        $isProjectsActive = $profile ? ($profile->is_projects_page_active !== false) : true;
 
         $staticRoutes = [
             '/' => '1.0',
@@ -22,8 +23,11 @@ class SitemapController extends Controller
             $staticRoutes['/about'] = '0.8';
         }
 
-        $staticRoutes['/projects'] = '0.9';
-        $staticRoutes['/projects/day-one'] = '0.7';
+        if ($isProjectsActive) {
+            $staticRoutes['/projects'] = '0.9';
+            $staticRoutes['/projects/day-one'] = '0.7';
+        }
+
         $staticRoutes['/blogs'] = '0.9';
 
         if ($isCertificatesActive) {

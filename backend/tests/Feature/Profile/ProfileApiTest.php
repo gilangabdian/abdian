@@ -48,6 +48,7 @@ class ProfileApiTest extends TestCase
                 'show_tech_on_home' => false,
                 'is_about_page_active' => false,
                 'is_certificates_page_active' => false,
+                'is_projects_page_active' => false,
                 'show_resume_button' => false,
                 'show_profile_picture' => false,
             ]);
@@ -69,8 +70,61 @@ class ProfileApiTest extends TestCase
         $this->assertFalse($profile->show_tech_on_home);
         $this->assertFalse($profile->is_about_page_active);
         $this->assertFalse($profile->is_certificates_page_active);
+        $this->assertFalse($profile->is_projects_page_active);
         $this->assertFalse($profile->show_resume_button);
         $this->assertFalse($profile->show_profile_picture);
+    }
+
+    public function test_admin_can_toggle_projects_page_visibility_and_rejects_invalid_boolean()
+    {
+        $user = User::factory()->create();
+
+        // Default column value should be true
+        $profile = Profile::create([
+            'name' => 'Gilang',
+            'job_title' => 'Software Engineer',
+            'about_description' => 'About me',
+        ]);
+        $profile->refresh();
+        $this->assertTrue($profile->is_projects_page_active);
+
+        // Toggle OFF
+        $offResponse = $this->actingAs($user)->postJson('/api/profile', [
+            'name' => 'Gilang',
+            'job_title' => 'Software Engineer',
+            'about_description' => 'About me',
+            'is_projects_page_active' => false,
+        ]);
+        $offResponse->assertStatus(200)
+            ->assertJsonPath('data.is_projects_page_active', false);
+
+        $this->getJson('/api/profile')
+            ->assertStatus(200)
+            ->assertJsonPath('about.is_projects_page_active', false);
+
+        // Toggle ON
+        $onResponse = $this->actingAs($user)->postJson('/api/profile', [
+            'name' => 'Gilang',
+            'job_title' => 'Software Engineer',
+            'about_description' => 'About me',
+            'is_projects_page_active' => true,
+        ]);
+        $onResponse->assertStatus(200)
+            ->assertJsonPath('data.is_projects_page_active', true);
+
+        $this->getJson('/api/profile')
+            ->assertStatus(200)
+            ->assertJsonPath('about.is_projects_page_active', true);
+
+        // Reject invalid non-boolean value
+        $invalidResponse = $this->actingAs($user)->postJson('/api/profile', [
+            'name' => 'Gilang',
+            'job_title' => 'Software Engineer',
+            'about_description' => 'About me',
+            'is_projects_page_active' => 'not-a-boolean',
+        ]);
+        $invalidResponse->assertStatus(422)
+            ->assertJsonValidationErrors(['is_projects_page_active']);
     }
 
     public function test_admin_can_upload_photo_secondary_image_and_cv()
