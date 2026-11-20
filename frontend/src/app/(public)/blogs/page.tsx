@@ -6,7 +6,7 @@ import { SITE_URL } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "A poorly writer. Trying to write about something that interest me",
+  description: "Gilang Abdian's blogs",
 };
 
 export default async function BlogPage() {

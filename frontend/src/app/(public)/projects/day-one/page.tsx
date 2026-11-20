@@ -1,8 +1,14 @@
+import { Metadata } from 'next';
 interface Project {
   id: number;
   name: string;
   url: string;
   desc: string;
+}
+
+export const metadata: Metadata = {
+  title: 'Projects day one',
+  description: 'Projects day one'
 }
 
 export default function SimpleProjectPage() {

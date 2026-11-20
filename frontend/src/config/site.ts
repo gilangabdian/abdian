@@ -8,9 +8,9 @@ export const siteConfig = {
   ogImage: `${SITE_URL}/hide-tokyo-ghoul.png`,
   icon: `${SITE_URL}/icon.svg`,
   description:
-    "Hello World from Gilang Abdian. He is a software engineer who loves to experiment. In his free time, he enjoys contributing to open-source projects.",
+    "Hello, World!",
   keywords:
-    "Gilang Abdian, Software Engineer, Gilang, Abdian, gilangabdian, gilang, abdian, personal website, Personal Website, gilang abdian, software engineer, Portfolio",
+    "Gilang Abdian, Software Engineer, Gilang, Abdian, gilangabdian, gilang, abdian, personal website, Personal Website, gilang abdian, software engineer, open-source",
   authors: [{ name: "Gilang Abdian" }],
   links: {
     github: "https://github.com/gilangabdian",

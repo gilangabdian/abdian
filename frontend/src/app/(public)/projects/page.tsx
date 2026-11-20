@@ -6,7 +6,7 @@ import { SITE_URL } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "All Projects",
-  description: "Projects that I created.",
+  description: "Gilang Abdian's projects",
 };
 
 export default async function ProjectsPage() {

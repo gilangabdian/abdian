@@ -4,7 +4,7 @@ import AllCertificatesClient from "@/components/public/certificate/AllCertificat
 
 export const metadata: Metadata = {
   title: "Certificates",
-  description: "Certificates that I got about topics that interest me.",
+  description: "Certificates that I got.",
 };
 
 import { notFound } from "next/navigation";
