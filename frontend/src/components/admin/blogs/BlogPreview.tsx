@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import hljs from "highlight.js";
 import "highlight.js/styles/night-owl.css";
 import { formatGithubLinks } from "@/lib/github-link-formatter";
+import { formatInlineCode } from "@/lib/inline-code-utils";
 
 interface BlogPreviewProps {
   title: string;
@@ -28,7 +29,8 @@ export default function BlogPreview({
 }: BlogPreviewProps) {
   const displayTitle = activeTab === "id" ? title || "Untitled Blog" : title_en || "Untitled Blog (EN)";
 
-  const displayContent = activeTab === "id" ? content : content_en;
+  const rawDisplayContent = activeTab === "id" ? content : content_en;
+  const displayContent = formatInlineCode(rawDisplayContent);
 
   useEffect(() => {
     const container = document.querySelector(".prose") as HTMLElement;
@@ -100,6 +102,21 @@ export default function BlogPreview({
         .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
         .prose ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
         .prose li { margin-bottom: 0.5em; }
+        .prose code::before,
+        .prose code::after {
+          content: none !important;
+        }
+        .prose code:not(pre code) {
+          background-color: #f4f4f5;
+          color: #18181b;
+          border: 1px solid #e4e4e7;
+          border-radius: 0.375rem;
+          padding: 0.125rem 0.375rem;
+          font-size: 0.875em;
+          font-weight: 500;
+          word-break: break-word;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
       `}</style>
       <div className="flex gap-4 border-b-4 border-black pb-2 mb-4">
         <button

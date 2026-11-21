@@ -201,6 +201,21 @@ export default function BlogEditor({
                 .ProseMirror ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
                 .ProseMirror ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
                 .ProseMirror li { margin-bottom: 0.5em; }
+                .ProseMirror code::before,
+                .ProseMirror code::after {
+                  content: none !important;
+                }
+                .ProseMirror code:not(pre code) {
+                  background-color: #f4f4f5;
+                  color: #18181b;
+                  border: 1px solid #e4e4e7;
+                  border-radius: 0.375rem;
+                  padding: 0.125rem 0.375rem;
+                  font-size: 0.875em;
+                  font-weight: 500;
+                  word-break: break-word;
+                  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                }
               `}</style>
               <EditorContent editor={editorId} />
             </div>
@@ -262,6 +277,21 @@ export default function BlogEditor({
                 .ProseMirror ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
                 .ProseMirror ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 1em; }
                 .ProseMirror li { margin-bottom: 0.5em; }
+                .ProseMirror code::before,
+                .ProseMirror code::after {
+                  content: none !important;
+                }
+                .ProseMirror code:not(pre code) {
+                  background-color: #f4f4f5;
+                  color: #18181b;
+                  border: 1px solid #e4e4e7;
+                  border-radius: 0.375rem;
+                  padding: 0.125rem 0.375rem;
+                  font-size: 0.875em;
+                  font-weight: 500;
+                  word-break: break-word;
+                  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                }
               `}</style>
               <EditorContent editor={editorEn} />
             </div>

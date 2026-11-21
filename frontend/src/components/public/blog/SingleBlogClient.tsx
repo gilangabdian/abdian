@@ -9,6 +9,7 @@ import "highlight.js/styles/night-owl.css";
 import { Blog } from "@/types";
 import TableOfContents from "@/components/global/TableOfContents";
 import { injectHeadingIds } from "@/lib/heading-utils";
+import { formatInlineCode } from "@/lib/inline-code-utils";
 import { formatGithubLinks } from "@/lib/github-link-formatter";
 
 interface SingleBlogClientProps {
@@ -31,7 +32,8 @@ const BlogContent = React.memo(
     // Pre-process HTML: inject heading IDs and extract ToC synchronously
     // IDs are embedded in the HTML string BEFORE render, avoiding race conditions
     // with React.memo caching and Turbopack's useEffect timing.
-    const { processedHtml, toc } = injectHeadingIds(content);
+    const { processedHtml: headingHtml, toc } = injectHeadingIds(content);
+    const processedHtml = formatInlineCode(headingHtml);
 
     // Effect 1: Report ToC from pre-computed data (no DOM dependency)
     useEffect(() => {
@@ -229,6 +231,26 @@ export default function SingleBlogClient({ initialBlog, initialLang }: SingleBlo
         .prose li p {
           margin-top: 0px !important;
           margin-bottom: 0px !important;
+        }
+        .prose code::before,
+        .prose code::after {
+          content: none !important;
+        }
+        .prose code:not(pre code) {
+          background-color: #f4f4f5;
+          color: #18181b;
+          border: 1px solid #e4e4e7;
+          border-radius: 0.375rem;
+          padding: 0.125rem 0.375rem;
+          font-size: 0.875em;
+          font-weight: 500;
+          word-break: break-word;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+        .dark .prose code:not(pre code) {
+          background-color: rgba(255, 255, 255, 0.1);
+          color: #e5e5e5;
+          border-color: rgba(255, 255, 255, 0.12);
         }
 
       `}</style>

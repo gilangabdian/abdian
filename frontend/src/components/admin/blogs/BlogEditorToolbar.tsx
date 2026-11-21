@@ -90,6 +90,16 @@ export default function BlogEditorToolbar({
       </button>
       <button
         type="button"
+        onClick={() => editor.chain().focus().toggleCode().run()}
+        className={`p-2 border-2 border-transparent hover:border-black transition-colors rounded ${
+          editor.isActive("code") ? "bg-black text-white" : ""
+        }`}
+        title="Inline Code (`code` / Ctrl+E)"
+      >
+        <Icon icon="lucide:code" />
+      </button>
+      <button
+        type="button"
         onClick={() => setLink(editor)}
         className={`p-2 border-2 border-transparent hover:border-black transition-colors rounded ${
           editor.isActive("link") ? "bg-black text-white" : ""
@@ -173,7 +183,7 @@ export default function BlogEditorToolbar({
         }`}
         title="Code Block"
       >
-        <Icon icon="lucide:code" />
+        <Icon icon="lucide:square-code" />
       </button>
       <button
         type="button"
