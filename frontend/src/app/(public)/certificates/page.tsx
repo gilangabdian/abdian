@@ -13,7 +13,7 @@ import { getProfile } from "@/lib/api/profile";
 export default async function CertificatesPage() {
   const profile = await getProfile();
 
-  if (profile?.about?.is_certificates_page_active === false) {
+  if (!profile?.about || profile.about.is_certificates_page_active === false) {
     notFound();
   }
 

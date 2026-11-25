@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function AboutPage() {
   const profile = await getProfile();
 
-  if (profile?.about?.is_about_page_active === false) {
+  if (!profile?.about || profile.about.is_about_page_active === false) {
     notFound();
   }
 

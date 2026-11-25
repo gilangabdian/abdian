@@ -5,14 +5,15 @@ import Footer from "@/components/layouts/public/Footer";
 import ScrollToTop from "@/components/global/ScrollToTop";
 import ProgressBarProvider from "@/components/global/ProgressBarProvider";
 
-import { getProfile } from "@/lib/api/profile";
+import { getProfile, sanitizePublicProfile } from "@/lib/api/profile";
 
 export default async function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const profile = await getProfile().catch(() => null);
+  const rawProfile = await getProfile().catch(() => null);
+  const profile = sanitizePublicProfile(rawProfile);
 
   return (
     <>
